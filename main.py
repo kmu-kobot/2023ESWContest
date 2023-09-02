@@ -15,13 +15,13 @@ if __name__ == "__main__":
     
     start = time.time()
     end = start
-    while end-start < 1:
+    while end-start < 0.5:
         end = time.time()
         Motion.TX_data_py3(11)
-    while end-start < 3:
+    while end-start < 4:
         end = time.time()
         Motion.TX_data_py3(13)
-    while end-start < 5:
+    while end-start < 6:
         end = time.time()
         Motion.TX_data_py3(11)
     Motion.TX_data_py3(26)
