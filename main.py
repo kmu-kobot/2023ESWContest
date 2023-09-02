@@ -20,7 +20,7 @@ if __name__ == "__main__":
         Motion.TX_data_py3(11)
     while end-start < 3:
         end = time.time()
-        Motion.TX_data_py3(3)
+        Motion.TX_data_py3(13)
     while end-start < 5:
         end = time.time()
         Motion.TX_data_py3(11)
