@@ -16,11 +16,11 @@ if __name__ == "__main__":
     start = time.time()
     end = start
     while end-start < 3:
-        Motion.TX_data_py3(2)
+        Motion.TX_data_py3(11)
     while end-start < 5:
-        Motion.TX_data_py3(24)
+        Motion.TX_data_py3(3)
     while end-start < 7:
-        Motion.TX_data_py3(2)
+        Motion.TX_data_py3(11)
         
     # main while loop
     # ceremony 완료할 때까지 반복
