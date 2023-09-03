@@ -3,7 +3,7 @@ import numpy as np
 import time
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
-
+from ultralytics import YOLO
 
 class Camera:
     def __init__(self):
@@ -14,9 +14,9 @@ class Camera:
         time.sleep(2)
         
         while True:
-            img = self.get_image()
-            cv2.imshow("camera", img)
-            cv2.waitKey(10)
+            self.cvCircleDetect(self.get_image())
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         cv2.destroyAllWindows
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
@@ -33,3 +33,14 @@ class Camera:
     
     def ball_distance(self, angle):
         return 0
+    
+    def cvCircleDetect(self, img):
+        gray = cv2.cvtColor(img, cv2.COLORBGR2GRAY)
+        
+        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100, param1=250, param2=10, minRadius=40, maxRadius=200)
+        
+        for i in circles[0]:
+            cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
+            
+        cv2.imshow("circle", img)
+        return (i[0],i[1],i[2])
