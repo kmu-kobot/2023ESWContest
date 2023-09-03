@@ -93,3 +93,16 @@ class Motion:
         if not self.lock:
             self.TX_data_py3(Motion["WALK"]["GOFORWARD"])
         pass
+
+    # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
+    def view(self, direction):
+        if not self.lock:
+            if direction == "CENTER":
+                self.TX_data_py3(Motion["VIEW"]["CENTER"])
+            elif direction == "LEFT":
+                self.TX_data_py3(Motion["VIEW"]["LEFT45"])
+            elif direction == "RIGHT":
+                self.TX_data_py3(Motion["VIEW"]["RIGHT45"])
+            while self.getRx():
+                continue
+        pass
