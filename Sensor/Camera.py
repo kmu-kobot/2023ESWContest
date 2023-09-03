@@ -13,7 +13,7 @@ class Camera:
         print(shape) # 세로, 가로 출력
         time.sleep(2)
         
-        while cv2.waitKey():
+        while True:
             img = self.get_image()
             cv2.imshow("camera", img)
         cv2.destroyAllWindows
