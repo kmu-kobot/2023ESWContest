@@ -21,6 +21,7 @@ class Camera:
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
         try:
+            print("image get")
             return self.cam.read().copy()
         except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
             print("Attribute Error")
