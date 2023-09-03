@@ -1,6 +1,8 @@
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 
+import cv2
+
 import time
 # import cv2
 
@@ -14,7 +16,15 @@ if __name__ == "__main__":
     
     Motion = Motion()
     Camera = Camera()
-    pass
+    
+    while True:
+        frame = Camera.get_image()
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+        else:
+            break
+    cv2.destroyAllWindows
     
     # start = time.time()
     # end = start
