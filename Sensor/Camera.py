@@ -12,6 +12,11 @@ class Camera:
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
         time.sleep(2)
+        
+        while cv2.waitKey():
+            img = self.get_image
+            cv2.imshow("camera", img)
+        cv2.destroyAllWindows
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
