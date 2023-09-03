@@ -17,8 +17,15 @@ if __name__ == "__main__":
     
     while True:
         frame = Camera.get_image()
-        circle = Camera.cvCircleDetect(frame)
-        cv2.imshow('frame', circle)
+        ret, img, xy = Camera.cvCircleDetect(frame)
+        if ret == True:
+            if xy[0] > 420:
+                Motion.view("RIGHT")
+            elif xy[0] < 220:
+                Motion.view("LEFT")
+        else:
+            pass
+        cv2.imshow('frame', img)
         if cv2.waitKey(16) & 0xFF == 27:
             break
         else:
