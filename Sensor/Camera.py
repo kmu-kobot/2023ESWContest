@@ -14,7 +14,7 @@ class Camera:
         
         while True:
             self.cvCircleDetect(self.get_image())
-            cv2.waitKey(0)
+            cv2.waitKey(10)
         cv2.destroyAllWindows
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
