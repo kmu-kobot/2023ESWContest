@@ -98,11 +98,11 @@ class Motion:
     def view(self, direction):
         if not self.lock:
             if direction == "CENTER":
-                self.TX_data_py3(Motion["VIEW"]["CENTER"])
+                self.TX_data_py3(21)
             elif direction == "LEFT":
-                self.TX_data_py3(Motion["VIEW"]["LEFT45"])
+                self.TX_data_py3(28)
             elif direction == "RIGHT":
-                self.TX_data_py3(Motion["VIEW"]["RIGHT45"])
+                self.TX_data_py3(30)
             while self.getRx():
                 continue
         pass
