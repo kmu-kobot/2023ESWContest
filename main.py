@@ -2,9 +2,7 @@ from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 
 import cv2
-
 import time
-# import cv2
 
 # Robot 클래스 import
 
