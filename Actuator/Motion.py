@@ -2,7 +2,18 @@ import serial
 import time
 from threading import Thread
 
-Motion = {}
+Motion = {"SIGNAL":{"INIT":26},
+          "VIEW":{"LEFT90":17, "LEFT45":28,        # 목각도
+                  "RIGHT90":27,"RIGHT45":30,
+                  "CENTER":21},
+          "WALK":{"LEFT70":14, "LEFT20":15,
+                  "RIGHT70":13,"RIGHT20":20,       # 70연속, 20
+                  "FORWARD":10,"BACKWARD":32,      # 종종 걸음
+                  "GOFORWARD":11,"GOBACKWARD":32}, # 연속 걸음
+          "SHOT":{"LEFT":2, "RIGHT":5},
+          "TURN":{"LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
+                  "RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
+          }
 
 
 class Motion:
@@ -31,7 +42,7 @@ class Motion:
         time.sleep(0.01)
         
     def TX_data_py3(self, one_byte):  # one_byte= 0~255
-        #self.lock = True
+        self.lock = True
         self.serial_port.write(serial.to_bytes([one_byte]))  # python3
         #time.sleep(0.05)
         
@@ -69,17 +80,16 @@ class Motion:
                     break
     
 
-    # // init 모션 지정
-    # def init(self):
-    #     if not self.lock:
-    #         self.TX_data_py2(MOTION["SIGNAL"]["INIT"])
-    #         while self.getRx():
-    #             continue
-    #     pass
+    # init 모션
+    def init(self):
+        if not self.lock:
+            self.TX_data_py3(Motion["SIGNAL"]["INIT"])
+            while self.getRx():
+                continue
+        pass
 
-    # def init2(self):
-    #     if not self.lock:
-    #         self.TX_data_py2(MOTION["SIGNAL"]["INIT2"])
-    #         while self.getRx():
-    #             continue
-    #     pass
+    # 연속 걸음
+    def walk(self):
+        if not self.lock:
+            self.TX_data_py3(Motion["WALK"]["GOFORWARD"])
+        pass
