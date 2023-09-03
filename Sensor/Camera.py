@@ -23,6 +23,7 @@ class Camera:
         try:
             return self.cam.read().copy()
         except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
+            print("Attribute Error")
             return np.zeros(shape=(480, 640, 3), dtype="uint8")
         
     def ball_position(self, img):
