@@ -34,6 +34,4 @@ class Camera:
         
         for i in circles[0]:
             cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
-            
-        cv2.imshow("circle", img)
-        return (i[0],i[1],i[2])
+        return img

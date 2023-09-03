@@ -17,7 +17,8 @@ if __name__ == "__main__":
     
     while True:
         frame = Camera.get_image()
-        cv2.imshow('frame', frame)
+        circle = Camera.cvCircleDetect(frame)
+        cv2.imshow('frame', circle)
         if cv2.waitKey(16) & 0xFF == 27:
             break
         else:
