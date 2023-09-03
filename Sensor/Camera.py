@@ -3,7 +3,6 @@ import numpy as np
 import time
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
-from ultralytics import YOLO
 
 class Camera:
     def __init__(self):
