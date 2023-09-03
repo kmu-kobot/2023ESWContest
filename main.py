@@ -14,6 +14,7 @@ if __name__ == "__main__":
     
     Motion = Motion()
     Camera = Camera()
+    pass
     
     # start = time.time()
     # end = start
