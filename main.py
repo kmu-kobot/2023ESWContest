@@ -15,14 +15,28 @@ if __name__ == "__main__":
     Motion = Motion()
     Camera = Camera()
     
+    direction = "CENTER"
+
+    Motion.init()
+    
     while True:
         frame = Camera.get_image()
         ret, img, xy = Camera.cvCircleDetect(frame)
         if ret == True:
-            if xy[0] > 420:
-                Motion.view("RIGHT")
-            elif xy[0] < 220:
-                Motion.view("LEFT")
+            if xy[0] > 420: # 화면의 오른쪽
+                if direction == "CENTER":
+                    Motion.view("RIGHT")
+                    direction = "RIGHT"
+                elif direction == "LEFT":
+                    Motion.view("CENTER")
+                    direction = "CENTER"
+            elif xy[0] < 220: # 화면의 왼쪽
+                if direction == "CENTER":
+                    Motion.view("LEFT")
+                    direction = "LEFT"
+                elif direction == "RIGHT":
+                    Motion.view("CENTER")
+                    direction = "CENTER"
         else:
             pass
         cv2.imshow('frame', img)
