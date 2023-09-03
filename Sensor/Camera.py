@@ -7,7 +7,7 @@ from imutils.video import FPS
 
 class Camera:
     def __init__(self):
-        self.cam = WebcamVideoStream(0).start
+        self.cam = WebcamVideoStream(1).start
         self.fps = FPS()
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
