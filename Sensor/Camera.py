@@ -32,6 +32,8 @@ class Camera:
         
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100, param1=100, param2=100, minRadius=40, maxRadius=100)
         
+        if circles == None:
+            return img
         for i in circles[0]:
             cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
         return img
