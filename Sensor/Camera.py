@@ -34,7 +34,7 @@ class Camera:
         return 0
     
     def cvCircleDetect(self, img):
-        gray = cv2.cvtColor(img, cv2.COLORBGR2GRAY)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100, param1=250, param2=10, minRadius=40, maxRadius=200)
         
