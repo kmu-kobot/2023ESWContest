@@ -44,7 +44,7 @@ class Motion:
     def TX_data_py3(self, one_byte):  # one_byte= 0~255
         self.lock = True
         self.serial_port.write(serial.to_bytes([one_byte]))  # python3
-        #time.sleep(0.05)
+        time.sleep(0.05)
         
     def RX_data(self):
         if self.serial_port.inWaiting() > 0:
@@ -83,9 +83,9 @@ class Motion:
     # init 모션
     def init(self):
         if not self.lock:
-            self.TX_data_py3(Motion["SIGNAL"]["INIT"])
-            while self.getRx():
-                continue
+            self.TX_data_py3(26)
+            self.TX_data_py3(21)
+            self.lock = False
         pass
 
     # 연속 걸음
@@ -103,6 +103,5 @@ class Motion:
                 self.TX_data_py3(28)
             elif direction == "RIGHT":
                 self.TX_data_py3(30)
-            while self.getRx():
-                continue
+            self.lock = False
         pass
