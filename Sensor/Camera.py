@@ -6,8 +6,8 @@ from imutils.video import FPS
 
 class Camera:
     def __init__(self):
-        self.cam = WebcamVideoStream(-1).start()
-        self.fps = FPS()
+        self.cam = WebcamVideoStream(-1).start() # 카메라 오픈
+        self.fps = FPS() # 디버깅용 fps, 나중에 off
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
         time.sleep(2)
@@ -34,6 +34,7 @@ class Camera:
         
         if np.any(circles == None):
             return False, img, None
+        
         for i in circles[0]:
             cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
         return True, img, (circles[0][0][0],circles[0][0][1])
