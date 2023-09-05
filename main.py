@@ -21,29 +21,34 @@ if __name__ == "__main__":
     
     while True:
         frame = Camera.get_image()
-        ret, img, xy = Camera.cvCircleDetect(frame)
-        if ret == True:
-            if xy[0] > 420: # 화면의 오른쪽
-                if direction == "CENTER":
-                    Motion.view("RIGHT")
-                    direction = "RIGHT"
-                elif direction == "LEFT":
-                    Motion.view("CENTER")
-                    direction = "CENTER"
-            elif xy[0] < 220: # 화면의 왼쪽
-                if direction == "CENTER":
-                    Motion.view("LEFT")
-                    direction = "LEFT"
-                elif direction == "RIGHT":
-                    Motion.view("CENTER")
-                    direction = "CENTER"
-        else:
-            pass
-        cv2.imshow('frame', img)
-        if cv2.waitKey(16) & 0xFF == 27:
-            break
-        else:
-            continue
+        
+        # ret, img, xy = Camera.cvCircleDetect(frame)
+        # if ret == True:
+        #     if xy[0] > 420: # 화면의 오른쪽
+        #         if direction == "CENTER":
+        #             Motion.view("RIGHT")
+        #             direction = "RIGHT"
+        #         elif direction == "LEFT":
+        #             Motion.view("CENTER")
+        #             direction = "CENTER"
+        #     elif xy[0] < 220: # 화면의 왼쪽
+        #         if direction == "CENTER":
+        #             Motion.view("LEFT")
+        #             direction = "LEFT"
+        #         elif direction == "RIGHT":
+        #             Motion.view("CENTER")
+        #             direction = "CENTER"
+        # else:
+        #     pass
+        # cv2.imshow('frame', img)
+        # if cv2.waitKey(16) & 0xFF == 27:
+        #     break
+        # else:
+        #     continue
+        
+        while True:
+            detect = Camera.yoloDetect(frame)
+            cv2.waitKey(20)
     cv2.destroyAllWindows()
     
     # start = time.time()
