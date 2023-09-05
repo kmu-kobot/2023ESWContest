@@ -2,6 +2,7 @@ from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 
 import cv2
+import numpy as np
 import time
 
 CONFIDENCE_THRESHOLD = 0.8
@@ -27,6 +28,8 @@ if __name__ == "__main__":
 
         # run the YOLO model on the frame
         detections = Camera.yoloDetect(frame)
+        if np.any(detections) == None:
+            continue
 
         # loop over the detections
         for data in detections.boxes.data.tolist():
