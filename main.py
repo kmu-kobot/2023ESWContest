@@ -21,6 +21,12 @@ if __name__ == "__main__":
     
     while True:
         frame = Camera.get_image()
+        detection = Camera.yoloDetect(frame)
+        annotated_frame = detection[0].plot()
+        cv2.imshow("Ball Detect", annotated_frame)
+        
+        if cv2.waitKey(20) & 0xFF == ord("q"):
+            break
         
         # ret, img, xy = Camera.cvCircleDetect(frame)
         # if ret == True:
@@ -46,9 +52,6 @@ if __name__ == "__main__":
         # else:
         #     continue
         
-        while True:
-            detect = Camera.yoloDetect(frame)
-            cv2.waitKey(20)
     cv2.destroyAllWindows()
     
     # start = time.time()
