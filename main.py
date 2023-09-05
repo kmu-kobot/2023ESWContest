@@ -4,6 +4,9 @@ from Sensor.Camera import Camera
 import cv2
 import time
 
+CONFIDENCE_THRESHOLD = 0.8
+GREEN = (0, 255, 0)
+
 # Robot 클래스 import
 
 if __name__ == "__main__":
@@ -21,51 +24,55 @@ if __name__ == "__main__":
     
     while True:
         frame = Camera.get_image()
-        detection = Camera.yoloDetect(frame)
-        annotated_frame = detection[0].plot()
-        cv2.imshow("Ball Detect", annotated_frame)
+
+        # run the YOLO model on the frame
+        detections = Camera.yoloDetect(frame)
+
+        # loop over the detections
+        for data in detections.boxes.data.tolist():
+            # extract the confidence (i.e., probability) associated with the detection
+            confidence = data[4]
+
+            # filter out weak detections by ensuring the 
+            # confidence is greater than the minimum confidence
+            if float(confidence) < CONFIDENCE_THRESHOLD:
+                continue
+
+            # if the confidence is greater than the minimum confidence,
+            # draw the bounding box on the frame
+            xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
+            cv2.rectangle(frame, (xmin, ymin) , (xmax, ymax), GREEN, 2)
+            
+        # show the frame to our screen
+        cv2.imshow("Frame", frame)
         
-        if cv2.waitKey(20) & 0xFF == ord("q"):
+        if cv2.waitKey(1) == ord("q"):
             break
-        
-        # ret, img, xy = Camera.cvCircleDetect(frame)
-        # if ret == True:
-        #     if xy[0] > 420: # 화면의 오른쪽
-        #         if direction == "CENTER":
-        #             Motion.view("RIGHT")
-        #             direction = "RIGHT"
-        #         elif direction == "LEFT":
-        #             Motion.view("CENTER")
-        #             direction = "CENTER"
-        #     elif xy[0] < 220: # 화면의 왼쪽
-        #         if direction == "CENTER":
-        #             Motion.view("LEFT")
-        #             direction = "LEFT"
-        #         elif direction == "RIGHT":
-        #             Motion.view("CENTER")
-        #             direction = "CENTER"
-        # else:
-        #     pass
-        # cv2.imshow('frame', img)
-        # if cv2.waitKey(16) & 0xFF == 27:
-        #     break
-        # else:
-        #     continue
-        
+    
     cv2.destroyAllWindows()
     
-    # start = time.time()
-    # end = start
-    # while end-start < 0.5:
-    #     end = time.time()
-    #     Motion.TX_data_py3(11)
-    # while end-start < 4:
-    #     end = time.time()
-    #     Motion.TX_data_py3(13)
-    # while end-start < 6:
-    #     end = time.time()
-    #     Motion.TX_data_py3(11)
-    # Motion.TX_data_py3(26)
+    # ret, img, xy = Camera.cvCircleDetect(frame)
+    # if ret == True:
+    #     if xy[0] > 420: # 화면의 오른쪽
+    #         if direction == "CENTER":
+    #             Motion.view("RIGHT")
+    #             direction = "RIGHT"
+    #         elif direction == "LEFT":
+    #             Motion.view("CENTER")
+    #             direction = "CENTER"
+    #     elif xy[0] < 220: # 화면의 왼쪽
+    #         if direction == "CENTER":
+    #             Motion.view("LEFT")
+    #             direction = "LEFT"
+    #         elif direction == "RIGHT":
+    #             Motion.view("CENTER")
+    #             direction = "CENTER"
+    # else:
+    #     pass
+    # cv2.imshow('frame', img)
+    # if cv2.waitKey(16) & 0xFF == 27:
+    #     break
+    # else:
         
     # main while loop
     # ceremony 완료할 때까지 반복

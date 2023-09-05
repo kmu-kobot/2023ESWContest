@@ -45,6 +45,5 @@ class Camera:
         return True, img, (circles[0][0][0],circles[0][0][1])
     
     def yoloDetect(self, img):
-        result = self.model(img, classes = 32, conf = 0.8)
-        print(result)
-        
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        result = self.model.predict(img, classes = 32, conf = 0.8)[0]
