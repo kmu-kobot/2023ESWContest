@@ -8,12 +8,12 @@ from ultralytics import YOLO
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.cam = WebcamVideoStream(-1).start() # 카메라 오픈
-        self.fps = FPS() # 디버깅용 fps, 나중에 off
+        self.cam = WebcamVideoStream(-1).start()
+        self.fps = FPS()
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
         time.sleep(2)
-        
+
         # YOLO 설정
         self.model = YOLO('yolov8n.pt')
     
@@ -46,4 +46,5 @@ class Camera:
     
     def yoloDetect(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        result = self.model.predict(img, classes = 32, conf = 0.8)[0]
+        result = self.model.predict(img, conf = 0.8)[0]
+        return result
