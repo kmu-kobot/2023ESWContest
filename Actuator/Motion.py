@@ -66,10 +66,9 @@ class Motion:
                 result = ser.read(1) # 시리얼 포트에서 한 바이트(문자)를 읽어와 result 변수에 저장
                 RX = ord(result)
                 print(f"Receive: {RX}", end=" ")
-                if RX == 200:
-                # print("motion end")
+                if RX == 38:
                     self.lock = False
-                    print("lock 해제")
+                    print("motion end --- lock 해제")
                 # print("RX=" + str(RX))
                 else:
                     self.distance = RX
@@ -84,13 +83,23 @@ class Motion:
     def init(self):
         if not self.lock:
             self.TX_data_py3(26)
+            while self.lock:
+                continue
             self.TX_data_py3(21)
+            while self.lock:
+                continue
         pass
 
     # 연속 걸음
-    def walk(self):
+    def walk(self, period):
         if not self.lock:
             self.TX_data_py3(Motion["WALK"]["GOFORWARD"])
+            start_time = time.time()
+            while self.lock:
+                current_time = time.time()
+                if current_time - start_time >= period:
+                    break
+            self.TX_data_py3(Motion["SIGNAL"]["INIT"])
         pass
 
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
@@ -106,9 +115,10 @@ class Motion:
         pass
 
 if __name__ == '__main__':
-    temp = Motion()
-    temp.init()
+    Motion = Motion()
+    Motion.init()
     time.sleep(3)
-    temp.init()
+    Motion.walk(1)
+    Motion.init()
     time.sleep(1)
     pass
