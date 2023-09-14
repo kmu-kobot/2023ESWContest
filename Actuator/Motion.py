@@ -2,6 +2,7 @@ import serial
 import time
 from threading import Thread
 
+'''
 Motion = {"SIGNAL":{"INIT":26},
           "VIEW":{"LEFT90":17, "LEFT45":28,        # 목각도
                   "RIGHT90":27,"RIGHT45":30,
@@ -14,6 +15,7 @@ Motion = {"SIGNAL":{"INIT":26},
           "TURN":{"LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
                   "RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
           }
+'''
 
 
 class Motion:
@@ -93,13 +95,13 @@ class Motion:
     # 연속 걸음
     def walk(self, period):
         if not self.lock:
-            self.TX_data_py3(Motion["WALK"]["GOFORWARD"])
+            self.TX_data_py3(10)
             start_time = time.time()
             while self.lock:
                 current_time = time.time()
                 if current_time - start_time >= period:
                     break
-            self.TX_data_py3(Motion["SIGNAL"]["INIT"])
+            self.TX_data_py3(26)
         pass
 
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
