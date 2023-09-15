@@ -1,5 +1,6 @@
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
+from Brain.Robot import Robot
 
 import cv2
 import numpy as np
@@ -11,18 +12,16 @@ GREEN = (0, 255, 0)
 # Robot 클래스 import
 
 if __name__ == "__main__":
-    # ROBOT 객체 생성
-    # robot = Robot()
-    # 미션 수행 함수 실행
-    # robot.line_tracing_Final()
     
+    Robot = Robot()
     Motion = Motion()
     Camera = Camera()
     
     direction = "CENTER"
 
     Motion.init()
-    
+
+    # 미션 수행 함수 실행
     while True:
         frame = Camera.get_image()
 
