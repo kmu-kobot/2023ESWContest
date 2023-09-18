@@ -1,5 +1,6 @@
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
+from Brain.Robot import Robot
 
 import cv2
 import numpy as np
@@ -11,32 +12,28 @@ GREEN = (0, 255, 0)
 # Robot 클래스 import
 
 if __name__ == "__main__":
-    # ROBOT 객체 생성
-    # robot = Robot()
-    # 미션 수행 함수 실행
-    # robot.line_tracing_Final()
     
+    Robot = Robot()
     Motion = Motion()
     Camera = Camera()
     
     direction = "CENTER"
 
     Motion.init()
-    
+
+    # 미션 수행 함수 실행
     while True:
         frame = Camera.get_image()
 
         # run the YOLO model on the frame
-        detections = Camera.yoloDetect(frame)
-        if np.any(detections) == None:
-            continue
+        detections = Camera.yoloDetect(frame.copy())
 
         # loop over the detections
         for data in detections.boxes.data.tolist():
             # extract the confidence (i.e., probability) associated with the detection
             confidence = data[4]
 
-            # filter out weak detections by ensuring the 
+            # filter out weak detections by ensuring the
             # confidence is greater than the minimum confidence
             if float(confidence) < CONFIDENCE_THRESHOLD:
                 continue
@@ -44,16 +41,15 @@ if __name__ == "__main__":
             # if the confidence is greater than the minimum confidence,
             # draw the bounding box on the frame
             xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
-            cv2.rectangle(frame, (xmin, ymin) , (xmax, ymax), GREEN, 2)
-            
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
+
         # show the frame to our screen
         cv2.imshow("Frame", frame)
-        
-        if cv2.waitKey(1) == ord("q"):
+        if cv2.waitKey(1600) == ord("q"):
             break
-    
+        
     cv2.destroyAllWindows()
-    
+
     # ret, img, xy = Camera.cvCircleDetect(frame)
     # if ret == True:
     #     if xy[0] > 420: # 화면의 오른쪽
@@ -76,6 +72,7 @@ if __name__ == "__main__":
     # if cv2.waitKey(16) & 0xFF == 27:
     #     break
     # else:
+    #     continue
         
     # main while loop
     # ceremony 완료할 때까지 반복

@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import time
+import math
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 from ultralytics import YOLO
@@ -8,12 +9,12 @@ from ultralytics import YOLO
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.cam = WebcamVideoStream(-1).start() # 카메라 오픈
-        self.fps = FPS() # 디버깅용 fps, 나중에 off
+        self.cam = WebcamVideoStream(-1).start()
+        self.fps = FPS()
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
         time.sleep(2)
-        
+
         # YOLO 설정
         self.model = YOLO('yolov8n.pt')
     
@@ -32,6 +33,13 @@ class Camera:
     def ball_distance(self, angle):
         return 0
     
+    # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
+    def ball_hole(self, ball, hole, neck_angle):
+        # neck angle은 60 or 80
+        neck_angle = math.radians(neck_angle)
+        ball_hole = math.sqrt(ball**2 + hole**2 - 2*ball*hole*math.cos(neck_angle))
+        return ball_hole
+    
     def cvCircleDetect(self, img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
@@ -46,4 +54,5 @@ class Camera:
     
     def yoloDetect(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        result = self.model.predict(img, classes = 32, conf = 0.8)[0]
+        result = self.model.predict(img, conf = 0.8)[0]
+        return result
