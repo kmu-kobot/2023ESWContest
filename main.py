@@ -55,6 +55,9 @@ if __name__ == "__main__":
         elif ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 95:
                 Motion.neckup()
+                Robot.neck_pitch += 5
+            else:
+                Motion.init()
                 Robot.neck_pitch = 100
         elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
             if 65 < Robot.neck_pitch < 80:
