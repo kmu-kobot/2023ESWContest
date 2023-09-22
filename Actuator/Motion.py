@@ -67,7 +67,7 @@ class Motion:
                 # Rx, 수신
                 result = ser.read(1) # 시리얼 포트에서 한 바이트(문자)를 읽어와 result 변수에 저장
                 RX = ord(result)
-                print(f"Receive: {RX}", end=" ")
+                print(f"Receive: {RX}")
                 if RX == 38:
                     self.lock = False
                     print("motion end --- lock 해제")
@@ -81,6 +81,14 @@ class Motion:
             if self.receiving_exit == 0:
                 break
 
+
+    def initial(self):
+        if not self.lock:
+            self.TX_data_py3(8)
+            while self.lock:
+                continue
+        pass
+        
     # init 모션
     def init(self):
         if not self.lock:
@@ -118,9 +126,9 @@ class Motion:
 
 if __name__ == '__main__':
     Motion = Motion()
-    Motion.init()
-    time.sleep(3)
-    Motion.walk(1)
+    Motion.initial()
+    time.sleep(5)
+
     Motion.init()
     time.sleep(1)
     pass
