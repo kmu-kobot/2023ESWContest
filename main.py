@@ -26,14 +26,14 @@ if __name__ == "__main__":
 
     # 미션 수행 함수 실행
     while True:
-        xmin = ymin = xmax = ymax = False
-
         frame = Camera.get_image()
 
         # run the YOLO model on the frame
         detections = Camera.yoloDetect(frame.copy())
 
-        # loop over the detections
+        # img process
+        # 1. loop over the detections - 공 인식
+        xmin = ymin = xmax = ymax = False
         for data in detections.boxes.data.tolist():
             # extract the confidence (i.e., probability) associated with the detection
             confidence = data[4]
@@ -48,6 +48,14 @@ if __name__ == "__main__":
             xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
 
+        # 2. hole 인식
+        ret, holebox = Camera.is_hole(frame.copy())
+        if ret:
+            cv2.rectangle(frame, (holebox[0], holebox[1]), (holebox[0]+holebox[2], holebox[1]+holebox[3]), (0,255,0), 2)
+            Robot.is_hole = True
+        else:
+            Robot.is_hole = False
+            
         # 공 bounding box에 따라 목 각도 조절
         # 반복 한 번에 동작 하나만 호출함
         if ymin == False:    # 공 bounding box가 없다면

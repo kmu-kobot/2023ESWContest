@@ -33,6 +33,28 @@ class Camera:
     def ball_distance(self, angle):
         return 0
     
+    # 홀 인식
+    def is_hole(self, img):
+        # 이미지를 HLS 색공간으로 변환
+        img_hls = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+        
+        # 색상, 밝기, 채도 범위 설정
+        lower_bound = np.array([0, 0, 0])
+        upper_bound = np.array([60, 255, 255])
+        
+        # 범위 내의 픽셀을 마스크로 만들기
+        mask = cv2.inRange(img_hls, lower_bound, upper_bound)
+
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # 검은색이 아닌 영역을 사각형으로 표시
+        for contour in contours:
+            x, y, w, h = cv2.boundingRect(contour)
+            if w < 10 or h < 10 or h / w < 1.5:
+                continue
+            return True, [x, y, w, h]
+        return False, None
+    
     # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
     def ball_hole(self, ball, hole, neck_angle):
         # neck angle은 60 or 80
