@@ -12,8 +12,8 @@ Motion = {"SIGNAL":{"INIT":26},
                   "FORWARD":10,"BACKWARD":32,      # 종종 걸음
                   "GOFORWARD":11,"GOBACKWARD":32}, # 연속 걸음
           "SHOT":{"LEFT":2, "RIGHT":5},
-          "TURN":{"LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
-                  "RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
+          "TURN":{"LEFT5":1, "LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
+                  "RIGHT5":3,"RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
           }
 '''
 
@@ -81,7 +81,6 @@ class Motion:
             if self.receiving_exit == 0:
                 break
 
-
     # 초기 연결 확인 동작
     def initial(self):
         if not self.lock:
@@ -125,14 +124,15 @@ class Motion:
             self.lock = False
         pass
 
-    def neckup(self, count):
+    # 고개 5도씩 올림
+    def neckup(self):
         if not self.lock:
-            for _ in range(count):
-                self.TX_data_py3(8)
-                while self.lock:
-                    continue
+            self.TX_data_py3(8)
+            while self.lock:
+                continue
         return
 
+    # 고개 65도
     def neck65(self):
         if not self.lock:
             self.TX_data_py3(31)
@@ -140,9 +140,39 @@ class Motion:
                 continue
         return
     
+    # 고개 80도
     def neck80(self):
         if not self.lock:
             self.TX_data_py3(29)
+            while self.lock:
+                continue
+        return
+
+    # 몸통 회전
+    def turn(self, direction, angle):
+        if not self.lock:
+            if direction == "LEFT":
+                if angle == 5:       
+                    self.TX_data_py3(1)
+                elif angle == 10:
+                    self.TX_data_py3(4)
+                elif angle == 20:
+                    self.TX_data_py3(7)
+                elif angle == 45:
+                    self.TX_data_py3(22)
+                elif angle == 60:
+                    self.TX_data_py3(25)
+            else:
+                if angle == 5:       
+                    self.TX_data_py3(3)
+                elif angle == 10:
+                    self.TX_data_py3(6)
+                elif angle == 20:
+                    self.TX_data_py3(9)
+                elif angle == 45:
+                    self.TX_data_py3(24)
+                elif angle == 60:
+                    self.TX_data_py3(19)
             while self.lock:
                 continue
         return
