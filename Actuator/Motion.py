@@ -82,12 +82,13 @@ class Motion:
                 break
 
 
+    # 초기 연결 확인 동작
     def initial(self):
         if not self.lock:
-            self.TX_data_py3(8)
+            self.TX_data_py3(250)
             while self.lock:
                 continue
-        pass
+        return
         
     # init 모션
     def init(self):
@@ -123,6 +124,28 @@ class Motion:
                 self.TX_data_py3(30)
             self.lock = False
         pass
+
+    def neckup(self, count):
+        if not self.lock:
+            for _ in range(count):
+                self.TX_data_py3(8)
+                while self.lock:
+                    continue
+        return
+
+    def neck65(self):
+        if not self.lock:
+            self.TX_data_py3(31)
+            while self.lock:
+                continue
+        return
+    
+    def neck80(self):
+        if not self.lock:
+            self.TX_data_py3(29)
+            while self.lock:
+                continue
+        return
 
 if __name__ == '__main__':
     Motion = Motion()

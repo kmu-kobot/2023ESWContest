@@ -4,6 +4,6 @@ class Robot:
         self.curr_mission = None # 현재 수행 중인 미션
 
         # humanoid variables
-        self.neck_pitch = 90
-        self.neck_yaw = 0
+        self.neck_pitch = 100 # 상하
+        self.neck_yaw = 0    # 좌우
         

@@ -19,6 +19,9 @@ if __name__ == "__main__":
     
     direction = "CENTER"
 
+    # 시리얼 연결 확인 동작
+    Motion.initial()
+    # 초기 자세
     Motion.init()
 
     # 미션 수행 함수 실행
