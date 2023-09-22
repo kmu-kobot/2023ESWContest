@@ -1,6 +1,7 @@
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 from Brain.Robot import Robot
+from Brain.Robot_ball_distance import ball_distance
 
 import cv2
 import numpy as np
@@ -9,7 +10,6 @@ import time
 CONFIDENCE_THRESHOLD = 0.8
 GREEN = (0, 255, 0)
 
-# Robot 클래스 import
 
 if __name__ == "__main__":
     
