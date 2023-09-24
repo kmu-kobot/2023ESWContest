@@ -26,12 +26,6 @@ class Camera:
         except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
             print("Attribute Error")
             return np.zeros(shape=(480, 640, 3), dtype="uint8")
-        
-    def ball_position(self, img):
-        return 0, 0, 0 # cx, cy
-    
-    def ball_distance(self, angle):
-        return 0
     
     # 홀 인식
     def is_hole(self, img):
@@ -78,3 +72,6 @@ class Camera:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         result = self.model.predict(img, conf = 0.8)[0]
         return result
+
+if __name__ == "__main__":
+    Camera = Camera()
