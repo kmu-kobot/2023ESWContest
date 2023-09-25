@@ -66,24 +66,24 @@ if __name__ == "__main__":
             Robot.is_bunker = False
 
         # 공 bounding box에 따라 목 각도 조절
-        if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
+        if ymax == False or ymax < 100:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 95:
                 Motion.neckup()
                 Robot.neck_pitch += 5
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             else:
                 Motion.init()
                 Robot.neck_pitch = 100
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
-        elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
+        elif ymax > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
             if 65 < Robot.neck_pitch < 80:
                 Motion.neck65()
                 Robot.neck_pitch = 65
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             elif Robot.neck_pitch > 80:
                 Motion.neck80()
                 Robot.neck_pitch = 80
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
             Motion.walk(1)
         elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
