@@ -56,12 +56,17 @@ if __name__ == "__main__":
             Robot.is_hole = True
         else:
             Robot.is_hole = False
-            
+
+        # 4. bunker 인식
+        ret, bunkerbox = Camera.is_bunker(frame.copy())
+        if ret:
+            cv2.rectangle(frame, (bunkerbox[0], bunkerbox[1]), (bunkerbox[0]+bunkerbox[2], bunkerbox[1]+bunkerbox[3]), (255,255,255), 2)
+            Robot.is_bunker = True
+        else:
+            Robot.is_bunker = False
+
         # 공 bounding box에 따라 목 각도 조절
-        # 반복 한 번에 동작 하나만 호출함
-        if ymin == False:    # 공 bounding box가 없다면
-            pass
-        elif ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
+        if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 95:
                 Motion.neckup()
                 Robot.neck_pitch += 5

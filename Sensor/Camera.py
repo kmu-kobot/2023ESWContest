@@ -49,6 +49,24 @@ class Camera:
             return True, [x, y, w, h]
         return False, None
     
+    # 벙커 인식
+    def is_bunker(self, img):
+        img_hls = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+
+        lower_bound = np.array([0, 135, 0])
+        upper_bound = np.array([180, 255, 31])
+
+        mask = cv2.inRange(img_hls, lower_bound, upper_bound)
+
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            x, y, w, h = cv2.boundingRect(contour)
+            if w < 50 or h < 50:
+                continue
+            return True, [x, y, w, h]
+        return False, None
+        
     # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
     def ball_hole(self, ball, hole, neck_angle):
         # neck angle은 60 or 80
@@ -74,4 +92,14 @@ class Camera:
         return result
 
 if __name__ == "__main__":
-    Camera = Camera()
+    camera = Camera()
+    while True:
+        frame = camera.get_image()
+
+        ret, rect = camera.is_bunker(frame.copy())
+        if ret:
+            cv2.rectangle(frame, (rect[0], rect[1]), (rect[0]+rect[2], rect[1]+rect[3]), (0,255,255), 2)
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(16) == ord("q"):
+            break
+    cv2.destroyAllWindows()
