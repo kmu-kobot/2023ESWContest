@@ -123,18 +123,24 @@ class Camera:
             cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
             cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
             cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
-            return True, [x1, y1, x2, y2]
-        return False, [False,False,False,False]
+            return True, [x1, y1, x2, y2], ori_img
+        return False, [False,False,False,False] , ori_img
 
 if __name__ == "__main__":
     camera = Camera()
     while True:
         frame = camera.get_image()
 
-        ret, rect = camera.is_bunker(frame.copy())
-        if ret:
-            cv2.rectangle(frame, (rect[0], rect[1]), (rect[0]+rect[2], rect[1]+rect[3]), (0,255,255), 2)
-        cv2.imshow("Frame", frame)
+        #ret, rect = camera.is_bunker(frame.copy())
+        #if ret:
+        #    cv2.rectangle(frame, (rect[0], rect[1]), (rect[0]+rect[2], rect[1]+rect[3]), (0,255,255), 2)
+        #cv2.imshow("Frame", frame)
+        #if cv2.waitKey(16) == ord("q"):
+        #    break
+        ret, xy, output = camera.yoloDetect(frame.copy())
+        cv2.imshow("detect", output)
         if cv2.waitKey(16) == ord("q"):
             break
+        
+        
     cv2.destroyAllWindows()

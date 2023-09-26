@@ -34,13 +34,14 @@ if __name__ == "__main__":
 
         # img process
         # 1. loop over the detections - 공 인식
-        ret, ballbox = Camera.yoloDetect(frame.copy())
+        ret, ballbox, output = Camera.yoloDetect(frame.copy())
         xmin = ballbox[0]
         ymin = ballbox[1]
         xmax = ballbox[2]
         ymax = ballbox[3]
         print(f"{xmin}, {ymin}")
-        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,255,0), 2)
+        if ret:
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,255,0), 2)
         # 2. hole 인식
         ret, holebox = Camera.is_hole(frame.copy())
         if ret:
@@ -62,20 +63,20 @@ if __name__ == "__main__":
             if Robot.neck_pitch < 95:
                 Motion.neckup()
                 Robot.neck_pitch += 5
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+#                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             else:
                 Motion.init()
                 Robot.neck_pitch = 100
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
             if 65 < Robot.neck_pitch < 80:
                 Motion.neck65()
                 Robot.neck_pitch = 65
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             elif Robot.neck_pitch > 80:
                 Motion.neck80()
                 Robot.neck_pitch = 80
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
+                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
             Motion.walk(1)
         elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
@@ -86,7 +87,7 @@ if __name__ == "__main__":
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
-        if cv2.waitKey(1600) == ord("q"):
+        if cv2.waitKey(16) == ord("q"):
             break
         
     cv2.destroyAllWindows()
