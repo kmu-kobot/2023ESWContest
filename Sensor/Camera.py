@@ -94,18 +94,13 @@ class Camera:
             cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
         return True, img, (circles[0][0][0],circles[0][0][1])
     
-    def yoloDetect(self, img): # output is boxed img
-        try:
-            ori_img = self.cam.read()[1]
-        except AttributeError:
-            print("atterribute error")
-            ori_img = np.zeros(shape=(480, 640, 3), dtype="uint8")
+    def yoloDetect(self, ori_img): # output is boxed img
         res_img = cv2.resize(ori_img, (self.cfg["width"], self.cfg["height"]), interpolation = cv2.INTER_LINEAR) 
         img = res_img.reshape(1, self.cfg["height"], self.cfg["width"], 3)
         img = torch.from_numpy(img.transpose(0,3, 1, 2))
         img = img.to(self.device).float() / 255.0
         
-        preds = model(img)
+        preds = self.model(img)
         
         output = utils.utils.handel_preds(preds, self.cfg, self.device)
         output_boxes = utils.utils.non_max_suppression(output, conf_thres = 0.8, iou_thres = 0.5)
@@ -128,7 +123,8 @@ class Camera:
             cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
             cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
             cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
-        return ori_img
+            return True, [x1, y1, x2, y2]
+        return False, [False,False,False,False]
 
 if __name__ == "__main__":
     camera = Camera()

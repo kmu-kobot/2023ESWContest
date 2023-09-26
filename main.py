@@ -34,21 +34,13 @@ if __name__ == "__main__":
 
         # img process
         # 1. loop over the detections - 공 인식
-        xmin = ymin = xmax = ymax = False
-        for data in detections.boxes.data.tolist():
-            # extract the confidence (i.e., probability) associated with the detection
-            confidence = data[4]
-
-            # filter out weak detections by ensuring the
-            # confidence is greater than the minimum confidence
-            if float(confidence) < CONFIDENCE_THRESHOLD:
-                continue
-
-            # if the confidence is greater than the minimum confidence,
-            # draw the bounding box on the frame
-            xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
-
+        ret, ballbox = Camera.yoloDetect(frame.copy())
+        xmin = ballbox[0]
+        ymin = ballbox[1]
+        xmax = ballbox[2]
+        ymax = ballbox[3]
+        print(f"{xmin}, {ymin}")
+        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,255,0), 2)
         # 2. hole 인식
         ret, holebox = Camera.is_hole(frame.copy())
         if ret:
