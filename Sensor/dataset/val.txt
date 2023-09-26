@@ -1,0 +1,7 @@
+./Sensor/dataset/val/IMG_1284.jpg
+./Sensor/dataset/val/IMG_1289.jpg
+./Sensor/dataset/val/IMG_1293.jpg
+./Sensor/dataset/val/IMG_1303.jpg
+./Sensor/dataset/val/IMG_1313.jpg
+./Sensor/dataset/val/IMG_1330.jpg
+./Sensor/dataset/val/IMG_1334.jpg

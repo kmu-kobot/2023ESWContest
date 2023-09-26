@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
+import torch
+import model.detector
+import utils.utils
 import time
 import math
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
-from ultralytics import YOLO
 
 class Camera:
     def __init__(self):
@@ -16,7 +18,13 @@ class Camera:
         time.sleep(2)
 
         # YOLO 설정
-        self.model = YOLO('yolov8n.pt')
+        self.optData = "./Sensor/dataset/coco.data"
+        self.optWeight = "./Sensor/weights/ESWv5-290-epoch-0.341991ap-model.pth"
+        self.cfg = utils.utils.load_datafile(self.optData)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model = model.detector.Detector(self.cfg["classes"], self.cfg["anchor_num"], True).to(self.device)
+        self.model.load_state_dict(torch.load(self.optWeight, map_location=self.device))
+        self.model.eval()
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
@@ -86,10 +94,41 @@ class Camera:
             cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
         return True, img, (circles[0][0][0],circles[0][0][1])
     
-    def yoloDetect(self, img):
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        result = self.model.predict(img, conf = 0.8)[0]
-        return result
+    def yoloDetect(self, img): # output is boxed img
+        try:
+            ori_img = self.cam.read()[1]
+        except AttributeError:
+            print("atterribute error")
+            ori_img = np.zeros(shape=(480, 640, 3), dtype="uint8")
+        res_img = cv2.resize(ori_img, (self.cfg["width"], self.cfg["height"]), interpolation = cv2.INTER_LINEAR) 
+        img = res_img.reshape(1, self.cfg["height"], self.cfg["width"], 3)
+        img = torch.from_numpy(img.transpose(0,3, 1, 2))
+        img = img.to(self.device).float() / 255.0
+        
+        preds = model(img)
+        
+        output = utils.utils.handel_preds(preds, self.cfg, self.device)
+        output_boxes = utils.utils.non_max_suppression(output, conf_thres = 0.8, iou_thres = 0.5)
+        
+        LABEL_NAMES = []
+        with open(self.cfg["names"], 'r') as f:
+            for line in f.readlines():
+                LABEL_NAMES.append(line.strip())
+        h, w, _ = ori_img.shape
+        scale_h, scale_w = h / self.cfg["height"], w / self.cfg["width"]
+        
+        for box in output_boxes[0]:
+            box = box.tolist()       
+            obj_score = box[4]
+            category = LABEL_NAMES[int(box[5])]
+
+            x1, y1 = int(box[0] * scale_w), int(box[1] * scale_h)
+            x2, y2 = int(box[2] * scale_w), int(box[3] * scale_h)
+
+            cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
+            cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
+            cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
+        return ori_img
 
 if __name__ == "__main__":
     camera = Camera()
