@@ -41,11 +41,11 @@ if __name__ == "__main__":
         ymax = ballbox[3]
         print(f"{xmin}, {ymin}")
         if ret:
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,255,0), 2)
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (255,0,0), 2)
         # 2. hole 인식
         ret, holebox = Camera.is_hole(frame.copy())
         if ret:
-            cv2.rectangle(frame, (holebox[0], holebox[1]), (holebox[0]+holebox[2], holebox[1]+holebox[3]), (0,255,0), 2)
+            cv2.rectangle(frame, (holebox[0], holebox[1]), (holebox[0]+holebox[2], holebox[1]+holebox[3]), (0,255,255), 2)
             Robot.is_hole = True
         else:
             Robot.is_hole = False
@@ -80,7 +80,10 @@ if __name__ == "__main__":
                 Robot.neck_pitch = 80
                 Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
-            Motion.walk(1)
+            Motion.walk()
+        elif Robot.robot_ball_distance <= 15:
+            Motion.init()
+            Motion.shot()
         elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
             Motion.turn("LEFT", 45)
 
