@@ -85,31 +85,18 @@ class Motion:
     def initial(self):
         if not self.lock:
             self.TX_data_py3(250)
-            while self.lock:
-                continue
         return
         
     # init 모션
     def init(self):
         if not self.lock:
             self.TX_data_py3(26)
-            while self.lock:
-                continue
-            self.TX_data_py3(21)
-            while self.lock:
-                continue
         pass
 
     # 연속 걸음
-    def walk(self, period):
+    def walk(self):
         if not self.lock:
             self.TX_data_py3(10)
-            start_time = time.time()
-            while self.lock:
-                current_time = time.time()
-                if current_time - start_time >= period:
-                    break
-            self.TX_data_py3(26)
         pass
 
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
@@ -128,24 +115,18 @@ class Motion:
     def neckup(self):
         if not self.lock:
             self.TX_data_py3(8)
-            while self.lock:
-                continue
         return
 
     # 고개 65도
     def neck65(self):
         if not self.lock:
             self.TX_data_py3(31)
-            while self.lock:
-                continue
         return
     
     # 고개 80도
     def neck80(self):
         if not self.lock:
             self.TX_data_py3(29)
-            while self.lock:
-                continue
         return
 
     # 몸통 회전
@@ -173,8 +154,14 @@ class Motion:
                     self.TX_data_py3(24)
                 elif angle == 60:
                     self.TX_data_py3(19)
-            while self.lock:
-                continue
+        return
+
+    def shot(self, direction = "LEFT"):
+        if not self.lock:
+            if direction == "LEFT":
+                self.TX_data_py3(2)
+            else:
+                self.TX_data_py3(5)
         return
 
 if __name__ == '__main__':

@@ -59,7 +59,9 @@ if __name__ == "__main__":
             Robot.is_bunker = False
 
         # 공 bounding box에 따라 목 각도 조절
-        if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
+        if Motion.getRx():
+            pass
+        elif ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 95:
                 Motion.neckup()
                 Robot.neck_pitch += 5
