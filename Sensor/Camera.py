@@ -40,20 +40,20 @@ class Camera:
             
         # Filter by Area.
         params.filterByArea = True
-        params.minArea = 9000 #20000
+        params.minArea = 1100 #20000
         params.maxArea = 50000 #40000
             
         # Filter by Circularity
         params.filterByCircularity = True
-        params.minCircularity = 0.05 #0.5
+        params.minCircularity = 0.5 #0.5
         
         # Filter by Convexity
-        params.filterByConvexity = False
-        #params.minConvexity = 0.87
+        params.filterByConvexity = True
+        params.minConvexity = 0.3
             
         # Filter by Inertia
         params.filterByInertia = True
-        params.minInertiaRatio = 0.1 #0.8
+        params.minInertiaRatio = 0.015 #0.8
 
         # Distance Between Blobs
         params.minDistBetweenBlobs = 200 #200
@@ -61,11 +61,39 @@ class Camera:
         # Create a detector with the parameters
         detector = cv2.SimpleBlobDetector_create(params)
 
+        cv2.namedWindow("Simulator_Image", cv2.WINDOW_NORMAL) 
+        cv2.createTrackbar('low_H', 'Simulator_Image', 0, 360, nothing)
+        cv2.createTrackbar('high_H', 'Simulator_Image', 30, 360, nothing)
+        cv2.createTrackbar('low_L', 'Simulator_Image', 175, 255, nothing)
+        cv2.createTrackbar('high_L', 'Simulator_Image', 255, 255, nothing)
+        cv2.createTrackbar('low_S', 'Simulator_Image', 0, 255, nothing)
+        cv2.createTrackbar('high_S', 'Simulator_Image', 255, 255, nothing)
+
+        
         while self.cam.isOpened():
             
             retval, im = self.cam.read()
             overlay = im.copy()
 
+            # HSL 색상 범위를 트랙바를 사용하여 조절합니다.
+            low_H = cv2.getTrackbarPos('low_H', 'Simulator_Image')
+            high_H = cv2.getTrackbarPos('high_H', 'Simulator_Image')
+            low_L = cv2.getTrackbarPos('low_L', 'Simulator_Image')
+            high_L = cv2.getTrackbarPos('high_L', 'Simulator_Image')
+            low_S = cv2.getTrackbarPos('low_S', 'Simulator_Image')
+            high_S = cv2.getTrackbarPos('high_S', 'Simulator_Image')
+        
+            # Convert the image to HSV color space
+            hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+        
+            # Define a range for yellow color in HSV
+            lower_yellow = np.array([low_H, low_L, low_S])
+            upper_yellow = np.array([high_H, high_L, high_S])
+        
+            # Create a mask to extract yellow regions
+            mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+
+            
             keypoints = detector.detect(im)
             for k in keypoints:
                 cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size/2), (0, 0, 255), -1)
