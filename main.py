@@ -35,11 +35,7 @@ if __name__ == "__main__":
         # img process
         # 1. loop over the detections - 공 인식
         ret, ballbox, output = Camera.yoloDetect(frame.copy())
-        xmin = ballbox[0]
-        ymin = ballbox[1]
-        xmax = ballbox[2]
-        ymax = ballbox[3]
-        print(f"{xmin}, {ymin}")
+        xmin, ymin, xmax, ymax = ballbox
         if ret:
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (255,0,0), 2)
         # 2. hole 인식
@@ -61,31 +57,33 @@ if __name__ == "__main__":
         # 공 bounding box에 따라 목 각도 조절
         if Motion.getRx():
             pass
-        elif ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
-            if Robot.neck_pitch < 95:
-                Motion.neckup()
-                Robot.neck_pitch += 5
-#                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-            else:
+        else:
+            if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
+                if Robot.neck_pitch < 95:
+                    Motion.neckup()
+                    Robot.neck_pitch += 5
+                else:
+                    Motion.init()
+                    Robot.neck_pitch = 100
+            elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
+                if 65 < Robot.neck_pitch < 80:
+                    Motion.neck65()
+                    Robot.neck_pitch = 65
+                elif Robot.neck_pitch > 80:
+                    Motion.neck80()
+                    Robot.neck_pitch = 80
+            elif xmin > 540:
+                Motion.crab("RIGHT")
+            elif xmax < 100:
+                Motion.crab("LEFT")
+            elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
+                Motion.walk()
+            elif Robot.robot_ball_distance <= 15:
                 Motion.init()
-                Robot.neck_pitch = 100
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-        elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
-            if 65 < Robot.neck_pitch < 80:
-                Motion.neck65()
-                Robot.neck_pitch = 65
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-            elif Robot.neck_pitch > 80:
-                Motion.neck80()
-                Robot.neck_pitch = 80
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-        elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
-            Motion.walk()
-        elif Robot.robot_ball_distance <= 15:
-            Motion.init()
-            Motion.shot()
-        elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
-            Motion.turn("LEFT", 45)
+                Motion.shot()
+            # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
+            #     Motion.turn("LEFT", 45)
+            Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
 
 
         print(f"로봇 목 각도:{Robot.neck_pitch} | 로봇과공:{Robot.robot_ball_distance}")

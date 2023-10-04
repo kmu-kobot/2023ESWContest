@@ -99,6 +99,14 @@ class Motion:
             self.TX_data_py3(10)
         pass
 
+    def crab(self, direction):
+        if not self.lock:
+            if direction == "LEFT":
+                self.TX_data_py3(34)
+            elif direction == "RIGHT":
+                self.TX_data_py3(33)
+        pass
+    
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
     def view(self, direction):
         if not self.lock:
