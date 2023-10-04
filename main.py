@@ -55,7 +55,7 @@ if __name__ == "__main__":
             Robot.is_bunker = False
 
         # 공 bounding box에 따라 목 각도 조절
-        if Motion.getRx():
+        if Motion.getRx() and Robot.curr_mission != "WALKING":
             pass
         else:
             if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
@@ -78,6 +78,7 @@ if __name__ == "__main__":
                 Motion.crab("LEFT")
             elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
                 Motion.walk()
+                Robot.curr_mission = "WALKING"
             elif Robot.robot_ball_distance <= 15:
                 Motion.init()
                 Motion.shot()
