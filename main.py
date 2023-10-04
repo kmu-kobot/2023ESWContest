@@ -74,7 +74,6 @@ if __name__ == "__main__":
                 Motion.walk()
                 Robot.curr_mission = "WALKING"
             elif Robot.robot_ball_distance <= 15:
-                Motion.init()
                 Motion.shot()
                 Robot.curr_mission = "SHOT"
             # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
