@@ -93,7 +93,7 @@ class Motion:
 
     # 연속 걸음
     def walk(self):
-        self.TX_data_py3(10)
+        self.TX_data_py3(36)
         pass
 
     def crab(self, direction):
@@ -115,18 +115,9 @@ class Motion:
         pass
 
     # 고개 5도씩 올림
-    def neckup(self):
-        self.TX_data_py3(8)
-        return
-
-    # 고개 65도
-    def neck65(self):
-        self.TX_data_py3(31)
-        return
-    
-    # 고개 80도
-    def neck80(self):
-        self.TX_data_py3(29)
+    def neckup(self, target_angle):
+        serial_num = target_angle // 5 + 33
+        self.TX_data_py3(serial_num)
         return
 
     # 몸통 회전
@@ -165,8 +156,5 @@ class Motion:
 if __name__ == '__main__':
     Motion = Motion()
     Motion.initial()
-    time.sleep(5)
-
-    Motion.init()
-    time.sleep(1)
+    time.sleep(7)
     pass
