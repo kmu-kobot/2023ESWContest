@@ -87,7 +87,7 @@ if __name__ == "__main__":
                 if Robot.neck_pitch < 100:
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
-            elif ymin > 380:     # 공 bounding box가 아래에 있다면 고개 내리기
+            elif ymax > 380:     # 공 bounding box가 아래에 있다면 고개 내리기
                 if Robot.neck_pitch > 35:
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
@@ -95,10 +95,10 @@ if __name__ == "__main__":
                 Motion.crab("RIGHT")
             elif xmax < 100:
                 Motion.crab("LEFT")
-            elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
+            elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
                 Motion.walk()
                 Robot.curr_mission = "WALKING"
-            elif Robot.robot_ball_distance <= 15:
+            elif Robot.robot_ball_distance <= 12:
                 Robot.curr_mission = "FINDGOAL"
             # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
             #     Motion.turn("LEFT", 45)
