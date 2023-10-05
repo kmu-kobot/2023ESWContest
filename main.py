@@ -30,7 +30,7 @@ if __name__ == "__main__":
         frame = Camera.get_image()
 
         # run the YOLO model on the frame
-        detections = Camera.yoloDetect(frame.copy())
+        # detections = Camera.yoloDetect(frame.copy())
 
         # img process
         # 1. loop over the detections - 공 인식
@@ -65,10 +65,9 @@ if __name__ == "__main__":
             if Robot.is_hole:
                 if Robot.neck_yaw < 0:
                     Motion.turn("LEFT", 45)
-                    Motion.view("CENTER")
                 elif Robot.neck_yaw > 0:
                     Motion.turn("RIGHT", 45)
-                    Motion.view("CENTER")
+                Motion.view("CENTER")
                 Robot.neck_yaw = 0
                 Robot.curr_mission = "SHOT"
             else:
@@ -105,7 +104,7 @@ if __name__ == "__main__":
             #     Motion.turn("LEFT", 45)
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
 
-        print(f"로봇 목 각도:{Robot.neck_pitch} | 로봇과공:{Robot.robot_ball_distance}")
+        print(f"pitch:{Robot.neck_pitch}\nyaw:{Robot.neck_yaw}\n로봇과공:{Robot.robot_ball_distance}")
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
