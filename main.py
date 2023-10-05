@@ -63,7 +63,14 @@ if __name__ == "__main__":
             pass
         elif Robot.curr_mission == "FINDGOAL":
             if Robot.is_hole:
-                Robot.curr_mission = "WALKING"
+                if Robot.neck_yaw < 0:
+                    Motion.turn("LEFT", 45)
+                    Motion.view("CENTER")
+                elif Robot.neck_yaw > 0:
+                    Motion.turn("RIGHT", 45)
+                    Motion.view("CENTER")
+                Robot.neck_yaw = 0
+                Robot.curr_mission = "SHOT"
             else:
                 if Robot.neck_yaw >= 0:
                     Motion.view("LEFT")
@@ -71,6 +78,9 @@ if __name__ == "__main__":
                 else:
                     Motion.view("RIGHT")
                     Robot.neck_yaw = 45
+        elif Robot.curr_mission == "SHOT":
+            Motion.shot()
+            Robot.curr_mission = "WALKING"
         else:
             if Robot.is_ball == False:
                 Motion.turn("LEFT", 10)
@@ -90,7 +100,6 @@ if __name__ == "__main__":
                 Motion.walk()
                 Robot.curr_mission = "WALKING"
             elif Robot.robot_ball_distance <= 15:
-                Motion.shot()
                 Robot.curr_mission = "FINDGOAL"
             # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
             #     Motion.turn("LEFT", 45)
