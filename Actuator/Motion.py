@@ -93,7 +93,7 @@ class Motion:
 
     # 연속 걸음
     def walk(self):
-        self.TX_data_py3(36)
+        self.TX_data_py3(11)
         pass
 
     def crab(self, direction):
