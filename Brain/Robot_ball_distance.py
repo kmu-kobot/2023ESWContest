@@ -26,7 +26,7 @@ def ball_distance(neck_angle, pixel):
     elif neck_angle == 95:
         return 2.46E-03 * (pixel ** 2) - 2.16 * pixel + 518
     elif neck_angle == 100:
-        return 3.24E-03 * (pixel **2) - 3.02 * pixel + 375
+        return 3.24E-03 * (pixel ** 2) - 3.02 * pixel + 756
     
 if __name__ == "__main__":
     distance = ball_distance(65, 480)

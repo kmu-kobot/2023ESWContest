@@ -83,105 +83,78 @@ class Motion:
 
     # 초기 연결 확인 동작
     def initial(self):
-        if not self.lock:
-            self.TX_data_py3(250)
-            while self.lock:
-                continue
+        self.TX_data_py3(250)
         return
         
     # init 모션
     def init(self):
-        if not self.lock:
-            self.TX_data_py3(26)
-            while self.lock:
-                continue
-            self.TX_data_py3(21)
-            while self.lock:
-                continue
+        self.TX_data_py3(26)
         pass
 
     # 연속 걸음
-    def walk(self, period):
-        if not self.lock:
-            self.TX_data_py3(10)
-            start_time = time.time()
-            while self.lock:
-                current_time = time.time()
-                if current_time - start_time >= period:
-                    break
-            self.TX_data_py3(26)
+    def walk(self):
+        self.TX_data_py3(36)
+        pass
+
+    def crab(self, direction):
+        if direction == "LEFT":
+            self.TX_data_py3(34)
+        elif direction == "RIGHT":
+            self.TX_data_py3(33)
         pass
 
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
     def view(self, direction):
-        if not self.lock:
-            if direction == "CENTER":
-                self.TX_data_py3(21)
-            elif direction == "LEFT":
-                self.TX_data_py3(28)
-            elif direction == "RIGHT":
-                self.TX_data_py3(30)
-            self.lock = False
+        if direction == "CENTER":
+            self.TX_data_py3(21)
+        elif direction == "LEFT":
+            self.TX_data_py3(28)
+        elif direction == "RIGHT":
+            self.TX_data_py3(30)
+        self.lock = False
         pass
 
     # 고개 5도씩 올림
-    def neckup(self):
-        if not self.lock:
-            self.TX_data_py3(8)
-            while self.lock:
-                continue
-        return
-
-    # 고개 65도
-    def neck65(self):
-        if not self.lock:
-            self.TX_data_py3(31)
-            while self.lock:
-                continue
-        return
-    
-    # 고개 80도
-    def neck80(self):
-        if not self.lock:
-            self.TX_data_py3(29)
-            while self.lock:
-                continue
+    def neckup(self, target_angle):
+        serial_num = target_angle // 5 + 33
+        self.TX_data_py3(serial_num)
         return
 
     # 몸통 회전
     def turn(self, direction, angle):
-        if not self.lock:
-            if direction == "LEFT":
-                if angle == 5:       
-                    self.TX_data_py3(1)
-                elif angle == 10:
-                    self.TX_data_py3(4)
-                elif angle == 20:
-                    self.TX_data_py3(7)
-                elif angle == 45:
-                    self.TX_data_py3(22)
-                elif angle == 60:
-                    self.TX_data_py3(25)
-            else:
-                if angle == 5:       
-                    self.TX_data_py3(3)
-                elif angle == 10:
-                    self.TX_data_py3(6)
-                elif angle == 20:
-                    self.TX_data_py3(9)
-                elif angle == 45:
-                    self.TX_data_py3(24)
-                elif angle == 60:
-                    self.TX_data_py3(19)
-            while self.lock:
-                continue
+        if direction == "LEFT":
+            if angle == 5:       
+                self.TX_data_py3(1)
+            elif angle == 10:
+                self.TX_data_py3(4)
+            elif angle == 20:
+                self.TX_data_py3(7)
+            elif angle == 45:
+                self.TX_data_py3(22)
+            elif angle == 60:
+                self.TX_data_py3(25)
+        else:
+            if angle == 5:       
+                self.TX_data_py3(3)
+            elif angle == 10:
+                self.TX_data_py3(6)
+            elif angle == 20:
+                self.TX_data_py3(9)
+            elif angle == 45:
+                self.TX_data_py3(24)
+            elif angle == 60:
+                self.TX_data_py3(19)
+        return
+
+    def shot(self, direction = "LEFT"):
+        if direction == "LEFT":
+            self.TX_data_py3(2)
+        else:
+            self.TX_data_py3(5)
         return
 
 if __name__ == '__main__':
     Motion = Motion()
     Motion.initial()
-    time.sleep(5)
-
-    Motion.init()
-    time.sleep(1)
+    time.sleep(7)
     pass

@@ -34,25 +34,14 @@ if __name__ == "__main__":
 
         # img process
         # 1. loop over the detections - 공 인식
-        xmin = ymin = xmax = ymax = False
-        for data in detections.boxes.data.tolist():
-            # extract the confidence (i.e., probability) associated with the detection
-            confidence = data[4]
-
-            # filter out weak detections by ensuring the
-            # confidence is greater than the minimum confidence
-            if float(confidence) < CONFIDENCE_THRESHOLD:
-                continue
-
-            # if the confidence is greater than the minimum confidence,
-            # draw the bounding box on the frame
-            xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
-
+        ret, ballbox, output = Camera.yoloDetect(frame.copy())
+        xmin, ymin, xmax, ymax = ballbox
+        if ret:
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (255,0,0), 2)
         # 2. hole 인식
         ret, holebox = Camera.is_hole(frame.copy())
         if ret:
-            cv2.rectangle(frame, (holebox[0], holebox[1]), (holebox[0]+holebox[2], holebox[1]+holebox[3]), (0,255,0), 2)
+            cv2.rectangle(frame, (holebox[0], holebox[1]), (holebox[0]+holebox[2], holebox[1]+holebox[3]), (0,255,255), 2)
             Robot.is_hole = True
         else:
             Robot.is_hole = False
@@ -66,35 +55,37 @@ if __name__ == "__main__":
             Robot.is_bunker = False
 
         # 공 bounding box에 따라 목 각도 조절
-        if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
-            if Robot.neck_pitch < 95:
-                Motion.neckup()
-                Robot.neck_pitch += 5
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
-            else:
-                Motion.init()
-                Robot.neck_pitch = 100
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
-        elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
-            if 65 < Robot.neck_pitch < 80:
-                Motion.neck65()
-                Robot.neck_pitch = 65
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
-            elif Robot.neck_pitch > 80:
-                Motion.neck80()
-                Robot.neck_pitch = 80
-                Robot.robot_ball_distance = ball_distance(Robot.neck_pitch)
-        elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
-            Motion.walk(1)
-        elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
-            Motion.turn("LEFT", 45)
+        if Motion.getRx() and Robot.curr_mission != "WALKING":
+            pass
+        else:
+            if ymin == False or ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
+                if Robot.neck_pitch < 100:
+                    Robot.neck_pitch += 5
+                    Motion.neckup(Robot.neck_pitch)
+            elif ymin > 350:     # 공 bounding box가 아래에 있다면 고개 내리기
+                if Robot.neck_pitch > 35:
+                    Robot.neck_pitch -= 5
+                    Motion.neckup(Robot.neck_pitch)
+            elif xmin > 540:
+                Motion.crab("RIGHT")
+            elif xmax < 100:
+                Motion.crab("LEFT")
+            elif Robot.robot_ball_distance > 15: # 공이 ROI 내에 있을 때
+                Motion.walk()
+                Robot.curr_mission = "WALKING"
+            elif Robot.robot_ball_distance <= 15:
+                Motion.shot()
+                Robot.curr_mission = "SHOT"
+            # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
+            #     Motion.turn("LEFT", 45)
+            Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
 
 
         print(f"로봇 목 각도:{Robot.neck_pitch} | 로봇과공:{Robot.robot_ball_distance}")
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
-        if cv2.waitKey(1600) == ord("q"):
+        if cv2.waitKey(16) == ord("q"):
             break
         
     cv2.destroyAllWindows()
