@@ -44,19 +44,19 @@ if __name__ == "__main__":
         if Motion.getRx():
             pass
         elif Robot.is_ball == False:
-            Motion.step("BACK")
+            pass
         elif ymin < 170:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 100:
                 Robot.neck_pitch += 5
                 Motion.neckup(Robot.neck_pitch)
-            else:
-                Motion.step("FRONT")
+            # else:
+            #     Motion.step("FRONT")
         elif ymax > 310:     # 공 bounding box가 아래에 있다면 고개 내리기
             if Robot.neck_pitch > 35:
                 Robot.neck_pitch -= 5
                 Motion.neckup(Robot.neck_pitch)
-            else:
-                Motion.step("BACK")
+            # else:
+            #     Motion.step("BACK")
         elif xmax > 390:
             Motion.crab("RIGHT")
         elif xmin < 250:
