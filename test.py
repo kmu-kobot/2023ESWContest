@@ -23,9 +23,8 @@ if __name__ == "__main__":
     # 시리얼 연결 확인 동작
     Motion.initial()
     # 초기 자세
-    Motion.init()
+    Motion.init(True)
     time.sleep(3)
-    Motion.neckup(100)
 
     # 미션 수행 함수 실행 - 반복 한 번에 동작 한 가지만 실행
     while True:

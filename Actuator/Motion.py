@@ -87,8 +87,11 @@ class Motion:
         return
         
     # init 모션
-    def init(self):
-        self.TX_data_py3(26)
+    def init(self, neck=False):
+        if neck:
+            self.TX_data_py3(8)
+        else:
+            self.TX_data_py3(26)
         pass
 
     # 연속 걸음
