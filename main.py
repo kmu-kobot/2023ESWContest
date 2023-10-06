@@ -24,6 +24,8 @@ if __name__ == "__main__":
     Motion.initial()
     # 초기 자세
     Motion.init()
+    time.sleep(3)
+    Motion.neckup(100)
 
     # 미션 수행 함수 실행 - 반복 한 번에 동작 한 가지만 실행
     while True:
@@ -81,6 +83,7 @@ if __name__ == "__main__":
             Motion.shot()
             Robot.curr_mission = "WALKING"
         else:
+            Robot.curr_mission = "WALKING"
             if Robot.is_ball == False:
                 Motion.turn("LEFT", 10)
             elif ymin < 100:     # 공 bounding box가 위에 있다면 고개 올리기
@@ -96,8 +99,8 @@ if __name__ == "__main__":
             elif xmax < 100:
                 Motion.crab("LEFT")
             elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
-                Motion.walk()
-                Robot.curr_mission = "WALKING"
+                if not Motion.getRx():
+                    Motion.walk()
             elif Robot.robot_ball_distance <= 12:
                 Robot.curr_mission = "FINDGOAL"
             # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
