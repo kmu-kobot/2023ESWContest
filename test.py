@@ -55,20 +55,21 @@ if __name__ == "__main__":
             if Robot.neck_pitch > 35:
                 Robot.neck_pitch -= 5
                 Motion.neckup(Robot.neck_pitch)
-            # else:
-            #     Motion.step("BACK")
+            else:
+                Motion.step("BACK")
         elif xmax > 390:
             Motion.crab("RIGHT")
         elif xmin < 250:
             Motion.crab("LEFT")
-        # elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
-        #     if not Motion.getRx():
-        #         Motion.step("FORWARD")
-        # elif 13 > Robot.robot_ball_distance > 11:
-        #     Motion.init()
-        #     Robot.curr_mission = "FINDGOAL"
-        # elif Robot.robot_ball_distance <= 10:
-        #     Motion.step("BACK")
+        elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
+            if not Motion.getRx():
+                Motion.step("FORWARD")
+        elif Robot.robot_ball_distance > 11:
+            Motion.init()
+            time.sleep(1)
+            Motion.shot()
+        elif Robot.robot_ball_distance <= 10:
+            Motion.step("BACK")
         # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
         #     Motion.turn("LEFT", 45)
         Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
