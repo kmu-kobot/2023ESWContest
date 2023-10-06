@@ -19,7 +19,7 @@ class Camera:
 
         # YOLO 설정
         self.optData = "./Sensor/dataset/coco.data"
-        self.optWeight = "./Sensor/weights/ESWv5-290-epoch-0.341991ap-model.pth"
+        self.optWeight = "./Sensor/weights/ESWv6-290-epoch-0.924759ap-model.pth"
         self.cfg = utils.utils.load_datafile(self.optData)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = model.detector.Detector(self.cfg["classes"], self.cfg["anchor_num"], True).to(self.device)
