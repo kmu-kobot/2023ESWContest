@@ -36,6 +36,7 @@ if __name__ == "__main__":
         if ret:
             Robot.is_ball = True
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (255,0,0), 2)
+            Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         else:
             Robot.is_ball = False
         
@@ -43,6 +44,7 @@ if __name__ == "__main__":
         # 공 bounding box에 따라 목 각도 조절
         if Robot.curr_mission == "SHOT":
             Motion.shot()
+            Robot.curr_mission = "WALKING"
         elif Motion.getRx() and Robot.curr_mission != "WALKING":
             pass
         elif Robot.is_ball == False:
@@ -72,7 +74,6 @@ if __name__ == "__main__":
             Motion.step("BACK")
         # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
         #     Motion.turn("LEFT", 45)
-        Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
 
         print(f"pitch:{Robot.neck_pitch}\nyaw:{Robot.neck_yaw}\n로봇과공:{Robot.robot_ball_distance}")
 
