@@ -125,6 +125,37 @@ class Camera:
             cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
             return True, [x1, y1, x2, y2], ori_img
         return False, [False,False,False,False] , ori_img
+
+    def yoloDetect_master(self, ori_img):
+        res_img = cv2.resize(ori_img, (self.cfg["width"], self.cfg["height"]), interpolation = cv2.INTER_LINEAR) 
+        img = res_img.reshape(1, self.cfg["height"], self.cfg["width"], 3)
+        img = torch.from_numpy(img.transpose(0,3, 1, 2))
+        img = img.to(self.device).float() / 255.0
+        
+        preds = self.model(img)
+        
+        output = utils.utils.handel_preds(preds, self.cfg, self.device)
+        output_boxes = utils.utils.non_max_suppression(output, conf_thres = 0.8, iou_thres = 0.5)
+        
+        LABEL_NAMES = []
+        with open(self.cfg["names"], 'r') as f:
+            for line in f.readlines():
+                LABEL_NAMES.append(line.strip())
+        h, w, _ = ori_img.shape
+        scale_h, scale_w = h / self.cfg["height"], w / self.cfg["width"]
+        
+        for box in output_boxes[0]:
+            box = box.tolist()       
+            obj_score = box[4]
+            category = LABEL_NAMES[int(box[5])]
+
+            x1, y1 = int(box[0] * scale_w), int(box[1] * scale_h)
+            x2, y2 = int(box[2] * scale_w), int(box[3] * scale_h)
+
+            cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
+            cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
+            cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
+        return ori_img
     
 
 if __name__ == "__main__":

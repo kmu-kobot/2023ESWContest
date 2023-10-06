@@ -28,16 +28,9 @@ if __name__ == "__main__":
     # 미션 수행 함수 실행 - 반복 한 번에 동작 한 가지만 실행
     while True:
         frame = Camera.get_image()
-
-        # run the YOLO model on the frame
-		ret, xy, output = camera.yoloDetect(frame.copy())
+		output = Camera.yoloDetect_master(frame)
         cv2.imshow("detect", output)
         if cv2.waitKey(16) == ord("q"):
             break
 
-        # show the frame to our screen
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(1600) == ord("q"):
-            break
-        
     cv2.destroyAllWindows()
