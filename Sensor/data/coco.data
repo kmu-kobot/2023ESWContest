@@ -19,4 +19,4 @@ anchors=17.43,14.90, 34.60,29.50, 44.13,49.39, 57.05,70.50, 82.98,114.32, 141.62
 [data-configure]
 train=/content/dataset/train.txt
 val=/content/dataset/val.txt
-names=/content/dataset/category.names
+names=./Sensor/data/category.names
