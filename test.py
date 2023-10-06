@@ -47,9 +47,10 @@ if __name__ == "__main__":
             Motion.init()
             time.sleep(1)
             Motion.shot()
-            Robot.curr_mission = "WALKING"
             time.sleep(10)
+            Robot.curr_mission = "WALKING"
             Motion.init(True)
+            Robot.neck_pitch = 0
         elif Motion.getRx() and Robot.curr_mission != "WALKING":
             pass
         elif Robot.is_ball == False:
@@ -60,7 +61,7 @@ if __name__ == "__main__":
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
                 else:
-                    Motion.step("FRONT")
+                    Motion.walk()
             elif ymax > 310:     # 공 bounding box가 아래에 있다면 고개 내리기
                 if Robot.neck_pitch > 35:
                     Robot.neck_pitch -= 5
