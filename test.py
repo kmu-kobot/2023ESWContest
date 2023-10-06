@@ -31,6 +31,7 @@ if __name__ == "__main__":
     while True:
         frame = Camera.get_image()
 
+        # image process
         ret, ballbox, output = Camera.yoloDetect(frame.copy())
         xmin, ymin, xmax, ymax = ballbox
         if ret:
@@ -41,16 +42,16 @@ if __name__ == "__main__":
         
         print(f"현재 미션:{Robot.curr_mission}")
         # 공 bounding box에 따라 목 각도 조절
-        if Motion.getRx():
+        if Robot.curr_mission == "SHOT":
+            Motion.shot()
+        elif Motion.getRx() and Robot.curr_mission != "WALKING":
             pass
         elif Robot.is_ball == False:
-            pass
+            Motion.turn("LEFT", 20)
         elif ymin < 170:     # 공 bounding box가 위에 있다면 고개 올리기
             if Robot.neck_pitch < 100:
                 Robot.neck_pitch += 5
                 Motion.neckup(Robot.neck_pitch)
-            # else:
-            #     Motion.step("FRONT")
         elif ymax > 310:     # 공 bounding box가 아래에 있다면 고개 내리기
             if Robot.neck_pitch > 35:
                 Robot.neck_pitch -= 5
@@ -63,11 +64,11 @@ if __name__ == "__main__":
             Motion.crab("LEFT")
         elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
             if not Motion.getRx():
-                Motion.step("FORWARD")
+                Motion.walk()
         elif Robot.robot_ball_distance > 11:
             Motion.init()
             time.sleep(1)
-            Motion.shot()
+            Robot.curr_mission = "SHOT"
         elif Robot.robot_ball_distance <= 10:
             Motion.step("BACK")
         # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
