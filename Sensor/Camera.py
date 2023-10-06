@@ -18,7 +18,7 @@ class Camera:
         time.sleep(2)
 
         # YOLO 설정
-        self.optData = "./Sensor/dataset/coco.data"
+        self.optData = "./Sensor/data/coco.data"
         self.optWeight = "./Sensor/weights/ESWv6-290-epoch-0.924759ap-model.pth"
         self.cfg = utils.utils.load_datafile(self.optData)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
