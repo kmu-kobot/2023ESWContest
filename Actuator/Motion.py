@@ -96,6 +96,12 @@ class Motion:
         self.TX_data_py3(11)
         pass
 
+    def step(self, direction="FRONT"):
+        if direction == "FRONT":
+            self.TX_data_py3(36)
+        else:
+            self.TX_data_py3(38)
+
     def crab(self, direction):
         if direction == "LEFT":
             self.TX_data_py3(34)
