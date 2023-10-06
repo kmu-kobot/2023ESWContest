@@ -82,7 +82,7 @@ if __name__ == "__main__":
             Motion.crab("LEFT")
         elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
             if not Motion.getRx():
-                Motion.walk()
+                Motion.step("FORWARD")
         elif Robot.robot_ball_distance > 10:
             Motion.init()
             Robot.curr_mission = "FINDGOAL"
