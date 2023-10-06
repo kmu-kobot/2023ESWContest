@@ -39,38 +39,45 @@ if __name__ == "__main__":
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
         else:
             Robot.is_ball = False
+            Robot.robot_ball_distance = 1000
         
         print(f"현재 미션:{Robot.curr_mission}")
         # 공 bounding box에 따라 목 각도 조절
         if Robot.curr_mission == "SHOT":
+            Motion.init()
+            time.sleep(1)
             Motion.shot()
             Robot.curr_mission = "WALKING"
+            time.sleep(10)
+            Motion.init(True)
         elif Motion.getRx() and Robot.curr_mission != "WALKING":
             pass
         elif Robot.is_ball == False:
             Motion.turn("LEFT", 20)
-        elif ymin < 170:     # 공 bounding box가 위에 있다면 고개 올리기
-            if Robot.neck_pitch < 100:
-                Robot.neck_pitch += 5
-                Motion.neckup(Robot.neck_pitch)
-        elif ymax > 310:     # 공 bounding box가 아래에 있다면 고개 내리기
-            if Robot.neck_pitch > 35:
-                Robot.neck_pitch -= 5
-                Motion.neckup(Robot.neck_pitch)
-            else:
-                Motion.step("BACK")
-        elif xmax > 390:
-            Motion.crab("RIGHT")
-        elif xmin < 250:
-            Motion.crab("LEFT")
+        elif ymin < 170 or ymax > 310 or xmin < 250 or xmax > 390: # 공이 ROI 밖에 있다면
+            if ymin < 170:     # 공 bounding box가 위에 있다면 고개 올리기
+                if Robot.neck_pitch < 100:
+                    Robot.neck_pitch += 5
+                    Motion.neckup(Robot.neck_pitch)
+                else:
+                    Motion.step("FRONT")
+            elif ymax > 310:     # 공 bounding box가 아래에 있다면 고개 내리기
+                if Robot.neck_pitch > 35:
+                    Robot.neck_pitch -= 5
+                    Motion.neckup(Robot.neck_pitch)
+                else:
+                    Motion.step("BACK")
+            if xmax > 390:
+                Motion.crab("RIGHT")
+            elif xmin < 250:
+                Motion.crab("LEFT")
         elif Robot.robot_ball_distance > 12: # 공이 ROI 내에 있을 때
-            if not Motion.getRx():
-                Motion.walk()
+            Motion.walk()
         elif Robot.robot_ball_distance > 11:
             Motion.init()
             time.sleep(1)
             Robot.curr_mission = "SHOT"
-        elif Robot.robot_ball_distance <= 10:
+        elif Robot.robot_ball_distance <= 11:
             Motion.step("BACK")
         # elif Robot.is_hole == False: # 공과 충분히 가까워졌지만 홀이 없을 때
         #     Motion.turn("LEFT", 45)
