@@ -5,26 +5,26 @@ import model.detector
 import utils.utils
 import time
 import math
-import threading
+# import threading
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 
-class CameraBufferCleanerThread(threading.Thread):
-    def __init__(self, camera, name='camera-buffer-cleaner-thread'):
-        self.camera = camera
-        self.last_frame = None
-        super(CameraBufferCleanerThread, self).__init__(name=name)
-        self.start()
+# class CameraBufferCleanerThread(threading.Thread):
+#     def __init__(self, camera, name='camera-buffer-cleaner-thread'):
+#         self.camera = camera
+#         self.last_frame = None
+#         super(CameraBufferCleanerThread, self).__init__(name=name)
+#         self.start()
 
-    def run(self):
-        while True:
-            ret, self.last_frame = self.camera.read()
+#     def run(self):
+#         while True:
+#             ret, self.last_frame = self.camera.read()
 
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.cam = cv2.VideoCapture(0)
-        self.cam_cleaner = CameraBufferCleanerThread(self.cam)
+        self.cam = WebcamVideoStream(-1).start()
+        # self.cam_cleaner = CameraBufferCleanerThread(self.cam)
         
         self.fps = FPS()
         shape = (self.height, self.width, _) = self.get_image().shape
@@ -42,16 +42,16 @@ class Camera:
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
-        # try:
-        #     print("image get")
-        #     return self.cam_cleaner.last_frame
-        # except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
-        #     print("Attribute Error")
-        #     return np.zeros(shape=(480, 640, 3), dtype="uint8")
-        if self.cam_cleaner.last_frame is not None:
-            return self.cam_cleaner.last_frame
-        else:
+        try:
+            print("image get")
+            return self.cam.read()
+        except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
+            print("Attribute Error")
             return np.zeros(shape=(480, 640, 3), dtype="uint8")
+        # if self.cam_cleaner.last_frame is not None:
+        #     return self.cam_cleaner.last_frame
+        # else:
+        #     return np.zeros(shape=(480, 640, 3), dtype="uint8")
     
     # 홀 인식
     def is_hole(self, img):
