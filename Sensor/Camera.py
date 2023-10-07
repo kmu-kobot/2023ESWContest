@@ -42,11 +42,15 @@ class Camera:
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
-        try:
-            print("image get")
+        # try:
+        #     print("image get")
+        #     return self.cam_cleaner.last_frame
+        # except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
+        #     print("Attribute Error")
+        #     return np.zeros(shape=(480, 640, 3), dtype="uint8")
+        if self.cam_cleaner.last_frame is not None:
             return self.cam_cleaner.last_frame
-        except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
-            print("Attribute Error")
+        else:
             return np.zeros(shape=(480, 640, 3), dtype="uint8")
     
     # 홀 인식
