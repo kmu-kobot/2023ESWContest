@@ -29,6 +29,9 @@ if __name__ == "__main__":
     # 미션 수행 함수 실행 - 반복 한 번에 동작 한 가지만 실행
     while True:
         frame = Camera.get_image()
+        frame = Camera.get_image()
+        frame = Camera.get_image()
+        frame = Camera.get_image()
 
         # image process
         Robot.is_hole, holeBox, Robot.is_ball, ballBox, Robot.is_arrow, arrowBox = Camera.yoloDetect_master(frame)
@@ -38,7 +41,7 @@ if __name__ == "__main__":
         # 공과의 거리가 12~13이면 공을 칠 목표점을 찾아야 함
         # 공이 없으면 find ball
         xmin, ymin, xmax, ymax = ballBox
-        if Robot.is_ball:
+        if Robot.is_ball and Robot.neck_yaw == 0:
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax) (0,0,255), 2)
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             if Robot.robot_ball_distance > 13:
@@ -51,7 +54,7 @@ if __name__ == "__main__":
             else:
                 Motion.init()
                 Robot.curr_mission == "FINDGOAL"
-        else:
+        elif not Robot.is_ball:
             Robot.curr_mission = "FINDBALL"
 
         # 홀 인식
@@ -93,6 +96,8 @@ if __name__ == "__main__":
             Motion.shot()
             time.sleep(10)
             Motion.init(True)
+            Robot.neck_pitch = 100
+            Robot.neck_yaw = 0
         elif Robot.curr_mission == "FINDBALL":
             Motion.init(True)
             Motion.turn("LEFT", 45)
