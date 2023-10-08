@@ -1,22 +1,22 @@
 [name]
-model_name=coco
+model_name=ESWv6
 
 [train-configure]
 epochs=300
 steps=150,250
-batch_size=128
+batch_size=32
 subdivisions=1
 learning_rate=0.001
 
 [model-configure]
 pre_weights=None
-classes=80
+classes=3
 width=352
 height=352
 anchor_num=3
-anchors=12.64,19.39, 37.88,51.48, 55.71,138.31, 126.91,78.23, 131.57,214.55, 279.92,258.87
+anchors=17.43,14.90, 34.60,29.50, 44.13,49.39, 57.05,70.50, 82.98,114.32, 141.62,198.02
 
 [data-configure]
-train=/media/qiuqiu/D/coco/train2017.txt
-val=/media/qiuqiu/D/coco/val2017.txt
-names=./data/coco.names
+train=/content/dataset/train.txt
+val=/content/dataset/val.txt
+names=./Sensor/data/category.names
