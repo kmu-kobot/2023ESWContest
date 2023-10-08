@@ -42,7 +42,7 @@ if __name__ == "__main__":
         # 공이 없으면 find ball
         xmin, ymin, xmax, ymax = ballBox
         if Robot.is_ball and Robot.neck_yaw == 0:
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax) (0,0,255), 2)
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,0,255), 2)
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             if Robot.robot_ball_distance > 13:
                 if not Motion.getRx():
