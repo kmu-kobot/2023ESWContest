@@ -67,10 +67,8 @@ class Motion:
                 # Rx, 수신
                 result = ser.read(1) # 시리얼 포트에서 한 바이트(문자)를 읽어와 result 변수에 저장
                 RX = ord(result)
-                print(f"Receive: {RX}")
                 if RX == 38:
                     self.lock = False
-                    print("motion end --- lock 해제")
                 # print("RX=" + str(RX))
                 else:
                     self.distance = RX
@@ -113,18 +111,17 @@ class Motion:
         pass
 
     # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
-    def view(self, direction):
-        if direction == "CENTER":
+    def view(self, target_angle=0):
+        if target_angle == 0:
             self.TX_data_py3(21)
-        elif direction == "LEFT":
-            self.TX_data_py3(28)
-        elif direction == "RIGHT":
-            self.TX_data_py3(30)
-        self.lock = False
+        elif target_angle == -90:
+            self.TX_data_py3(17)
+        elif target_angle == 90:
+            self.TX_data_py3(27)
         pass
 
     # 고개 5도씩 올림
-    def neckup(self, target_angle):
+    def neckup(self, target_angle=100):
         serial_num = target_angle // 5 + 33
         self.TX_data_py3(serial_num)
         return
