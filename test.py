@@ -31,10 +31,75 @@ if __name__ == "__main__":
         frame = Camera.get_image()
 
         # image process
-        img = Camera.yoloDetect_master(frame)
+        Robot.is_hole, holeBox, Robot.is_ball, ballBox, Robot.is_arrow, arrowBox = Camera.yoloDetect_master(frame)
+
+        # 공 인식
+        # 공과의 거리가 12 이하, 13 이상이면 approach ball
+        # 공과의 거리가 12~13이면 공을 칠 목표점을 찾아야 함
+        # 공이 없으면 find ball
+        xmin, ymin, xmax, ymax = ballBox
+        if Robot.is_ball:
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax) (0,0,255), 2)
+            Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
+            if Robot.robot_ball_distance > 13:
+                if not Motion.getRx():
+                    Motion.walk()
+                Robot.curr_mission = "APPROACHBALL"
+            elif Robot.robot_ball_distance < 12:
+                Motion.step("BACK")
+                Robot.curr_mission = "APPROACHBALL"
+            else:
+                Motion.init()
+                Robot.curr_mission == "FINDGOAL"
+        else:
+            Robot.curr_mission = "FINDBALL"
+
+        # 홀 인식
+        # 홀이 로봇 시선 중앙에 있으면 shot
+        if Robot.is_hole and Robot.curr_mission == "FINDGOAL" and Robot.neck_yaw == -90:
+            cv2.rectangle(frame, (holeBox[0], holeBox[1]), (holeBox[2], holeBox[3]), (255,255,0), 2)
+            if 300 < (holeBox[0] + holeBox[2]) / 2 < 340:
+                Robot.curr_mission = "SHOT"
+
+
+        # motion
+        if Motion.getRx() and Robot.curr_mission != "APPROACHBALL":
+            pass
+        # shot 가능한 거리라면 hole을 찾기 위해 목을 돌림
+        elif Robot.curr_mission == "FINDGOAL":
+            if Robot.neck_yaw == 0:
+                Robot.neck_yaw = -90
+                Motion.view(-90)
+            elif Robot.neck_yaw == -90:
+                Robot.neck_yaw = 0
+                Motion.view(0)
+        # 공이 감지된 후 공으로 다가감
+        elif Robot.curr_mission == "APPROACHBALL":
+            if ymin < 190:
+                if Robot.neck_pitch < 100:
+                    Robot.neck_pitch += 5
+                    Motion.neckup(Robot.neck_pitch)
+            elif ymax > 290:
+                if Robot.neck_pitch > 35:
+                    Robot.neck_pitch -= 5
+                    Motion.neckup(Robot.neck_pitch)
+            if xmin < 270:
+                Motion.crab("RIGHT")
+            elif xmax > 370:
+                Motion.crab("LEFT")
+        # 공과 충분히 가까워진 후 샷
+        elif Robot.curr_mission == "SHOT":
+            Motion.view(0)
+            Motion.shot()
+            time.sleep(10)
+            Motion.init(True)
+        elif Robot.curr_mission == "FINDBALL":
+            Motion.init(True)
+            Motion.turn("LEFT", 45)
+        
 
         # show the frame to our screen
-        cv2.imshow("Frame", img)
+        cv2.imshow("Frame", frame)
         if cv2.waitKey(16) == ord("q"):
             break
         

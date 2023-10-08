@@ -144,6 +144,8 @@ class Camera:
         h, w, _ = ori_img.shape
         scale_h, scale_w = h / self.cfg["height"], w / self.cfg["width"]
         
+        hole = golfBall = arrow = False
+        holebox = golfBallBox = arrowBox = [False, False, False, False]
         for box in output_boxes[0]:
             box = box.tolist()       
             obj_score = box[4]
@@ -151,11 +153,19 @@ class Camera:
 
             x1, y1 = int(box[0] * scale_w), int(box[1] * scale_h)
             x2, y2 = int(box[2] * scale_w), int(box[3] * scale_h)
-
-            cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
-            cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
-            cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
-        return ori_img
+            if category == "hall":
+                hole = True
+                holebox = [x1, y1, x2, y2]
+            elif category == "golfBall":
+                golfBall = True
+                golfBallBox = [x1, y1, x2, y2]
+            elif category == "arrow":
+                arrow = True
+                arrowBox = [x1, y1, x2, y2]
+            # cv2.rectangle(ori_img, (x1, y1), (x2, y2), (255, 255, 0), 2)
+            # cv2.putText(ori_img, '%.2f' % obj_score, (x1, y1 - 5), 0, 0.7, (0, 255, 0), 2)	
+            # cv2.putText(ori_img, category, (x1, y1 - 25), 0, 0.7, (0, 255, 0), 2)
+        return hole, holebox, golfBall, golfBallBox, arrow, arrowBox
     
 
 if __name__ == "__main__":
