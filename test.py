@@ -44,7 +44,7 @@ if __name__ == "__main__":
             print(f"distance: {Robot.robot_ball_distance}")
         # 홀 인식
         # 홀이 로봇 시선 중앙에 있으면 shot  
-        elif Robot.is_hole and Robot.neck_yaw == -90 and Robot.curr_mission == "FindGoal":
+        elif Robot.is_hole:
             cv2.rectangle(frame, (holeBox[0], holeBox[1]), (holeBox[2], holeBox[3]), (255,255,0), 2)
 
         # show the frame to our screen
