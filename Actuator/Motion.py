@@ -82,52 +82,71 @@ class Motion:
     # 초기 연결 확인 동작
     def initial(self):
         self.TX_data_py3(250)
+        while self.lock:
+            continue
         return
         
     # init 모션
     def init(self, neck=False):
-        if neck:
+        if neck:                 # 목 pitch = 100, yaw = 0
             self.TX_data_py3(8)
-        else:
+        else:                    # 목 조절 없음
             self.TX_data_py3(26)
-        pass
+        while self.lock:
+            continue
+        return
 
     # 연속 걸음
     def walk(self):
         self.TX_data_py3(11)
-        pass
+        return
 
+    # 한 걸음
     def step(self, direction="FRONT"):
-        if direction == "FRONT":
+        if direction == "FRONT":  # 앞으로 한 걸음
             self.TX_data_py3(36)
-        else:
+        else:                     # 뒤로 한 걸음
             self.TX_data_py3(38)
+        while self.lock:
+            continue
+        return
 
+    # 좌우 게걸음
     def crab(self, direction):
-        if direction == "LEFT":
+        if direction == "LEFT":    # 왼쪽으로 한 걸음
             self.TX_data_py3(34)
-        elif direction == "RIGHT":
+        elif direction == "RIGHT": # 오른쪽으로 한 걸음
             self.TX_data_py3(33)
-        pass
+        while self.lock:
+            continue
+        return
 
-    # 고개 돌려야하는 방향 입력 받아서 고개 좌우 회전
+    # 고개 돌려야하는 각도 받아서 고개 좌우 회전
     def view(self, target_angle=0):
-        if target_angle == 0:
+        if target_angle == 0:     # 정면
             self.TX_data_py3(21)
-        elif target_angle == -90:
+        elif target_angle == -45: # 왼쪽 45도
+            self.TX_data_py3(28)
+        elif target_angle == -90: # 왼쪽 90도
             self.TX_data_py3(17)
-        elif target_angle == 90:
+        elif target_angle == 45:  # 오른쪽 45도
+            self.TX_data_py3(30)
+        elif target_angle == 90:  # 오른쪽 90도
             self.TX_data_py3(27)
-        pass
+        while self.lock:
+            continue
+        return
 
-    # 고개 5도씩 올림
+    # 고개 들어야하는 각도 받아서 고개 상하 조절
     def neckup(self, target_angle=100):
         serial_num = target_angle // 5 + 33
         self.TX_data_py3(serial_num)
+        while self.lock:
+            continue
         return
 
-    # 몸통 회전
-    def turn(self, direction, angle):
+    # 몸통 회전 LEFT, RIGHT 각각 5도, 10도, 20도, 45도, 60도
+    def turn(self, direction="LEFT", angle="10"):
         if direction == "LEFT":
             if angle == 5:       
                 self.TX_data_py3(1)
@@ -150,13 +169,18 @@ class Motion:
                 self.TX_data_py3(24)
             elif angle == 60:
                 self.TX_data_py3(19)
+        while self.lock:
+            continue
         return
 
+    # shot
     def shot(self, direction = "LEFT"):
         if direction == "LEFT":
             self.TX_data_py3(2)
         else:
             self.TX_data_py3(5)
+        while self.lock:
+            continue
         return
 
 if __name__ == '__main__':
