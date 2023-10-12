@@ -3,15 +3,24 @@ import numpy as np
 import utils.utils
 import time
 import math
+from PIL import Image
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.cam = WebcamVideoStream(-1).start()
-        # self.cam_cleaner = CameraBufferCleanerThread(self.cam)
+        self.pink = [330,80,100]
+        self.pink = np.uint8([[self.pink]])
         
+        lowerLimitP = self.pink[0][0][0] - 10, 100, 100
+        upperLimitP = self.pink[0][0][0] + 10, 255, 255
+        
+        self.lowerLimitP = np.array(lowerLimitP, dtype=np.uint8)
+        self.upperLimitP = np.array(upperLimitP, dtype=np.uint8)
+        
+        
+        self.cam = WebcamVideoStream(-1).start()
         self.fps = FPS()
         shape = (self.height, self.width, _) = self.get_image().shape
         print(shape) # 세로, 가로 출력
@@ -26,7 +35,29 @@ class Camera:
         except AttributeError: # 이미지를 얻지 못할경우 검은화면 반환
             print("Attribute Error")
             return np.zeros(shape=(480, 640, 3), dtype="uint8")
-
+    
+    # hsv 허용 범위 설정
+    def hsv_limits(color):
+        c = np.uint8([[color]])
+        hsvC = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
+        
+        lowerLimit = hsvC[0][0][0] - 10, 100, 100
+        upperLimit = hsvC[0][0][0] + 10, 255, 255
+        
+        lowerLimit = np.array(lowerLimit, dtype=np.uint8)
+        upperLimit = np.array(upperLimit, dtype=np.uint8)
+        
+        return lowerLimit, upperLimit
+    
+    def hsvDetect(self, img):
+        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
+        mask2 = Image.fromarray(mask)
+        bbox = mask2.getbbox()
+        if bbox != None:
+            x1, y1, x2, y2 = bbox
+            img = cv2.rectangle(img, (x1,y1), (x2,y2), (0,255,0), 4)
+        return img
     
     # 홀 인식
     def is_hole(self, img):
