@@ -30,9 +30,9 @@ if __name__ == "__main__":
         frame = Camera.get_image()
 
         # image process
-        hls = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
-        Robot.is_ball, ballBox = Camera.cvCircleDetect(hls)
-        Robot.is_hole, holeBox = Camera.is_hole(hls)
+        img = frame.copy()
+        Robot.is_ball, ballBox = Camera.cvCircleDetect(img)
+        Robot.is_hole, holeBox = Camera.is_hole(img)
         Robot.is_arrow, arrowBox = False, [0, 0, 0, 0]
 
         if Robot.is_ball:
@@ -92,7 +92,9 @@ if __name__ == "__main__":
 
         # motion
         # 1. FindBall
-        if Robot.curr_mission == "FindBall":
+        if Motion.getRx() and Robot.curr_mission != "ApproachBall":
+            pass
+        elif Robot.curr_mission == "FindBall":
             Motion.init(True)
             Motion.turn("LEFT", 45)
             Robot.neck_pitch = 100
