@@ -9,7 +9,7 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.pink = [140,50 250]
+        self.pink = [140,50, 250]
         self.pink = np.uint8([[self.pink]])
         self.pink = cv2.cvtColor(self.pink, cv2.COLOR_BGR2HSV)
         lowerLimitP = self.pink[0][0][0] - 10, 100, 100
