@@ -111,8 +111,8 @@ class Camera:
     # 공 인식
     def cvCircleDetect(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-        lower_red = np.array([119, 28, 73])
-        upper_red = np.array([179, 255, 255])
+        lower_red = np.array([124, 26, 176])
+        upper_red = np.array([179, 180, 255])
         mask = cv2.inRange(img, lower_red, upper_red)
         kernel = np.ones((4, 4), np.uint8)
         mask = cv2.erode(mask, kernel)
