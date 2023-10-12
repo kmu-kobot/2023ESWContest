@@ -65,9 +65,11 @@ if __name__ == "__main__":
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
             elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 13:
                 Robot.curr_mission == "FindGoal"
+                plain_frame_count = 0
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
+                plain_frame_count = 0
         # 3. FindGoal
         elif Robot.curr_mission == "FindGoal":
             xmin, ymin, xmax, ymax = holeBox
@@ -143,8 +145,8 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
             Motion.shot()   
             Motion.init(True)
-            time.sleep(10)
             print(f"{shot_count}번째 Shot 완료 >__<")   
+
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
