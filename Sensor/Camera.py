@@ -105,16 +105,20 @@ class Camera:
         return ball_hole
     
     def cvCircleDetect(self, img):
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 100, param1=100, param2=40, minRadius=40, maxRadius=100)
-        
-        if np.any(circles == None):
-            return False, img, None
-        
-        for i in circles[0]:
-            cv2.circle(img, (i[0], i[1]), i[2], (255,255,255), 3)
-        return True, img, (circles[0][0][0],circles[0][0][1])
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+            
+        lower_red = np.array([119, 28, 73])
+        upper_red = np.array([179, 255, 255])
+        mask = cv2.inRange(img, lower_red, upper_red)
+        kernel = np.ones((4, 4), np.uint8)
+        mask = cv2.erode(mask, kernel)
+        mask = cv2.dilate(mask, kernel)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for contour in contours:
+            if cv2.contourArea(contour) > 100:
+                (x, y), radius = cv2.minEnclosingCircle(contour)
+                return True, [int(x-radius), int(y-radius), int(x+radius), int(y+radius)]
+        return False, [False, False, False, False]
     
     def yoloDetect(self, ori_img): # output is boxed img
         res_img = cv2.resize(ori_img, (self.cfg["width"], self.cfg["height"]), interpolation = cv2.INTER_LINEAR) 
@@ -201,8 +205,10 @@ if __name__ == "__main__":
         #cv2.imshow("Frame", frame)
         #if cv2.waitKey(16) == ord("q"):
         #    break
-        ret, xy, output = camera.yoloDetect(frame.copy())
-        cv2.imshow("detect", output)
+        ret, ball_box = camera.cvCircleDetect(frame.copy())
+        if ret:
+            cv2.rectangle(frame, (ball_box[0], ball_box[1]), (ball_box[2], ball_box[3]), (0,0,255), 2)
+        cv2.imshow("detect", frame)
         if cv2.waitKey(16) == ord("q"):
             break
         
