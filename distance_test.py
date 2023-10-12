@@ -86,27 +86,39 @@ if __name__ == "__main__":
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
-                if ymin < 190 and Robot.neck_pitch < 100:
+                if xmin < 270:
+                    Motion.init()
+                    Motion.wait_unlock()
+                    Motion.crab("LEFT")
+                    Motion.wait_unlock()
+                elif xmax > 370:
+                    Motion.init()
+                    Motion.wait_unlock()
+                    Motion.crab("RIGHT")
+                    Motion.wait_unlock()
+                elif ymin < 190 and Robot.neck_pitch < 100:
+                    Motion.init()
+                    Motion.wait_unlock()  
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                 elif ymax > 290 and Robot.neck_pitch > 35:
+                    Motion.init()
+                    Motion.wait_unlock()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
-                if xmin < 270:
-                    Motion.crab("RIGHT")
-                    Motion.wait_unlock()
-                elif xmax > 370:
-                    Motion.crab("LEFT")
-                    Motion.wait_unlock()
                 
-                if Robot.robot_ball_distance > 15:
+                elif Robot.robot_ball_distance > 15:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
+                    Motion.init()
+                    Motion.wait_unlock()
                     Motion.step()
                     Motion.wait_unlock()
                 elif Robot.robot_ball_distance < 12:
+                    Motion.init()
+                    Motion.wait_unlock()
                     Motion.step("BACK")
                     Motion.wait_unlock()
                 else:
@@ -116,7 +128,7 @@ if __name__ == "__main__":
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
-        if cv2.waitKey(16) == ord("q"):
+        if cv2.waitKey(1) == ord("q"):
             break
         
     cv2.destroyAllWindows()
