@@ -20,11 +20,9 @@ if __name__ == "__main__":
     Camera = Camera()
     
     Motion.initial()
-    while Motion.getRx():
-        continue
+    Motion.wait_unlock()
     Motion.init(True)
-    while Motion.getRx():
-        continue
+    Motion.wait_unlock()
 
     # 미션 수행 함수 실행
     print("Loop 시작 :)")
@@ -75,7 +73,9 @@ if __name__ == "__main__":
             pass
         elif Robot.curr_mission == "FindBall":
             Motion.init(True)
+            Motion.wait_unlock()
             Motion.turn("LEFT", 45)
+            Motion.wait_unlock()
             Robot.neck_pitch = 100
             Robot.neck_yaw = 0
         # 2. ApproachBall
@@ -89,22 +89,29 @@ if __name__ == "__main__":
                 if ymin < 190 and Robot.neck_pitch < 100:
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
+                    Motion.wait_unlock()
                 elif ymax > 290 and Robot.neck_pitch > 35:
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
+                    Motion.wait_unlock()
                 if xmin < 270:
                     Motion.crab("RIGHT")
+                    Motion.wait_unlock()
                 elif xmax > 370:
                     Motion.crab("LEFT")
+                    Motion.wait_unlock()
                 
                 if Robot.robot_ball_distance > 15:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
                     Motion.step()
+                    Motion.wait_unlock()
                 elif Robot.robot_ball_distance < 12:
                     Motion.step("BACK")
+                    Motion.wait_unlock()
                 else:
                     Motion.init()
+                    Motion.wait_unlock()
                 Robot.neck_yaw = 0
 
         # show the frame to our screen
