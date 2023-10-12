@@ -38,7 +38,7 @@ if __name__ == "__main__":
         if Robot.is_ball:
             cv2.rectangle(frame, (ballBox[0], ballBox[1]), (ballBox[2], ballBox[3]), (0,0,255), 2)
         if Robot.is_hole:
-            cv2.rectangle(frame, (holeBox[0]. holeBox[1]), (holeBox[2], holeBox[3]), (0,255,255), 2)
+            cv2.rectangle(frame, (holeBox[0]. holeBox[1]), (holeBox[0]+holeBox[2], holeBox[1]+holeBox[3]), (0,255,255), 2)
         if Robot.is_arrow:
             cv2.rectangle(frame, (arrowBox[0], arrowBox[1]), (arrowBox[2], arrowBox[3]), (255,255,255), 2)
 
