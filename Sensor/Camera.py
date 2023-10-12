@@ -32,17 +32,17 @@ class Camera:
         time.sleep(2)
 
         # YOLO 설정
-        if torch.cuda.is_available():
-            print("cuda is available")
-        else:
-            print("use cpu")
-        self.optData = "./Sensor/data/coco.data"
-        self.optWeight = "./Sensor/weights/ESWv6-290-epoch-0.924759ap-model.pth"
-        self.cfg = utils.utils.load_datafile(self.optData)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = model.detector.Detector(self.cfg["classes"], self.cfg["anchor_num"], True).to(self.device)
-        self.model.load_state_dict(torch.load(self.optWeight, map_location=self.device))
-        self.model.eval()
+        # if torch.cuda.is_available():
+        #     print("cuda is available")
+        # else:
+        #     print("use cpu")
+        # self.optData = "./Sensor/data/coco.data"
+        # self.optWeight = "./Sensor/weights/ESWv6-290-epoch-0.924759ap-model.pth"
+        # self.cfg = utils.utils.load_datafile(self.optData)
+        # self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # self.model = model.detector.Detector(self.cfg["classes"], self.cfg["anchor_num"], True).to(self.device)
+        # self.model.load_state_dict(torch.load(self.optWeight, map_location=self.device))
+        # self.model.eval()
     
     # 이미지 공급 쓰레드에서 이미지 하나 get.    
     def get_image(self):
