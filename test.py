@@ -30,7 +30,11 @@ if __name__ == "__main__":
         frame = Camera.get_image()
 
         # image process
-        Robot.is_hole, holeBox, Robot.is_ball, ballBox, Robot.is_arrow, arrowBox = Camera.yoloDetect_master(frame)
+        hls = cv2.cvtColor(frame, cv2.COLOR_BGR2HLS)
+        Robot.is_ball, ballBox = Camera.cvCircleDetect(hls)
+        Robot.is_hole, holeBox = Camera.is_hole(hls)
+        Robot.is_arrow, arrowBox = False, [0, 0, 0, 0]
+
         if Robot.is_ball:
             cv2.rectangle(frame, (ballBox[0], ballBox[1]), (ballBox[2], ballBox[3]), (0,0,255), 2)
         if Robot.is_hole:
@@ -52,7 +56,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "ApproachBall":
             xmin, ymin, xmax, ymax = ballBox
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-            # 공에 가까이 가는 중에 순간 공이 감지되지 않았다면 일단 기다리기
+            # 공에 가까이 가는 중에 순간 공이 감지되지 않았다면 일단 기다린다
             if not Robot.is_ball:
                 plain_frame_count += 1
                 if plain_frame_count > 5:

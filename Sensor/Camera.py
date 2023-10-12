@@ -59,15 +59,12 @@ class Camera:
     
     # 홀 인식
     def is_hole(self, img):
-        # 이미지를 HLS 색공간으로 변환
-        img_hls = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-        
         # 색상, 밝기, 채도 범위 설정
         lower_bound = np.array([0, 0, 0])
         upper_bound = np.array([60, 255, 255])
         
         # 범위 내의 픽셀을 마스크로 만들기
-        mask = cv2.inRange(img_hls, lower_bound, upper_bound)
+        mask = cv2.inRange(img, lower_bound, upper_bound)
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
@@ -81,12 +78,10 @@ class Camera:
     
     # 벙커 인식
     def is_bunker(self, img):
-        img_hls = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-
         lower_bound = np.array([0, 135, 0])
         upper_bound = np.array([180, 255, 31])
 
-        mask = cv2.inRange(img_hls, lower_bound, upper_bound)
+        mask = cv2.inRange(img, lower_bound, upper_bound)
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -104,9 +99,8 @@ class Camera:
         ball_hole = math.sqrt(ball**2 + hole**2 - 2*ball*hole*math.cos(neck_angle))
         return ball_hole
     
+    # 공 인식
     def cvCircleDetect(self, img):
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-            
         lower_red = np.array([119, 28, 73])
         upper_red = np.array([179, 255, 255])
         mask = cv2.inRange(img, lower_red, upper_red)
