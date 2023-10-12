@@ -59,14 +59,14 @@ class Camera:
             if density > min_density and area > max_area:
                 max_area = area
                 max_area_idx = i
-        print(f"area: {max_area}")
         if max_area < 100:
                 max_area_idx = -1
         if max_area_idx != -1:
             x1, y1, w, h, _ = stats[max_area_idx]
             x2, y2 = x1 + w, y1 + h
-            img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-        return img
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, (x1, y1), (x2, y2)
+        return False, None, None
     
     # 홀 인식
     def is_hole(self, img):
