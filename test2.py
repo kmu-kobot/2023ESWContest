@@ -25,7 +25,7 @@ if __name__ == "__main__":
     
     cap = cv2.VideoCapture(0)
     while(True):
-        frame = cap.read()
+        ret, frame = cap.read()
         detect = Camera.hsvDetect(frame)
         cv2.imshow("detect", detect)
         if cv2.waitKey(16) == ord("q"):
