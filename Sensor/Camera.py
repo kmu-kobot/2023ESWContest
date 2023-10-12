@@ -9,14 +9,8 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.pink = [140,50, 250]
-        self.pink = np.uint8([[self.pink]])
-        self.pink = cv2.cvtColor(self.pink, cv2.COLOR_BGR2HSV)
-        lowerLimitP = self.pink[0][0][0] - 10, 100, 100
-        upperLimitP = self.pink[0][0][0] + 10, 255, 255
-        
-        self.lowerLimitP = np.array(lowerLimitP, dtype=np.uint8)
-        self.upperLimitP = np.array(upperLimitP, dtype=np.uint8)
+        self.lowerLimitP = np.array([152, 55, 194], dtype=np.uint8)
+        self.upperLimitP = np.array([169,205,255], dtype=np.uint8)
         
         
         self.cam = WebcamVideoStream(-1).start()

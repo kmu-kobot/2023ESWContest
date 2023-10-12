@@ -1,0 +1,14 @@
+torchvision
+tqdm
+opencv_python
+torchsummary
+torch
+numpy
+
+hm 152
+sm 55
+vm 194
+
+HM 169
+HS 205
+VM 255
