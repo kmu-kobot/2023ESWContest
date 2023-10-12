@@ -50,19 +50,22 @@ class Camera:
         max_density = -1
         max_area_idx = -1
         # 노이즈를 잡기 위한 최소한의 밀집도
-        min_density = 0.3  # 예시: 50% 이상의 픽셀이 1이어야 함
+        min_density = 0.5  # 예시: 50% 이상의 픽셀이 1이어야 함
 
         for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
             area = stats[i,cv2.CC_STAT_AREA]
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
 
-            if density > min_density:
+            if density > min_density and area > max_area:
                 max_area = area
                 max_area_idx = i
-                
-        x1, y1, w, h, _ = stats[max_area_idx]
-        x2, y2 = x1 + w, y1 + h
-        img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+        print(f"area: {max_area}")
+        if max_area < 100:
+                max_area_idx = -1
+        if max_area_idx != -1:
+            x1, y1, w, h, _ = stats[max_area_idx]
+            x2, y2 = x1 + w, y1 + h
+            img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
         return img
     
     # 홀 인식
