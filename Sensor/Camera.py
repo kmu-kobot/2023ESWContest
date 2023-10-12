@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import utils.utils
 import time
 import math
 from PIL import Image
