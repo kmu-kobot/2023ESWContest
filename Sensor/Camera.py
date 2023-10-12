@@ -9,9 +9,9 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.pink = [330,80,100]
+        self.pink = [140,50 250]
         self.pink = np.uint8([[self.pink]])
-        
+        self.pink = cv2.cvtColor(self.pink, cv2.COLOR_BGR2HSV)
         lowerLimitP = self.pink[0][0][0] - 10, 100, 100
         upperLimitP = self.pink[0][0][0] + 10, 255, 255
         
@@ -56,7 +56,7 @@ class Camera:
         if bbox != None:
             x1, y1, x2, y2 = bbox
             img = cv2.rectangle(img, (x1,y1), (x2,y2), (0,255,0), 4)
-        return img
+        return mask
     
     # 홀 인식
     def is_hole(self, img):
