@@ -45,12 +45,20 @@ class Camera:
     def hsvDetect(self, img):
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
-        mask2 = Image.fromarray(mask)
-        bbox = mask2.getbbox()
-        if bbox != None:
-            x1, y1, x2, y2 = bbox
-            img = cv2.rectangle(img, (x1,y1), (x2,y2), (0,255,0), 4)
-        return mask
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.5  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+
+            if density > min_density:
+                x1, y1, w, h, _ = stats[i]
+                x2, y2 = x1 + w, y1 + h
+
+                img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+        return img
     
     # 홀 인식
     def is_hole(self, img):
