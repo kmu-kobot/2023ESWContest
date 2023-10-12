@@ -46,7 +46,7 @@ while True:
     filtered_frame = cv2.bitwise_and(frame, frame, mask=mask)
 
     # 화면에 영상을 표시합니다.
-    cv2.imshow('Video', filtered_frame)
+    cv2.imshow('Frame', filtered_frame)
 
     if cv2.waitKey(1) & 0xFF == 27:  # 'Esc' 키를 누르면 종료합니다.
         break
