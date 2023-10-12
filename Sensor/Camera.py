@@ -60,6 +60,7 @@ class Camera:
     
     # 홀 인식
     def is_hole(self, img):
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
         # 색상, 밝기, 채도 범위 설정
         lower_bound = np.array([0, 0, 0])
         upper_bound = np.array([60, 255, 255])
@@ -102,6 +103,7 @@ class Camera:
     
     # 공 인식
     def cvCircleDetect(self, img):
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
         lower_red = np.array([119, 28, 73])
         upper_red = np.array([179, 255, 255])
         mask = cv2.inRange(img, lower_red, upper_red)
