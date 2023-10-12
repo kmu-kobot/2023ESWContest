@@ -57,6 +57,10 @@ class Motion:
     def getRx(self):
         return self.lock
 
+    def wait_unlock(self):
+        while self.lock:
+            continue
+        
     # serial Thread에서 실행하는 함수 -> 백그라운드에서 계속 실행됨
     def Receiving(self, ser):
         self.receiving_exit = 1
