@@ -24,7 +24,7 @@ if __name__ == "__main__":
     Motion.init(True)
     
     while(True):
-        ret, frame = Camera.get_image()
+        frame = Camera.get_image()
         detect = Camera.hsvDetect(frame)
         cv2.imshow("detect", detect)
         if cv2.waitKey(16) == ord("q"):
