@@ -50,7 +50,7 @@ if __name__ == "__main__":
             (xmin, ymin) = ballBox1
             (xmax, ymax) = ballBox2
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
-            print(f"공과 로봇 거리 {int(Robot.robot_ball_distance)} cm")
+            print(f"공으로 다가가는 중: {int(Robot.robot_ball_distance)} cm")
             # 공에 가까이 가는 중에 순간 공이 감지되지 않았다면 일단 기다린다
             if not Robot.is_ball:
                 plain_frame_count += 1
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                     Robot.curr_mission = "FindBall"
                     plain_frame_count = 0
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
-            elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 13:
+            elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 15:
                 Robot.curr_mission == "FindGoal"
                 plain_frame_count = 0
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
@@ -66,18 +66,18 @@ if __name__ == "__main__":
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
           
-        print(f"현재 상태 {Robot.curr_mission}")
+        print(f"현재 상태 {Robot.curr_mission}, neck: {Robot.neck_pitch}")
 
         # motion
         # 1. FindBall
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
             pass
         elif Robot.curr_mission == "FindBall":
-            Motion.init(True)
+            Motion.init()
             Motion.wait_unlock()
-            Motion.turn("LEFT", 45)
+            Motion.turn("LEFT")
             Motion.wait_unlock()
-            Robot.neck_pitch = 100
+            time.sleep(2)
             Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
@@ -94,12 +94,14 @@ if __name__ == "__main__":
                         Motion.wait_unlock()
                     Motion.turn("LEFT")
                     Motion.wait_unlock()
+                    print("TURN LEFT")
                 elif xmax > 370:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
                     Motion.turn("RIGHT")
                     Motion.wait_unlock()
+                    print("TURN RIGHT")
                 elif ymin < 190 and Robot.neck_pitch < 100:
                     if Motion.getRx():
                         Motion.init()
@@ -107,6 +109,7 @@ if __name__ == "__main__":
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
+                    print("목 조절")
                 elif ymax > 290 and Robot.neck_pitch > 35:
                     if Motion.getRx():
                         Motion.init()
@@ -114,10 +117,11 @@ if __name__ == "__main__":
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
-                
-                elif Robot.robot_ball_distance > 15:
+                    print("목 조절")
+                elif Robot.robot_ball_distance > 18:
                     Motion.walk()
-                elif Robot.robot_ball_distance > 13:
+                    print("WALKING")
+                elif Robot.robot_ball_distance > 15:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
@@ -133,6 +137,10 @@ if __name__ == "__main__":
                     Motion.init()
                     Motion.wait_unlock()
                 Robot.neck_yaw = 0
+        elif Robot.curr_mission == "FindGoal":
+            Motion.initial()
+            print("Shot!!!!!!!!!!!!!!!!!!!!!!!!!")
+            time.sleep(10)
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
