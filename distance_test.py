@@ -89,12 +89,12 @@ if __name__ == "__main__":
                 if xmin < 270:
                     Motion.init()
                     Motion.wait_unlock()
-                    Motion.crab("RIGHT")
+                    Motion.crab("LEFT")
                     Motion.wait_unlock()
                 elif xmax > 370:
                     Motion.init()
                     Motion.wait_unlock()
-                    Motion.crab("LEFT")
+                    Motion.crab("RIGHT")
                     Motion.wait_unlock()
                 elif ymin < 190 and Robot.neck_pitch < 100:
                     Motion.init()
