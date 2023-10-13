@@ -31,10 +31,10 @@ if __name__ == "__main__":
 
         # image process
         img = frame.copy()
-        Robot.is_ball, ballBox = Camera.cvCircleDetect(img)
+        Robot.is_ball, ballBox1, ballBox2 = Camera.hsvDetect(img)
 
         if Robot.is_ball:
-            cv2.rectangle(frame, (ballBox[0], ballBox[1]), (ballBox[2], ballBox[3]), (0,0,255), 2)
+            cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
 
         # Finite State Machine
         # 1. FindBall
@@ -80,31 +80,36 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
-            xmin, ymin, xmax, ymax = ballBox
+            (xmin, ymin) = ballBox1
+            (xmax, ymax) = ballBox2
             # 공에 다가가다가 순간 공이 안 보인 경우
             if not Robot.is_ball:
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
                 if xmin < 270:
-                    Motion.init()
-                    Motion.wait_unlock()
-                    Motion.crab("LEFT")
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
+                    Motion.turn("LEFT")
                     Motion.wait_unlock()
                 elif xmax > 370:
-                    Motion.init()
-                    Motion.wait_unlock()
-                    Motion.crab("RIGHT")
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
+                    Motion.turn("RIGHT")
                     Motion.wait_unlock()
                 elif ymin < 190 and Robot.neck_pitch < 100:
-                    Motion.init()
-                    Motion.wait_unlock()  
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock() 
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                 elif ymax > 290 and Robot.neck_pitch > 35:
-                    Motion.init()
-                    Motion.wait_unlock()
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
@@ -112,13 +117,15 @@ if __name__ == "__main__":
                 elif Robot.robot_ball_distance > 15:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
-                    Motion.init()
-                    Motion.wait_unlock()
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
                     Motion.step()
                     Motion.wait_unlock()
                 elif Robot.robot_ball_distance < 12:
-                    Motion.init()
-                    Motion.wait_unlock()
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
                     Motion.step("BACK")
                     Motion.wait_unlock()
                 else:
