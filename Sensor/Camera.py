@@ -104,7 +104,7 @@ class Camera:
             x, y, w, h = cv2.boundingRect(contour)
             if w < 50 or h < 50:
                 continue
-            return True, [x, y, w, h]
+            return True, (x, y, w, h)
         return False, None
         
     # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
@@ -132,13 +132,13 @@ class Camera:
     
     def shotzoneChecker(self, img):
         ret, xywh = self.is_hole(img)
+        if ret == False:
+            return False
         x, y, w, h = xywh
         x = x + w/2
         y = y + h/2
         if ret == True and (2*x - 620 > y > (76*x-25460)/61):
             return True
-        else:
-            return False
     
 if __name__ == "__main__":
     camera = Camera()
