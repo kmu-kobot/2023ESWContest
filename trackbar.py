@@ -1,5 +1,23 @@
+from Actuator.Motion import Motion
+from Sensor.Camera import Camera
+from Brain.Robot import Robot
+
 import cv2
 import numpy as np
+
+
+Robot = Robot()
+Motion = Motion()
+Camera = Camera()
+
+Motion.initial()
+Motion.wait_unlock()
+Motion.init(True)
+Motion.wait_unlock()
+Motion.neckup(70)
+Motion.wait_unlock()
+Motion.view(-90)
+Motion.wait_unlock()
 
 def empty_callback(x):
     pass

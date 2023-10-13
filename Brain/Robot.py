@@ -13,3 +13,5 @@ class Robot:
         self.is_ball = False
         self.is_bunker = False
         self.is_arrow = False
+        
+        self.shotzone = False

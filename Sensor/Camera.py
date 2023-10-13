@@ -11,7 +11,7 @@ class Camera:
         # 카메라 설정
         self.lowerLimitP = np.array([152, 55, 194], dtype=np.uint8)
         self.upperLimitP = np.array([169,205,255], dtype=np.uint8)
-        
+        self.shotZone = [500, 600]
         
         self.cam = WebcamVideoStream(-1).start()
         self.fps = FPS()
@@ -127,6 +127,13 @@ class Camera:
                 return True, [int(x-radius), int(y-radius), int(x+radius), int(y+radius)]
         return False, [False, False, False, False]
     
+    def shotzoneChecker(self, img):
+        ret, xywh = self.is_hole(img)
+        x, y, w, h = xywh
+        if ret == True and (self.shotZone[0] < x+(w/2) < self.shotZone[1]):
+            return True
+        else:
+            return False
     
 if __name__ == "__main__":
     camera = Camera()
