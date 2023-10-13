@@ -67,6 +67,13 @@ if __name__ == "__main__":
           
         print(f"현재 상태 {Robot.curr_mission}, neck: {Robot.neck_pitch}")
 
+
+        # show the frame to our screen
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(1) == ord("q"):
+            break
+
+
         # motion
         # 1. FindBall
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
@@ -142,9 +149,5 @@ if __name__ == "__main__":
             time.sleep(10)
             # TODO shot 이후에 목 각도 70으로
 
-        # show the frame to our screen
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(1) == ord("q"):
-            break
         
     cv2.destroyAllWindows()
