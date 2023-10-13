@@ -47,7 +47,8 @@ if __name__ == "__main__":
                 Robot.curr_mission = "FindBall"
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
-            xmin, ymin, xmax, ymax = ballBox
+            (xmin, ymin) = ballBox1
+            (xmax, ymax) = ballBox2
             Robot.robot_ball_distance = ball_distance(Robot.neck_pitch, ymax)
             print(f"공과 로봇 거리 {int(Robot.robot_ball_distance)} cm")
             # 공에 가까이 가는 중에 순간 공이 감지되지 않았다면 일단 기다린다

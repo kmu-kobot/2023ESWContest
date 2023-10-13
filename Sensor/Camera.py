@@ -66,7 +66,7 @@ class Camera:
             x2, y2 = x1 + w, y1 + h
             # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
             return True, (x1, y1), (x2, y2)
-        return False, None, None
+        return False, (False, False), (False, False)
     
     # 홀 인식
     def is_hole(self, img):
