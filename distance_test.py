@@ -20,6 +20,8 @@ if __name__ == "__main__":
     Motion.wait_unlock()
     Motion.init(True)
     Motion.wait_unlock()
+    Motion.neckup(70)
+    Motion.wait_unlock()
 
     # 미션 수행 함수 실행
     print("Loop 시작 :)")
@@ -138,6 +140,7 @@ if __name__ == "__main__":
             Motion.initial()
             print("Shot!!!!!!!!!!!!!!!!!!!!!!!!!")
             time.sleep(10)
+            # TODO shot 이후에 목 각도 70으로
 
         # show the frame to our screen
         cv2.imshow("Frame", frame)
