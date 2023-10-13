@@ -163,9 +163,6 @@ if __name__ == "__main__":
                     Motion.wait_unlock()
                 Robot.neck_yaw = 0
         elif Robot.curr_mission == "FindGoal":
-            if Motion.getRx():
-                Motion.init()
-                Motion.wait_unlock()
             if Robot.neck_yaw == 0:
                 Robot.neck_yaw = -90
                 Motion.view(-90)
