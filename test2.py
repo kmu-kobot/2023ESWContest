@@ -167,11 +167,13 @@ if __name__ == "__main__":
                 Robot.neck_yaw = -90
                 Motion.view(-90)
                 Motion.wait_unlock()
-            elif Robot.neck_yaw == -90:
                 if Robot.shotzone == True:
                     Motion.shot()
                     Motion.wait_unlock()
                     Robot.shotzone = False
+                    Motion.view(0)
+                    Motion.wait_unlock()
+                    Robot.neck_yaw = 0
                 else:
                     Motion.view(0)
                     Motion.wait_unlock()
