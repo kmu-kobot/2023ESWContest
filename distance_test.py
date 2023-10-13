@@ -7,9 +7,6 @@ import cv2
 import numpy as np
 import time
 
-CONFIDENCE_THRESHOLD = 0.8
-GREEN = (0, 255, 0)
-
 shot_count = 0
 plain_frame_count = 0
 

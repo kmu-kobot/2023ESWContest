@@ -58,9 +58,8 @@ class Motion:
         return self.lock
 
     def wait_unlock(self):
-        if self.lock:
-            while self.lock:
-                continue
+        while self.lock:
+            continue
         
     # serial Thread에서 실행하는 함수 -> 백그라운드에서 계속 실행됨
     def Receiving(self, ser):
