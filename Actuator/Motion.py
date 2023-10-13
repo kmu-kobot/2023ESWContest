@@ -58,8 +58,9 @@ class Motion:
         return self.lock
 
     def wait_unlock(self):
-        while self.lock:
-            continue
+        if self.lock:
+            while self.lock:
+                continue
         
     # serial Thread에서 실행하는 함수 -> 백그라운드에서 계속 실행됨
     def Receiving(self, ser):
@@ -104,7 +105,7 @@ class Motion:
     # 한 걸음
     def step(self, direction="FRONT"):
         if direction == "FRONT":  # 앞으로 한 걸음
-            self.TX_data_py3(36)
+            self.TX_data_py3(5)
         else:                     # 뒤로 한 걸음
             self.TX_data_py3(38)
         return
@@ -138,7 +139,7 @@ class Motion:
         return
 
     # 몸통 회전 LEFT, RIGHT 각각 5도, 10도, 20도, 45도, 60도
-    def turn(self, direction="LEFT", angle="10"):
+    def turn(self, direction="LEFT", angle=10):
         if direction == "LEFT":
             if angle == 5:       
                 self.TX_data_py3(1)
