@@ -12,6 +12,9 @@ class Camera:
         self.lowerLimitP = np.array([152, 55, 194], dtype=np.uint8)
         self.upperLimitP = np.array([169,205,255], dtype=np.uint8)
         self.shotZone = [500, 600]
+        # cv2.line(filtered_frame, (310,0), (550,480), (0,0,255), 2) => y = 2x - 620
+        # cv2.line(filtered_frame, (335,0), (640,380), (0,0,255), 2) => 76x- 61y = 25460 => y = 76x-25460/61
+        
         
         self.cam = WebcamVideoStream(-1).start()
         self.fps = FPS()
@@ -130,7 +133,9 @@ class Camera:
     def shotzoneChecker(self, img):
         ret, xywh = self.is_hole(img)
         x, y, w, h = xywh
-        if ret == True and (self.shotZone[0] < x+(w/2) < self.shotZone[1]):
+        x = x + w/2
+        y = y + h/2
+        if ret == True and (2*x - 620 > y > (76*x-25460)/61):
             return True
         else:
             return False
