@@ -32,7 +32,7 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox = Camera.cvCircleDetect(img)
-        Robot.is_hole, holeBox = Camera.shotzone(img)
+        Robot.is_hole, holeBox = Camera.shotzoneChecker(img)
         Robot.is_arrow, arrowBox = False, [0, 0, 0, 0]
 
         if Robot.is_ball:
