@@ -34,9 +34,6 @@ if __name__ == "__main__":
 
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
-            
-        if Robot.curr_mission == "FindGoal" and Robot.neck_yaw == -90:
-            Robot.shotzone = Camera.shotzoneChecker(frame)
 
         # Finite State Machine
         # 1. FindBall
@@ -167,16 +164,26 @@ if __name__ == "__main__":
                 Robot.neck_yaw = -90
                 Motion.view(-90)
                 Motion.wait_unlock()
+                print("turn head to check goal")
+                time.sleep(2)
+                frame = Camera.get_image()
+                Robot.shotzone, frame = Camera.shotzoneChecker(frame)
+                cv2.imshow("Frame", frame)
+                cv2.waitKey(1)
                 if Robot.shotzone == True:
+                    print("shot!")
                     Motion.shot()
                     Motion.wait_unlock()
                     Robot.shotzone = False
                     Motion.view(0)
                     Motion.wait_unlock()
+                    time.sleep(2)
                     Robot.neck_yaw = 0
                 else:
+                    print("cant shot")
                     Motion.view(0)
                     Motion.wait_unlock()
+                    time.sleep(2)
                     Robot.neck_yaw = 0
             
             # TODO shot 이후에 목 각도 70으로

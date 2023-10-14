@@ -75,8 +75,8 @@ class Camera:
     def is_hole(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
         # 색상, 밝기, 채도 범위 설정
-        lower_bound = np.array([0, 0, 0])
-        upper_bound = np.array([60, 255, 255])
+        lower_bound = np.array([0, 48, 221])
+        upper_bound = np.array([40, 255, 255])
         
         # 범위 내의 픽셀을 마스크로 만들기
         mask = cv2.inRange(img, lower_bound, upper_bound)
@@ -90,6 +90,38 @@ class Camera:
                 continue
             return True, [x, y, w, h]
         return False, None
+    
+    # hall detect v2
+    def holeDetect(self, img):
+        lower_bound = np.array([0, 48, 221])
+        upper_bound = np.array([40, 255, 255])
+        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        cv2.imshow("Frame", mask)
+        cv2.waitKey(1)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        max_area = -1
+        max_density = -1
+        max_area_idx = -1
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.2  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            area = stats[i,cv2.CC_STAT_AREA]
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+
+            if density > min_density and area > max_area:
+                max_area = area
+                max_area_idx = i
+        if max_area < 100:
+                max_area_idx = -1
+        if max_area_idx != -1:
+            x1, y1, w, h, _ = stats[max_area_idx]
+            x2, y2 = x1 + w, y1 + h
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, (x1, y1, x2, y2)
+        return False, (False, False, False, False)
+        
     
     # 벙커 인식
     def is_bunker(self, img):
@@ -131,14 +163,19 @@ class Camera:
         return False, [False, False, False, False]
     
     def shotzoneChecker(self, img):
-        ret, xywh = self.is_hole(img)
+        ret, xyxy = self.holeDetect(img)
         if ret == False:
-            return False
-        x, y, w, h = xywh
-        x = x + w/2
-        y = y + h/2
+            return False, img
+        x1, y1, x2, y2 = xyxy
+        x = int((x1 + x2)/2)
+        y = int((y1 + y2)/2)
+        cv2.line(img, (310,0), (550,480), (0,0,255), 2)
+        cv2.line(img, (335,0), (640,380), (0,0,255), 2)
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
         if ret == True and (2*x - 620 > y > (76*x-25460)/61):
-            return True
+            return True, img
+        else:
+            return False, img
     
 if __name__ == "__main__":
     camera = Camera()
