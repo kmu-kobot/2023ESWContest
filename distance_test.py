@@ -89,26 +89,28 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "ApproachBall":
             (xmin, ymin) = ballBox1
             (xmax, ymax) = ballBox2
+            xmean = (xmin + xmax) // 2
+            ymean = (ymin + ymax) // 2
             # 공에 다가가다가 순간 공이 안 보인 경우
             if not Robot.is_ball:
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
-                if xmin < 270:
+                if xmean < 160:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
                     Motion.turn("LEFT")
                     Motion.wait_unlock()
                     print("TURN LEFT")
-                elif xmax > 370:
+                elif xmean > 480:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
                     Motion.turn("RIGHT")
                     Motion.wait_unlock()
                     print("TURN RIGHT")
-                elif ymin < 190 and Robot.neck_pitch < 100:
+                elif ymean < 50 and Robot.neck_pitch < 100:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock() 
@@ -116,7 +118,7 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif ymax > 290 and Robot.neck_pitch > 35:
+                elif ymean > 590 and Robot.neck_pitch > 35:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
@@ -124,7 +126,7 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif Robot.robot_ball_distance > 18:
+                elif Robot.robot_ball_distance > 30:
                     Motion.walk()
                     print("WALKING")
                 elif Robot.robot_ball_distance > 15:
@@ -133,6 +135,20 @@ if __name__ == "__main__":
                         Motion.wait_unlock()
                     Motion.step()
                     Motion.wait_unlock()
+                elif xmean < 300:
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
+                    Motion.turn("LEFT")
+                    Motion.wait_unlock()
+                    print("TURN LEFT")
+                elif xmean > 380:
+                    if Motion.getRx():
+                        Motion.init()
+                        Motion.wait_unlock()
+                    Motion.turn("RIGHT")
+                    Motion.wait_unlock()
+                    print("TURN RIGHT")
                 elif Robot.robot_ball_distance < 12:
                     if Motion.getRx():
                         Motion.init()
