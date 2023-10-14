@@ -58,7 +58,7 @@ if __name__ == "__main__":
                     plain_frame_count = 0
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
             elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 15:
-                Robot.curr_mission == "FindGoal"
+                Robot.curr_mission = "FindGoal"
                 plain_frame_count = 0
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
@@ -110,7 +110,7 @@ if __name__ == "__main__":
                     Motion.turn("RIGHT")
                     Motion.wait_unlock()
                     print("TURN RIGHT")
-                elif ymean < 50 and Robot.neck_pitch < 100:
+                elif ymean < 100 and Robot.neck_pitch < 100:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock() 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif ymean > 590 and Robot.neck_pitch > 35:
+                elif ymean > 380 and Robot.neck_pitch > 35:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
