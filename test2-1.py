@@ -32,13 +32,13 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox = Camera.cvCircleDetect(img)
-        Robot.is_hole, holeBox = Camera.shotzoneChecker(img)
+        Robot.is_hole, holeBox = Camera.shotzone(img)
         Robot.is_arrow, arrowBox = False, [0, 0, 0, 0]
 
         if Robot.is_ball:
             cv2.rectangle(frame, (ballBox[0], ballBox[1]), (ballBox[2], ballBox[3]), (0,0,255), 2)
         if Robot.is_hole:
-            cv2.rectangle(frame, (holeBox[0], holeBox[1]), (holeBox[0]+holeBox[2], holeBox[1]+holeBox[3]), (0,255,255), 2)
+            cv2.circle(img, (int((holeBox[0]+holeBox[2])/2),int((holeBox[1]+holeBox[3])/2)), 3, (0,255,0), 3)
         if Robot.is_arrow:
             cv2.rectangle(frame, (arrowBox[0], arrowBox[1]), (arrowBox[2], arrowBox[3]), (255,255,255), 2)
 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "FindGoal":
             xmin, ymin, xmax, ymax = holeBox
             # goal이 shot 가능한 위치에 있으면 shot을 한다
-            if Robot.is_hole:
+            if Robot.is_hole and  300 < (xmin + xmax) // 2 < 340:
                 Robot.curr_mission = "Shot"
             # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
             else:
