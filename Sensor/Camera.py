@@ -169,13 +169,13 @@ class Camera:
         x1, y1, x2, y2 = xyxy
         x = int((x1 + x2)/2)
         y = int((y1 + y2)/2)
-        #cv2.line(img, (310,0), (550,480), (0,0,255), 2)
-        #cv2.line(img, (335,0), (640,380), (0,0,255), 2)
-        #cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        cv2.line(img, (310,0), (550,480), (0,0,255), 2)
+        cv2.line(img, (335,0), (640,380), (0,0,255), 2)
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
         if ret == True and (2*x - 620 > y > (76*x-25460)/61):
-            return True, (x1, y1, x2, y2)
+            return True, img
         else:
-            return False, (x1, y1, x2, y2)
+            return False, img
     
 if __name__ == "__main__":
     camera = Camera()
