@@ -31,9 +31,12 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox1, ballBox2 = Camera.hsvDetect(img)
+        Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
+        if Robot.shotzone:
+            cv2.imshow("Hole", hole_frame)
 
         # Finite State Machine
         # 1. FindBall
@@ -64,6 +67,23 @@ if __name__ == "__main__":
             else:
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
+        # 3. FindGoal
+        elif Robot.curr_mission == "FindGoal":
+            # goal이 shot 가능한 위치에 있으면 shot을 한다
+            if Robot.shotzone:
+                Robot.curr_mission = "Shot"
+            # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
+            else:
+                Robot.curr_mission = "ApproachGoal"
+        # 4. ApproachGoal
+        elif Robot.curr_mission == "ApproachGoal":
+            # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
+            Robot.curr_mission = "ApproachBall"
+        # 5. Shot
+        elif Robot.curr_mission == "Shot":
+            # shot을 하면 다음 shot을 위해 공을 찾는다
+            Robot.curr_mission = "FindBall"
+            shot_count += 1
           
         print(f"현재 상태 {Robot.curr_mission}, neck: {Robot.neck_pitch}")
 
@@ -126,10 +146,10 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif Robot.robot_ball_distance > 30:
+                elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                     print("WALKING")
-                elif Robot.robot_ball_distance > 15:
+                elif Robot.robot_ball_distance > 14:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
@@ -159,11 +179,23 @@ if __name__ == "__main__":
                     Motion.init()
                     Motion.wait_unlock()
                 Robot.neck_yaw = 0
+        # 3. FindGoal
         elif Robot.curr_mission == "FindGoal":
-            Motion.initial()
-            print("Shot!!!!!!!!!!!!!!!!!!!!!!!!!")
-            time.sleep(10)
-            # TODO shot 이후에 목 각도 70으로
+            Robot.neck_yaw = -90
+            Motion.view(-90)
+        # 4. ApproachGoal
+        elif Robot.curr_mission == "ApproachGoal":
+            Robot.neck_yaw = 0
+            Motion.view(0)
+        # 5. Shot
+        elif Robot.curr_mission == "Shot":
+            Robot.neck_yaw = 0
+            Motion.view(0)
+            Motion.wait_unlock()
+            Robot.neck_pitch = 70
+            Motion.neckup(70)
+            Motion.wait_unlock()
+            Motion.shot()
 
         
     cv2.destroyAllWindows()
