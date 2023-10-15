@@ -32,14 +32,14 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox1, ballBox2 = Camera.hsvDetect(img)
-        Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
+        # Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
-        if Robot.shotzone:
-            Robot.is_hole = True
-        else:
-            Robot.is_hole = False
+        # if Robot.shotzone:
+        #     Robot.is_hole = True
+        # else:
+        #     Robot.is_hole = False
 
         # Finite State Machine
         # 1. FindBall
@@ -75,9 +75,11 @@ if __name__ == "__main__":
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
         # 3. FindGoal
-        elif Robot.curr_mission == "FindGoal":
+        elif Robot.curr_mission == "FindGoal" and Robot.neck_yaw == -90:
+            Robot.shotzone, frame = Camera.shotzoneChecker(img)
             # goal이 shot 가능한 위치에 있으면 shot을 한다
-            if Robot.is_hole:
+            if Robot.shotzone:
+                Robot.shotzone = False
                 Robot.curr_mission = "Shot"
             # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
             else:
@@ -99,7 +101,7 @@ if __name__ == "__main__":
 
 
         # show the frame to our screen
-        cv2.imshow("Frame", hole_frame)
+        cv2.imshow("Frame", frame)
         if cv2.waitKey(1) == ord("q"):
             break
 
