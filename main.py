@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # 미션 수행 함수 실행
     print("Loop 시작 :)")
     while True:
+        print("===============================")
         frame = Camera.get_image()
 
         # image process
@@ -93,6 +94,10 @@ if __name__ == "__main__":
             ymean = (ymin + ymax) // 2
             # 공에 다가가다가 순간 공이 안 보인 경우
             if not Robot.is_ball:
+                if Motion.getRx():
+                    Motion.init()
+                    print("No ball")
+                    Motion.wait_unlock()
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
@@ -118,7 +123,7 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif ymean > 380 and Robot.neck_pitch > 35:
+                elif ymean > 300 and Robot.neck_pitch > 35:
                     if Motion.getRx():
                         Motion.init()
                         Motion.wait_unlock()
@@ -126,7 +131,7 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                     Motion.wait_unlock()
                     print("목 조절")
-                elif Robot.robot_ball_distance > 30:
+                elif Robot.robot_ball_distance > 20:
                     Motion.walk()
                     print("WALKING")
                 elif Robot.robot_ball_distance > 15:

@@ -36,7 +36,9 @@ if __name__ == "__main__":
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
         if Robot.shotzone:
-            cv2.imshow("Hole", hole_frame)
+            Robot.is_hole = True
+        else:
+            Robot.is_hole = False
 
         # Finite State Machine
         # 1. FindBall
@@ -63,6 +65,7 @@ if __name__ == "__main__":
             elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 15:
                 Robot.curr_mission = "FindGoal"
                 plain_frame_count = 0
+                neck_before_find = Robot.neck_pitch
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
