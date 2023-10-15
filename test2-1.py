@@ -32,13 +32,13 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox = Camera.cvCircleDetect(img)
-        # Robot.is_hole, holeBox = Camera.shotzoneChecker(img)
+        # Robot.is_hole, holeBox = Camera.is_hole(img)
         Robot.is_arrow, arrowBox = False, [0, 0, 0, 0]
 
         if Robot.is_ball:
             cv2.rectangle(frame, (ballBox[0], ballBox[1]), (ballBox[2], ballBox[3]), (0,0,255), 2)
         # if Robot.is_hole:
-        #     cv2.circle(img, (int((holeBox[0]+holeBox[2])/2),int((holeBox[1]+holeBox[3])/2)), 3, (0,255,0), 3)
+        #     cv2.rectangle(frame, (holeBox[0], holeBox[1]), (holeBox[0]+holeBox[2], holeBox[1]+holeBox[3]), (0,255,255), 2)
         if Robot.is_arrow:
             cv2.rectangle(frame, (arrowBox[0], arrowBox[1]), (arrowBox[2], arrowBox[3]), (255,255,255), 2)
 
@@ -72,14 +72,15 @@ if __name__ == "__main__":
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
         # 3. FindGoal
-        # elif Robot.curr_mission == "FindGoal":
-        #     xmin, ymin, xmax, ymax = holeBox
-        #     # goal이 shot 가능한 위치에 있으면 shot을 한다
-        #     if Robot.is_hole and  300 < (xmin + xmax) // 2 < 340:
-        #         Robot.curr_mission = "Shot"
-        #     # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
-        #     else:
-        #         Robot.curr_mission = "ApproachGoal"
+        elif Robot.curr_mission == "FindGoal" and Robot.neck_yaw == -90:
+            Robot.shotzone, frame = Camera.shotzoneChecker(img)
+            # goal이 shot 가능한 위치에 있으면 shot을 한다
+            if Robot.shotzone == True:
+                Robot.shotzone = False
+                Robot.curr_mission = "Shot"
+            # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
+            else:
+                Robot.curr_mission = "ApproachGoal"
         # 4. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
@@ -89,7 +90,13 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
             shot_count += 1
+
         print(f"현재 상태 {Robot.curr_mission}")
+        
+        # show the frame to our screen
+        cv2.imshow("Frame", frame)
+        if cv2.waitKey(16) == ord("q"):
+            break
 
         # motion
         # 1. FindBall
@@ -133,24 +140,9 @@ if __name__ == "__main__":
             if Robot.neck_yaw == 0:
                 Robot.neck_yaw = -90
                 Motion.view(-90)
-                Motion.wait_unlock()
-                time.sleep(2)
-                frame = Camera.get_image()
-                Robot.shotzone, frame = Camera.shotzoneChecker(frame)
-                cv2.imshow("Frame", frame)
-                cv2.waitKey(1)
-                if Robot.shotzone == True:
-                    Robot.curr_mission = "Shot"
-                    Robot.shotzone = False
-                    Motion.view(0)
-                    Motion.wait_unlock()
-                    time.sleep(2)
-                else:
-                    Robot.curr_mission = "ApproachGoal"
-                    Motion.view(0)
-                    Motion.wait_unlock()
-                    time.sleep(2)
-                
+            elif Robot.neck_yaw == -90:
+                Robot.neck_yaw = 0
+                Motion.view(0)
         # 4. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             Robot.neck_pitch = 100
@@ -164,11 +156,5 @@ if __name__ == "__main__":
             Motion.shot()   
             Motion.init(True)
             print(f"{shot_count}번째 Shot 완료 >__<")   
-
-
-        # show the frame to our screen
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(16) == ord("q"):
-            break
         
     cv2.destroyAllWindows()
