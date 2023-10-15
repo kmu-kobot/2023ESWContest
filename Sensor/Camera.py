@@ -97,8 +97,8 @@ class Camera:
         upper_bound = np.array([40, 255, 255])
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
-        cv2.imshow("Frame", mask)
-        cv2.waitKey(1)
+        # cv2.imshow("Frame", mask)
+        # cv2.waitKey(1)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_density = -1
