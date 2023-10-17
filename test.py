@@ -165,6 +165,7 @@ if __name__ == "__main__":
                         Motion.wait_unlock()
                     Motion.step()
                     Motion.wait_unlock()
+                    time.sleep(1)
                 elif xmean < 300:
                     if Motion.getRx():
                         Motion.init()
@@ -196,7 +197,7 @@ if __name__ == "__main__":
                 Motion.wait_unlock()
             Robot.neck_yaw = -90
             Motion.view(-90)
-            time.sleep(3)
+            time.sleep(1)
         # 4. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
@@ -204,7 +205,7 @@ if __name__ == "__main__":
                 Motion.wait_unlock()
             Robot.neck_yaw = 0
             Motion.view(0)
-            time.sleep(3)
+            time.sleep(1)
             Motion.circular_orbit()
             Motion.wait_unlock()
             Motion.turn("RIGHT", 20)
