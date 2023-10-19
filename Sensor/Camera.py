@@ -57,100 +57,10 @@ class Camera:
 
         for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
             area = stats[i,cv2.CC_STAT_AREA]
-            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+            density = stats[i, cv2.CC_STAT_AREA] / (중
 
-            if density > min_density and area > max_area:
-                max_area = area
-                max_area_idx = i
-        if max_area < 100:
-                max_area_idx = -1
-        if max_area_idx != -1:
-            x1, y1, w, h, _ = stats[max_area_idx]
-            x2, y2 = x1 + w, y1 + h
-            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-            return True, (x1, y1), (x2, y2)
-        return False, None, None
-    
-    def yellow_detection_params(self):
-        # 초기 노란색 검출 트랙바 설정
-        cv2.namedWindow("Yellow_Detection", cv2.WINDOW_NORMAL)
-        cv2.createTrackbar('low_H', 'Yellow_Detection', 13, 179, self.nothing)
-        cv2.createTrackbar('high_H', 'Yellow_Detection', 37, 179, self.nothing)
-        cv2.createTrackbar('low_S', 'Yellow_Detection', 0, 255, self.nothing)
-        cv2.createTrackbar('high_S', 'Yellow_Detection', 255, 255, self.nothing)
-        cv2.createTrackbar('low_V', 'Yellow_Detection', 167, 255, self.nothing)
-        cv2.createTrackbar('high_V', 'Yellow_Detection', 255, 255, self.nothing)
-
-    def get_yellow_detection_values(self):
-        # 노란색 검출 트랙바에서 HSV 범위 가져오기
-        low_H = cv2.getTrackbarPos('low_H', 'Yellow_Detection')
-        high_H = cv2.getTrackbarPos('high_H', 'Yellow_Detection')
-        low_L = cv2.getTrackbarPos('low_S', 'Yellow_Detection')
-        high_L = cv2.getTrackbarPos('high_S', 'Yellow_Detection')
-        low_S = cv2.getTrackbarPos('low_V', 'Yellow_Detection')
-        high_S = cv2.getTrackbarPos('high_V', 'Yellow_Detection')
-
-        return low_H, high_H, low_L, high_L, low_S, high_S
-
-    # 홀 인식
-    def is_hole(self, img):
-        #노란색 검출 트랙바
-        self.yellow_detection_params()
-
-        low_H, high_H, low_L, high_L, low_S, high_S = self.get_yellow_detection_values()
-        img2 = img.copy()
+        return False, [False, False, False, False]
         
-        #이미지를 HSV 색 공간으로 변환
-        hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
-
-        lower_yellow = np.array([low_H, low_L, low_S])
-        upper_yellow = np.array([high_H, high_L, high_S])
-
-        #노란색 추출 마스크
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
-
-        detector = cv2.SimpleBlobDetector_create()
-        params = cv2.SimpleBlobDetector_Params()
-
-        # Area
-        params.filterByArea = True
-        params.minArea = 250  # 최소 홀 크기
-        params.maxArea = 500000000  # 최대 홀 크기
-
-        # Circularity
-        params.filterByCircularity = True
-        params.minCircularity = 0.2  # 최소 원형도
-
-
-        # Convexity
-        params.filterByConvexity = True
-        params.minConvexity = 0.1
-
-        # Inertia
-        params.filterByInertia = True
-        params.minInertiaRatio = 0.0000001  # 최소 관성 비율
-
-        # Blob 간의 거리 설정
-        params.minDistBetweenBlobs = 100
-
-        # 파라미터
-        detector = cv2.SimpleBlobDetector_create(params)
-
-        keypoints = detector.detect(mask)
-        detected_points = []
-        for k in keypoints:
-            cv2.circle(img2, (int(k.pt[0]), int(k.pt[1])), int(k.size / 2), (0, 0, 255), -1)
-            cv2.line(img2, (int(k.pt[0]) - 20, int(k.pt[1])), (int(k.pt[0]) + 20, int(k.pt[1])), (0, 0, 0), 3)
-            cv2.line(img2, (int(k.pt[0]), int(k.pt[1]) - 20), (int(k.pt[0]), int(k.pt[1]) + 20), (0, 0, 0), 3)
-            detected_points.append((int(k.pt[0])-int(k.size/2),int(k.pt[1])+int(k.size/2),int(k.pt[0])+int(k.size/2),int(k.pt[1])-int(k.size/2)))
-
-        opacity = 0.5
-        cv2.addWeighted(img2, opacity, img, 1 - opacity, 0, img)
-
-        if detected_points:  # Check if any keypoints were detected
-            return True, detected_points
-
-        return False, [False,False,False,False]
         '''
             return True, [int(k.pt[0])-int(k.size/2),int(k.pt[1])+int(k.size/2),int(k.pt[0])+int(k.size/2),int(k.pt[1])-int(k.size/2)] # detect
         return False, [False,False,False,False]
