@@ -161,12 +161,20 @@ class Camera:
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        for contour in contours:
+        ret = False
+        leftmost_point = None
+        rightmost_point = None
+
+        if len(contours) > 0:
+            ret = True
+            contour = contours[0]
             x, y, w, h = cv2.boundingRect(contour)
-            if w < 50 or h < 50:
-                continue
-            return True, (x, y, w, h)
-        return False, None
+            if leftmost_point is None or x < leftmost_point[0]:
+                leftmost_point = (x, y)
+            if rightmost_point is None or (x + w) > rightmost_point[0]:
+                rightmost_point = (x + w, y + h)
+
+        return ret, leftmost_point, rightmost_point
         
     # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
     def ball_hole(self, ball, hole, neck_angle):

@@ -32,13 +32,14 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox1, ballBox2 = Camera.hsvDetect(img)
-        Robot.is_hole, holeBox = Camera.is_hole(img)
+        Robot.is_bunker, bunkerL, bunkerR = Camera.is_bunker(img)
         # Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
-        if Robot.is_hole:
-            cv2.circle(frame, (holeBox[0], holeBox[1]), 5, (255,0,0), -1)
+        if Robot.is_bunker:
+            cv2.circle(frame, (bunkerL, 5, (255,255,255), -1))
+            cv2.circle(frame, (bunkerR, 5, (255,255,255), -1))
 
         # Finite State Machine
         # 1. FindBall
@@ -75,8 +76,10 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. FindGoal
         elif Robot.curr_mission == "FindGoal":
+            Robot.shotzone, frame = Camera.shotzoneChecker(img)
             # goal이 shot 가능한 위치에 있으면 shot을 한다
-            if Robot.is_hole and (2*holeBox[0] - 620 > holeBox[1] > (76*holeBox[0]-25460)/61):
+            if Robot.shotzone:
+                Robot.shotzone = False
                 Robot.curr_mission = "Shot"
             # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
             else:
