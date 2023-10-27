@@ -73,23 +73,52 @@ class Camera:
     
     # 홀 인식
     def is_hole(self, img):
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-        # 색상, 밝기, 채도 범위 설정
-        lower_bound = np.array([0, 48, 221])
-        upper_bound = np.array([40, 255, 255])
+        img2 = img.copy()
         
-        # 범위 내의 픽셀을 마스크로 만들기
-        mask = cv2.inRange(img, lower_bound, upper_bound)
+        #이미지를 HSV 색 공간으로 변환
+        hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
+        
+        #노란색 추출 마스크
+        lower_yellow = np.array([0, 48, 221])
+        upper_yellow = np.array([40, 255, 255])
+        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        detector = cv2.SimpleBlobDetector_create() # 개체 검출 객체 생성
+        params = cv2.SimpleBlobDetector_Params()   # 파라미터 설정 객체(크기, 원형도, 관성 비율)
+
+        # Area
+        params.filterByArea = True
+        params.minArea = 250  # 최소 홀 크기
+        params.maxArea = 500000000  # 최대 홀 크기
+
+        # Circularity
+        params.filterByCircularity = True
+        params.minCircularity = 0.2  # 최소 원형도
+
+        # Convexity
+        params.filterByConvexity = True
+        params.minConvexity = 0.1
+
+        # Inertia
+        params.filterByInertia = True
+        params.minInertiaRatio = 0.0000001  # 최소 관성 비율
+
+        # Blob 간의 거리 설정
+        params.minDistBetweenBlobs = 100000
+
+        # 파라미터
+        detector = cv2.SimpleBlobDetector_create(params)
+
+        keypoints = detector.detect(mask) # mask된 이미지에서 hole의 위치 및 특성 검출
         
-        # 검은색이 아닌 영역을 사각형으로 표시
-        for contour in contours:
-            x, y, w, h = cv2.boundingRect(contour)
-            if w < 10 or h < 10 or h / w < 1.5:
-                continue
-            return True, [x, y, w, h]
-        return False, None
+        ret = False
+        detected_points = [False, False]
+        for k in keypoints:
+            ret = True
+            detected_points = [int(k.pt[0]), int(k.pt[1])]
+            return ret, detected_points
+            
+        return ret, detected_points
     
     # hall detect v2
     def holeDetect(self, img):
