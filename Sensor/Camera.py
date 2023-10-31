@@ -151,6 +151,49 @@ class Camera:
             return True, (x1, y1, x2, y2)
         return False, (False, False, False, False)
         
+    def preprocess(self,img):
+        lower_yellow = np.array([0, 48, 221])
+        upper_yellow = np.array([40, 255, 255])
+        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        yellow_mask = cv2.inRange(hsvImg, lower_yellow, upper_yellow)
+
+
+        return yellow_mask
+    
+    def find_tip(self, points, convex_hull):
+        length = len(points)
+        indices = np.setdiff1d(range(length), convex_hull)
+
+        for i in range(2):
+            j = indices[i] + 2
+            if j > length - 1:
+                j = length - j
+            if np.all(points[j] == points[indices[i - 1] - 2]):
+                return tuple(points[j])  
+        
+    
+    def is_arrow(self, img):
+        contours, hierarchy = cv2.findContours(self.preprocess(img), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        '''
+        leftmost = (float('inf'), float('inf'))
+        rightmost = (float('-inf'), float('-inf'))
+        topmost = (float('inf'), float('inf'))
+        bottommost = (float('-inf'), float('-inf'))
+        '''
+        for cnt in contours:
+            peri = cv2.arcLength(cnt, True)
+            approx = cv2.approxPolyDP(cnt, 0.025 * peri, True)
+            hull = cv2.convexHull(approx, returnPoints=False)
+            sides = len(hull)
+
+            if 15 > sides > 3 and sides + 2 == len(approx):
+                arrow_tip = self.find_tip(approx[:,0,:], hull.squeeze())
+                if arrow_tip:
+                    #cv2.drawContours(img, [cnt], -1, (0, 255, 0), 3)
+                    #cv2.circle(img, arrow_tip, 3, (0, 0, 255), cv2.FILLED)
+                    return True, arrow_tip
+        return False, [False,False]
+        
     
     # 벙커 인식
     def is_bunker(self, img):
