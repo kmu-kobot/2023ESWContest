@@ -9,6 +9,7 @@ import time
 
 shot_count = 0
 plain_frame_count = 0
+clockwise = "Left"
 
 if __name__ == "__main__":
     
@@ -76,17 +77,27 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. FindGoal
         elif Robot.curr_mission == "FindGoal":
-            Robot.is_hole, detected_points = Camera.is_hole(img)
-            if not Robot.is_hole:
+            Robot.shotzone, frame = Camera.shotzoneChecker(img)
+            if Robot.shotzone == "!!!Shot!!!":
+                Robot.curr_mission = "Shot"
+            else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
                 Motion.wait_unlock()
-            else:
-                if 2*detected_points[0] - 620 > detected_points[1] > (76*detected_points[0] - 25460)/ 61:
-                    Robot.curr_mission = "Shot"
-                else:
-                    Robot.curr_mission = "ApproachGoal"
+                clockwise = Robot.shotzone
+
+            # Robot.is_hole, detected_points = Camera.is_hole(img)
+            # if not Robot.is_hole:
+            #     Robot.curr_mission = "ApproachGoal"
+            #     Robot.neck_pitch = neck_before_find
+            #     Motion.neckup(Robot.neck_pitch)
+            #     Motion.wait_unlock()
+            # else:
+            #     if 2*detected_points[0] - 620 > detected_points[1] > (76*detected_points[0] - 25460)/ 61:
+            #         Robot.curr_mission = "Shot"
+            #     else:
+            #         Robot.curr_mission = "ApproachGoal"
         # 4. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
@@ -208,10 +219,16 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
             Motion.view(0)
             time.sleep(1)
-            Motion.circular_orbit()
-            Motion.wait_unlock()
-            Motion.turn("RIGHT", 20)
-            Motion.wait_unlock()
+            if clockwise == "Left":
+                Motion.circular_orbit()
+                Motion.wait_unlock()
+                Motion.turn("RIGHT", 20)
+                Motion.wait_unlock()
+            else:
+                Motion.circular_orbit("Right", False)
+                Motion.wait_unlock()
+                Motion.turn("LEFT", 20)
+                Motion.wait_unlock()
         # 5. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():

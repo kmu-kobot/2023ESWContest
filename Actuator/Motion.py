@@ -164,11 +164,15 @@ class Motion:
         return
 
     # 공을 중심으로 원 궤도로 회전
-    def circular_orbit(self, leg_up = True):
-        if leg_up:
+    def circular_orbit(self, direction = "Left", leg_up = True):
+        if leg_up and direction == "Left":
             self.TX_data_py3(29)
-        else:
+        elif not leg_up and direction == "Left":
             self.TX_data_py3(30)
+        elif leg_up and direction == "Right":
+            self.TX_data_py3(55)
+        else:
+            self.TX_data_py3(54)
         return
 
     # shot
