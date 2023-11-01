@@ -253,9 +253,11 @@ class Camera:
         cv2.line(img, (335,0), (640,380), (0,0,255), 2)
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         if ret == True and (2*x - 620 > y > (76*x-25460)/61):
-            return True, img
+            return "!!!Shot!!!", img
+        elif ret == True and y > (76*x-25460)/61:
+            return "Right", img
         else:
-            return False, img
+            return "Left", img
     
 if __name__ == "__main__":
     camera = Camera()
