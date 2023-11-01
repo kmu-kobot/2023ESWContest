@@ -229,6 +229,7 @@ if __name__ == "__main__":
                 Motion.wait_unlock()
                 Motion.turn("LEFT", 20)
                 Motion.wait_unlock()
+                time.sleep(2)
         # 5. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():

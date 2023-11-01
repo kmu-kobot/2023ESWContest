@@ -77,9 +77,7 @@ class Motion:
                 else:
                     self.distance = RX
                 # -----  remocon 16 Code  Exit ------
-                if RX == 16:
-                    self.receiving_exit = 0
-                    break
+                
             if self.receiving_exit == 0:
                 break
 
@@ -170,9 +168,9 @@ class Motion:
         elif not leg_up and direction == "Left":
             self.TX_data_py3(30)
         elif leg_up and direction == "Right":
-            self.TX_data_py3(55)
-        else:
             self.TX_data_py3(54)
+        else:
+            self.TX_data_py3(55)
         return
 
     # shot
