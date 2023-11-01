@@ -76,17 +76,17 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. FindGoal
         elif Robot.curr_mission == "FindGoal":
-            Robot.shotzone, frame = Camera.shotzoneChecker(img)
-            # goal이 shot 가능한 위치에 있으면 shot을 한다
-            if Robot.shotzone:
-                Robot.shotzone = False
-                Robot.curr_mission = "Shot"
-            # goal이 shot 불가능한 위치에 있으면 goal을 찾아 회전한다
-            else:
+            Robot.is_hole, detected_points = Camera.is_hole(img)
+            if not Robot.is_hole:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
                 Motion.wait_unlock()
+            else:
+                if 2*detected_points[0] - 620 > detected_points[1] > (76*detected_points[0] - 25460)/ 61:
+                    Robot.curr_mission = "Shot"
+                else:
+                    Robot.curr_mission = "ApproachGoal"
         # 4. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
