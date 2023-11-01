@@ -219,8 +219,8 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
             Motion.view(0)
             time.sleep(1)
-            if clockwise == "Left":
-                Motion.circular_orbit()
+            if clockwise == "Right":
+                Motion.circular_orbit(leg_up=False)
                 Motion.wait_unlock()
                 Motion.turn("RIGHT", 20)
                 Motion.wait_unlock()
