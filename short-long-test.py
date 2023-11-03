@@ -67,11 +67,6 @@ if __name__ == "__main__":
             elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 15:
                 Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
-                # long check전으로 이동 (까먹지않기)
-                # neck_before_find = Robot.neck_pitch
-                # Motion.neck_pitch = 70
-                # Motion.neckup(70)
-                # Motion.wait_unlock()
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
@@ -89,6 +84,11 @@ if __name__ == "__main__":
                 Motion.neckup(Robot.neck_pitch)
                 Motion.wait_unlock()
                 clockwise = Robot.shotzone
+                
+                neck_before_find = Robot.neck_pitch
+                Motion.neck_pitch = 70
+                Motion.neckup(70)
+                Motion.w
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame = Camera.longChecker(img)
