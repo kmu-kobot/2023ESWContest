@@ -61,19 +61,31 @@ if __name__ == "__main__":
                     Robot.curr_mission = "FindBall"
                     plain_frame_count = 0
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
-            elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 15:
-                Robot.curr_mission = "FindGoal"
+            elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 13:
+                Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
-                neck_before_find = Robot.neck_pitch
-                Motion.neck_pitch = 70
-                Motion.neckup(70)
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
-        # 3. FindGoal
-        elif Robot.curr_mission == "FindGoal":
-            Robot.shotzone, frame = Camera.shotzoneChecker(img)
+        # 3. ShortCheck
+        elif Robot.curr_mission == "ShortCheck":
+            Robot.shotzone, frame = Camera.shortChecker(img)
+            if Robot.shotzone == "!!!Shot!!!":
+                Robot.curr_mission = "Shot"
+            elif Robot.shotzone == "NoHole":
+                Robot.curr_mission == "LongCheck"
+                neck_before_find = Robot.neck_pitch
+                Motion.neck_pitch = 70
+                Motion.neckup(70)
+            else:
+                Robot.curr_mission = "ApproachGoal"
+                Robot.neck_pitch = neck_before_find
+                Motion.neckup(Robot.neck_pitch)
+                clockwise = Robot.shotzone
+        # 4. LongCheck
+        elif Robot.curr_mission == "LongCheck":
+            Robot.shotzone, frame = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
             else:
@@ -81,23 +93,11 @@ if __name__ == "__main__":
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
                 clockwise = Robot.shotzone
-
-            # Robot.is_hole, detected_points = Camera.is_hole(img)
-            # if not Robot.is_hole:
-            #     Robot.curr_mission = "ApproachGoal"
-            #     Robot.neck_pitch = neck_before_find
-            #     Motion.neckup(Robot.neck_pitch)
-            #     Motion.wait_unlock()
-            # else:
-            #     if 2*detected_points[0] - 620 > detected_points[1] > (76*detected_points[0] - 25460)/ 61:
-            #         Robot.curr_mission = "Shot"
-            #     else:
-            #         Robot.curr_mission = "ApproachGoal"
-        # 4. ApproachGoal
+        # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
             Robot.curr_mission = "ApproachBall"
-        # 5. Shot
+        # 6. Shot
         elif Robot.curr_mission == "Shot":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
@@ -179,20 +179,24 @@ if __name__ == "__main__":
                 else:
                     Motion.init()
                 Robot.neck_yaw = 0
-        # 3. FindGoal
-        elif Robot.curr_mission == "FindGoal":
+        # 3. ShortCheck
+        elif Robot.curr_mission == "ShortCheck":
+            time.sleep(1)
+        # 4. LongCheck
+        elif Robot.curr_mission == "LongCheck":
             if Motion.getRx():
                 Motion.init()
             Robot.neck_yaw = -90
             Motion.view(-90)
             time.sleep(1)
-        # 4. ApproachGoal
+        # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
                 Motion.init()
             Robot.neck_yaw = 0
             Motion.view(0)
             time.sleep(1)
+            # hole이 공이 움직일 궤도 오른쪽에 있다면 시계 방향으로 회전한다
             if clockwise == "Right":
                 Motion.circular_orbit("Left", True)
                 time.sleep(1) # 동작 안정성을 위한 대기
@@ -202,7 +206,7 @@ if __name__ == "__main__":
                 time.sleep(1) # 동작 안정성을 위한 대기
                 Motion.turn("LEFT", 20)
                 time.sleep(2)
-        # 5. Shot
+        # 6. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():
                 Motion.init()
