@@ -242,7 +242,7 @@ class Camera:
                 return True, [int(x-radius), int(y-radius), int(x+radius), int(y+radius)]
         return False, [False, False, False, False]
     
-    def shotzoneChecker(self, img):
+    def longChecker(self, img):
         ret, xyxy = self.holeDetect(img)
         if ret == False:
             return False, img
@@ -258,6 +258,25 @@ class Camera:
             return "Left", img
         else:
             return "Right", img
+    
+    def shortChecker(self, img):
+        ret, xyxy = self.holeDetect(img)
+        if ret == False:
+            return False, img
+        x1, y1, x2, y2 = xyxy
+        x = int((x1 + x2)/2)
+        y = int((y1 + y2)/2)
+        cv2.line(img, (310,0), (550,480), (0,0,255), 2)
+        cv2.line(img, (335,0), (640,380), (0,0,255), 2)
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and (2*x - 620 > y > (76*x-25460)/61):
+            return "!!!Shot!!!", img
+        elif ret == True and y > 2*x - 620:
+            return "Left", img
+        elif ret == True and y < (76*x-25460)/61:
+            return "Right", img
+        else:
+            return "NoHole", img
     
 if __name__ == "__main__":
     camera = Camera()
