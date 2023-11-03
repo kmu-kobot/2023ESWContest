@@ -255,9 +255,9 @@ class Camera:
         if ret == True and (2*x - 620 > y > (76*x-25460)/61):
             return "!!!Shot!!!", img
         elif ret == True and y > 2*x - 620:
-            return "Left", img
+            return "R-turn", img
         else:
-            return "Right", img
+            return "L-turn", img
     
     def shortChecker(self, img):
         ret, xyxy = self.holeDetect(img)
@@ -267,25 +267,27 @@ class Camera:
         x = int((x1 + x2)/2)
         y = int((y1 + y2)/2)
         # shot y boundary
-        cv2.line(frame, (0,210), (640, 210), (255,0,0), 2)
-        cv2.line(frame, (0,260), (640, 260), (0,255,0), 2)
-        cv2.line(frame, (0,300), (640, 300), (255,0,0), 2)
+        cv2.line(img, (0,210), (640, 210), (255,0,0), 2)
+        cv2.line(img, (0,260), (640, 260), (0,255,0), 2)
+        cv2.line(img, (0,300), (640, 300), (255,0,0), 2)
         # x center
-        cv2.line(frame, (320,0), (320, 480), (0,0,255), 2)
+        cv2.line(img, (320,0), (320, 480), (0,0,255), 2)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and 210<y<300 and x<320:
+        if ret == True and 220<y<330 and x<250:
             return "!!!Shot!!!", img
-        elif ret == True and 210<y<300 and x>=320:
+        elif ret == True and 220<y<330 and x>=390:
             return "!!!R-Shot!!!", img
-        elif ret == True and y < 210 and x<320:
-            return "Left", img
-        elif ret == True and y < 210 and x>=320:
-            return "Right", img
-        elif ret == True and 260 < y and x<320:
-            return "Right", img
-        elif ret == True and 260 < y and x>=320:
-            return "Left", img
+        elif ret == True  and 220<=y<=330 and 250<=x<=390:
+            return "!!!Goal!!!", img
+        elif ret == True and y <= 220 and x<320:
+            return "L-turn", img
+        elif ret == True and y <= 220 and x>=320:
+            return "R-turn", img
+        elif ret == True and 330 <= y and x<320:
+            return "R-turn", img
+        elif ret == True and 330 <= y and x>=320:
+            return "L-turn", img
         else:
             return "NoHole", img
     
