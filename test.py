@@ -136,28 +136,28 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("LEFT", 20)
-                    print("TURN LEFT")
                 elif xmean > 480:
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("RIGHT", 20)
-                    print("TURN RIGHT")
                 elif ymean < 100 and Robot.neck_pitch < 100:
                     if Motion.getRx():
                         Motion.init()
                     Robot.neck_pitch += 5
                     Motion.neckup(Robot.neck_pitch)
-                    print("목 조절")
                 elif ymean > 280 and Robot.neck_pitch > 35:
                     if Motion.getRx():
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
-                    print("목 조절")
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
-                    print("WALKING")
                 elif Robot.robot_ball_distance > 14:
+                    if Motion.getRx():
+                        Motion.init()
+                    Motion.step()
+                    time.sleep(1)
+                elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step()
@@ -165,13 +165,11 @@ if __name__ == "__main__":
                 elif xmean < 300:
                     if Motion.getRx():
                         Motion.init()
-                    Motion.turn("LEFT")
-                    print("TURN LEFT")
+                    Motion.crab("LEFT")
                 elif xmean > 340:
                     if Motion.getRx():
                         Motion.init()
-                    Motion.turn("RIGHT")
-                    print("TURN RIGHT")
+                    Motion.crab("RIGHT")
                 elif Robot.robot_ball_distance < 12:
                     if Motion.getRx():
                         Motion.init()
