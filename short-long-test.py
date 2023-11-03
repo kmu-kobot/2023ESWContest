@@ -78,17 +78,16 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Shot"
             elif Robot.shotzone == "NoHole":
                 Robot.curr_mission == "LongCheck"
+                neck_before_find = Robot.neck_pitch
+                Motion.neck_pitch = 70
+                Motion.neckup(70)
+                Motion.wait_unlock()
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
                 Motion.wait_unlock()
                 clockwise = Robot.shotzone
-                
-                neck_before_find = Robot.neck_pitch
-                Motion.neck_pitch = 70
-                Motion.neckup(70)
-                Motion.w
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame = Camera.longChecker(img)
@@ -121,7 +120,7 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
             shot_count += 1
-          
+        
         print(f"현재 상태 {Robot.curr_mission}, neck: {Robot.neck_pitch}")
 
 
@@ -129,8 +128,6 @@ if __name__ == "__main__":
         cv2.imshow("Frame", frame)
         if cv2.waitKey(1) == ord("q"):
             break
-
-
         # motion
         # 1. FindBall
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
