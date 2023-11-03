@@ -170,12 +170,12 @@ if __name__ == "__main__":
                 elif Robot.robot_ball_distance > 14:
                     if Motion.getRx():
                         Motion.init()
-                    Motion.step()
+                    Motion.step("FRONT", "big")
                     time.sleep(1)
                 elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
                         Motion.init()
-                    Motion.step()
+                    Motion.step("FRONT", "small")
                     time.sleep(1)
                 elif xmean < 310:
                     if Motion.getRx():
@@ -213,8 +213,8 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
             Motion.view(0)
             time.sleep(1)
-            # hole이 공이 움직일 궤도 오른쪽에 있다면 시계 방향으로 회전한다
-            if clockwise == "Right":
+            # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
+            if clockwise == "Left":
                 Motion.circular_orbit("Left", True)
                 time.sleep(1) # 동작 안정성을 위한 대기
                 Motion.turn("RIGHT", 20)
@@ -231,7 +231,10 @@ if __name__ == "__main__":
             Motion.view(0)
             Robot.neck_pitch = 70
             Motion.neckup(70)
-            Motion.shot()
+            if shot_direction == "Left":
+                Motion.shot()
+            else:
+                Motion.shot("RIGHT")
         # 7. Ceremony
         else:
             if Motion.getRx():
