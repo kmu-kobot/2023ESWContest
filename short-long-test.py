@@ -77,7 +77,7 @@ if __name__ == "__main__":
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
             elif Robot.shotzone == "NoHole":
-                Robot.curr_mission == "LongCheck"
+                Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
                 Motion.neck_pitch = 70
                 Motion.neckup(70)
