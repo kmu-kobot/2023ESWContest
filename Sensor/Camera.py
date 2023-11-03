@@ -115,7 +115,7 @@ class Camera:
         detected_points = [False, False]
         for k in keypoints:
             ret = True
-            detected_points = [int(k.pt[0]), int(k.pt[1])]
+            detected_points = (int(k.pt[0]), int(k.pt[1]))
             return ret, detected_points
             
         return ret, detected_points
@@ -260,12 +260,9 @@ class Camera:
             return "L-turn", img
     
     def shortChecker(self, img):
-        ret, xyxy = self.holeDetect(img)
+        ret, (x, y) = self.is_hole(img)
         if ret == False:
             return False, img
-        x1, y1, x2, y2 = xyxy
-        x = int((x1 + x2)/2)
-        y = int((y1 + y2)/2)
         # shot y boundary
         cv2.line(img, (0,210), (640, 210), (255,0,0), 2)
         cv2.line(img, (0,260), (640, 260), (0,255,0), 2)

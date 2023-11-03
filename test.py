@@ -10,6 +10,7 @@ import time
 shot_count = 0
 plain_frame_count = 0
 clockwise = "Left"
+shot_direction = "Left"
 
 if __name__ == "__main__":
     
@@ -70,22 +71,25 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            Robot.is_hole, detected_points = Camera.is_hole(img)
-            # 공과 홀이 한 화면에 잡히지 않았다면 왼쪽으로 고개를 돌려 goal을 찾는다
-            if not Robot.is_hole:
+            Robot.shotzone, frame = Camera.shortChecker(img)
+            if Robot.shotzone == "!!!Shot!!!":
+                Robot.curr_mission = "Shot"
+                shot_direction = "Left"
+            elif Robot.shotzone == "!!!R-Shot!!!":
+                Robot.curr_mission = "Shot"
+                shot_direction = "Right"
+            elif Robot.shotzone == "NoHole":
                 Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
-                Robot.neck_pitch(70)
+                Motion.neck_pitch = 70
                 Motion.neckup(70)
-            # 공과 홀이 한 화면에 잡혀 shot이 가능하다면 shot을 수행한다
-            elif Robot.shotzone == "!!!Shot!!!": # TODO
-                Robot.curr_mission = "Shot"
-            # 공과 홀이 한 화면에 잡히지만 shot이 불가능하다면 원 궤도로 회전한다
-            else:
+            elif Robot.shotzone == "R-turn":
                 Robot.curr_mission = "ApproachGoal"
-                Robot.neck_pitch = neck_before_find
-                Motion.neckup(Robot.neck_pitch)
-                clockwise = "Left" # TODO
+                clockwise = "Right"
+            elif Robot.shotzone == "L-turn":
+                Robot.curr_mission = "ApproachGoal"
+                clockwise = "Left"
+            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame = Camera.longChecker(img)
