@@ -84,6 +84,7 @@ class Motion:
     # 초기 연결 확인 동작
     def initial(self):
         self.TX_data_py3(250)
+        self.wait_unlock()
         return
         
     # init 모션
@@ -92,6 +93,7 @@ class Motion:
             self.TX_data_py3(8)
         else:                    # 목 조절 없음
             self.TX_data_py3(26)
+        self.wait_unlock()
         return
 
     # 연속 걸음
@@ -105,6 +107,7 @@ class Motion:
             self.TX_data_py3(5)
         else:                     # 뒤로 한 걸음
             self.TX_data_py3(38)
+        self.wait_unlock()
         return
 
     # 좌우 게걸음
@@ -113,6 +116,7 @@ class Motion:
             self.TX_data_py3(34)
         elif direction == "RIGHT": # 오른쪽으로 한 걸음
             self.TX_data_py3(33)
+        self.wait_unlock()
         return
 
     # 고개 돌려야하는 각도 받아서 고개 좌우 회전
@@ -127,12 +131,14 @@ class Motion:
             self.TX_data_py3(30)
         elif target_angle == 90:  # 오른쪽 90도
             self.TX_data_py3(27)
+        self.wait_unlock()
         return
 
     # 고개 들어야하는 각도 받아서 고개 상하 조절
     def neckup(self, target_angle=100):
         serial_num = target_angle // 5 + 33
         self.TX_data_py3(serial_num)
+        self.wait_unlock()
         return
 
     # 몸통 회전 LEFT, RIGHT 각각 5도, 10도, 20도, 45도, 60도
@@ -159,6 +165,7 @@ class Motion:
                 self.TX_data_py3(24)
             elif angle == 60:
                 self.TX_data_py3(19)
+        self.wait_unlock()
         return
 
     # 공을 중심으로 원 궤도로 회전
@@ -171,6 +178,7 @@ class Motion:
             self.TX_data_py3(54)
         else:
             self.TX_data_py3(55)
+        self.wait_unlock()
         return
 
     # shot
@@ -179,6 +187,7 @@ class Motion:
             self.TX_data_py3(2)
         else:
             self.TX_data_py3(5)
+        self.wait_unlock()
         return
 
 if __name__ == '__main__':
