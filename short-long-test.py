@@ -216,6 +216,11 @@ if __name__ == "__main__":
                 Robot.neck_yaw = 0
         # 3. ShortCheck
         elif Robot.curr_mission == 'ShortCheck':
+            if Motion.getRx():
+                Motion.init()
+                Motion.wait_unlock()
+            Robot.neck_pitch = 45
+            Motion.neckup(45)
             time.sleep(1)
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
