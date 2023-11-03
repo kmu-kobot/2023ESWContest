@@ -89,7 +89,8 @@ if __name__ == "__main__":
             elif Robot.shotzone == "L-turn":
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
-            
+            else: # hole in
+                Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame = Camera.longChecker(img)
@@ -109,7 +110,11 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
             shot_count += 1
-          
+        # 7. Ceremony
+        else:
+            print("미션 종료")
+            break
+
         print(f"현재 상태 {Robot.curr_mission}, neck: {Robot.neck_pitch}")
 
 
@@ -186,6 +191,10 @@ if __name__ == "__main__":
                 Robot.neck_yaw = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
+            if Motion.getRx():
+                Motion.init()
+            Robot.neck_pitch = 45
+            Motion.neckup(45)                
             time.sleep(1)
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
@@ -220,6 +229,11 @@ if __name__ == "__main__":
             Robot.neck_pitch = 70
             Motion.neckup(70)
             Motion.shot()
+        # 7. Ceremony
+        else:
+            if Motion.getRx():
+                Motion.init()
+            Motion.ceremony()
 
         
     cv2.destroyAllWindows()

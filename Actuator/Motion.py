@@ -190,6 +190,11 @@ class Motion:
         self.wait_unlock()
         return
 
+    def ceremony(self):
+        self.TX_data_py3(70)
+        self.wait_unlock()
+        return
+    
 if __name__ == '__main__':
     Motion = Motion()
     Motion.initial()
