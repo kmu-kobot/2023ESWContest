@@ -100,7 +100,10 @@ if __name__ == "__main__":
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
-                clockwise = Robot.shotzone
+                if Robot.shotzone == "R-turn":
+                    clockwise = "Right"
+                else:
+                    clockwise = "Left"
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
