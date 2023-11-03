@@ -30,14 +30,14 @@ if __name__ == "__main__":
         # image process
         img = frame.copy()
         Robot.is_ball, ballBox1, ballBox2 = Camera.hsvDetect(img)
-        Robot.is_bunker, bunkerL, bunkerR = Camera.is_bunker(img)
+        # Robot.is_bunker, bunkerL, bunkerR = Camera.is_bunker(img)
         # Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
-        if Robot.is_bunker:
-            cv2.circle(frame, (bunkerL, 5, (255,255,255), -1))
-            cv2.circle(frame, (bunkerR, 5, (255,255,255), -1))
+        # if Robot.is_bunker:
+        #     cv2.circle(frame, (bunkerL, 5, (255,255,255), -1))
+        #     cv2.circle(frame, (bunkerR, 5, (255,255,255), -1))
 
         # Finite State Machine
         # 1. FindBall
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                     Robot.curr_mission = "FindBall"
                     plain_frame_count = 0
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
-            elif Robot.is_ball and  12 <= Robot.robot_ball_distance <= 13:
+            elif 12 <= Robot.robot_ball_distance <= 13 and 300 < (xmin+xmax) // 2 < 340:
                 Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
@@ -70,19 +70,22 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            Robot.shotzone, frame = Camera.shortChecker(img)
-            if Robot.shotzone == "!!!Shot!!!":
-                Robot.curr_mission = "Shot"
-            elif Robot.shotzone == "NoHole":
-                Robot.curr_mission == "LongCheck"
+            Robot.is_hole, detected_points = Camera.is_hole(img)
+            # 공과 홀이 한 화면에 잡히지 않았다면 왼쪽으로 고개를 돌려 goal을 찾는다
+            if not Robot.is_hole:
+                Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
-                Motion.neck_pitch = 70
+                Robot.neck_pitch(70)
                 Motion.neckup(70)
+            # 공과 홀이 한 화면에 잡혀 shot이 가능하다면 shot을 수행한다
+            elif Robot.shotzone == "!!!Shot!!!": # TODO
+                Robot.curr_mission = "Shot"
+            # 공과 홀이 한 화면에 잡히지만 shot이 불가능하다면 원 궤도로 회전한다
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
                 Motion.neckup(Robot.neck_pitch)
-                clockwise = Robot.shotzone
+                clockwise = "Left" # TODO
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame = Camera.longChecker(img)
@@ -162,11 +165,11 @@ if __name__ == "__main__":
                         Motion.init()
                     Motion.step()
                     time.sleep(1)
-                elif xmean < 300:
+                elif xmean < 310:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("LEFT")
-                elif xmean > 340:
+                elif xmean > 330:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
