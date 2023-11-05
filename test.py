@@ -62,7 +62,7 @@ if __name__ == "__main__":
                     Robot.curr_mission = "FindBall"
                     plain_frame_count = 0
             # 공이 shot 가능한 위치에 있으면 goal을 찾는다
-            elif 12 <= Robot.robot_ball_distance <= 13 and 300 < (xmin+xmax) // 2 < 340:
+            elif 9.5 <= Robot.robot_ball_distance <= 11 and 330 < (xmin+xmax) // 2 < 370:
                 Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
@@ -149,11 +149,11 @@ if __name__ == "__main__":
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
-                if xmean < 160:
+                if xmean < 190:
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("LEFT", 20)
-                elif xmean > 480:
+                elif xmean > 510:
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("RIGHT", 20)
@@ -169,25 +169,25 @@ if __name__ == "__main__":
                     Motion.neckup(Robot.neck_pitch)
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
-                elif Robot.robot_ball_distance > 14:
+                elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "big")
                     time.sleep(1)
-                elif Robot.robot_ball_distance > 13:
+                elif Robot.robot_ball_distance > 12:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "small")
                     time.sleep(1)
-                elif xmean < 310:
+                elif xmean < 340:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("LEFT")
-                elif xmean > 330:
+                elif xmean > 360:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
-                elif Robot.robot_ball_distance < 12:
+                elif Robot.robot_ball_distance < 9:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("BACK")
@@ -217,14 +217,11 @@ if __name__ == "__main__":
             time.sleep(1)
             # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
             if clockwise == "Left":
-                Motion.circular_orbit("Left", True)
-                time.sleep(1) # 동작 안정성을 위한 대기
-                Motion.turn("RIGHT", 20)
+                Motion.circular_orbit("Left", False)
+                time.sleep(2) # 동작 안정성을 위한 대기
             else:
-                Motion.circular_orbit("Right", False)
-                time.sleep(1) # 동작 안정성을 위한 대기
-                Motion.turn("LEFT", 20)
-                time.sleep(2)
+                Motion.circular_orbit("Right", True)
+                time.sleep(2) # 동작 안정성을 위한 대기
         # 6. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():
