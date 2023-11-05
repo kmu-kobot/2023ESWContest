@@ -108,7 +108,7 @@ class Motion:
         elif direction == "FRONT" and stride == "big":  # 앞으로 2cm 한 걸음
             self.TX_data_py3(37)
         else:                                           # 뒤로 한 걸음
-            self.TX_data_py3(38)
+            self.TX_data_py3(39)
         self.wait_unlock()
         return
 
@@ -188,7 +188,7 @@ class Motion:
         if direction == "LEFT":
             self.TX_data_py3(2)
         else:
-            self.TX_data_py3(5)
+            self.TX_data_py3(68)
         self.wait_unlock()
         return
 
