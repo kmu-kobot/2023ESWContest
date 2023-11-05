@@ -96,6 +96,7 @@ if __name__ == "__main__":
             Robot.shotzone, frame = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
+                shot_direction = "Left"
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
@@ -110,6 +111,7 @@ if __name__ == "__main__":
             Robot.curr_mission = "ApproachBall"
         # 6. Shot
         elif Robot.curr_mission == "Shot":
+            shot_direction = "Left"
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
             shot_count += 1
