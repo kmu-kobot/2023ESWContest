@@ -262,7 +262,7 @@ class Camera:
     def shortChecker(self, img):
         ret, (x, y) = self.is_hole(img)
         if ret == False:
-            return False, img
+            return "NoHole", img
         # shot y boundary
         cv2.line(img, (0,210), (640, 210), (255,0,0), 2)
         cv2.line(img, (0,260), (640, 260), (0,255,0), 2)
