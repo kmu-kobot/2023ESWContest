@@ -187,7 +187,7 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
-                elif Robot.robot_ball_distance < 9:
+                elif Robot.robot_ball_distance < 12:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("BACK")

@@ -186,7 +186,7 @@ class Motion:
     # shot
     def shot(self, direction = "LEFT"):
         if direction == "LEFT":
-            self.TX_data_py3(2)
+            self.TX_data_py3(63)
         else:
             self.TX_data_py3(68)
         self.wait_unlock()
