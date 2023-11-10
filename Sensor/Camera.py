@@ -265,9 +265,9 @@ class Camera:
         if ret == False:
             return "NoHole", img
         # shot y boundary
-        cv2.line(img, (0,210), (640, 210), (255,0,0), 2)
-        cv2.line(img, (0,260), (640, 260), (0,255,0), 2)
-        cv2.line(img, (0,300), (640, 300), (255,0,0), 2)
+        cv2.line(frame, (0,248), (640, 248), (255,0,0), 2)
+        cv2.line(frame, (0,307), (640, 307), (0,255,0), 2)
+        cv2.line(frame, (0,375), (640, 375), (255,0,0), 2)
         # x center
         cv2.line(img, (320,0), (320, 480), (0,0,255), 2)
         
