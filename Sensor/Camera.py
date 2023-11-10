@@ -1,3 +1,5 @@
+from Brain.Robot_ball_distance import ball_distance
+
 import cv2
 import numpy as np
 import time
@@ -254,37 +256,55 @@ class Camera:
         cv2.line(img, (313,0), (447,480), (255,0,0), 2)
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
-            return "!!!Shot!!!", img
+            dist = ball_distance(70, y)
+            if dist > 125:
+                power = 12
+            elif dist > 85:
+                power = 11
+            elif dist > 50:
+                power = 10
+            elif dist > 40:
+                power = 8
+            elif dist > 30:
+                power = 7
+            elif dist > 20:
+                power = 6
+            else:
+                power = 2 
+            return "!!!Shot!!!", img, power
         elif ret == True and y > (-75120+240*x)/67:
-            return "R-turn", img
+            return "R-turn", img, None
         else:
-            return "L-turn", img
+            return "L-turn", img, None
     
     def shortChecker(self, img):
         ret, (x, y) = self.is_hole(img)
         if ret == False:
             return "NoHole", img
         # shot y boundary
-        cv2.line(frame, (0,248), (640, 248), (255,0,0), 2)
-        cv2.line(frame, (0,307), (640, 307), (0,255,0), 2)
-        cv2.line(frame, (0,375), (640, 375), (255,0,0), 2)
-        # x center
-        cv2.line(img, (320,0), (320, 480), (0,0,255), 2)
+        cv2.line(img, (0, 260), (640, 260), (255,0,0), 2)
+        cv2.line(img, (0, 320), (640, 320), (0,255,0), 2)
+        cv2.line(img, (0, 400), (640, 400), (255,0,0), 2)
         
-        cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and 220<y<330 and x<250:
+        cv2.line(img, (265, 0), (265, 480), (255,0,0), 2)
+        cv2.line(img, (333, 0), (333, 480), (0,255,0), 2)
+        cv2.line(img, (410, 0), (410, 480), (255,0,0), 2)
+        # x center
+        
+        cv2.circle(img, (x,y), 3, (0,0,255), 3)
+        if ret == True and 260<y<400 and x<265:
             return "!!!Shot!!!", img
-        elif ret == True and 220<y<330 and x>=390:
+        elif ret == True and 260<y<400 and x>410:
             return "!!!R-Shot!!!", img
-        elif ret == True  and 220<=y<=330 and 250<=x<=390:
+        elif ret == True  and 260<=y<=400 and 265<=x<=410:
             return "!!!Goal!!!", img
-        elif ret == True and y <= 220 and x<320:
+        elif ret == True and y <= 260 and x<333:
             return "L-turn", img
-        elif ret == True and y <= 220 and x>=320:
+        elif ret == True and y <= 260 and x>=333:
             return "R-turn", img
-        elif ret == True and 330 <= y and x<320:
+        elif ret == True and 400 <= y and x<333:
             return "R-turn", img
-        elif ret == True and 330 <= y and x>=320:
+        elif ret == True and 400 <= y and x>=333:
             return "L-turn", img
         else:
             return "NoHole", img
