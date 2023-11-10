@@ -253,9 +253,9 @@ class Camera:
         cv2.line(img, (335,0), (595,480), (255,0,0), 2)
         cv2.line(img, (313,0), (447,480), (255,0,0), 2)
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and (2*x - 620 > y > (76*x-25460)/61):
+        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
             return "!!!Shot!!!", img
-        elif ret == True and y > 2*x - 620:
+        elif ret == True and y > (-75120+240*x)/67:
             return "R-turn", img
         else:
             return "L-turn", img
