@@ -184,9 +184,10 @@ class Motion:
         return
 
     # shot
-    def shot(self, direction = "LEFT"):
-        if direction == "LEFT":
-            self.TX_data_py3(63)
+    def shot(self, direction = "LEFT", speed = 8):
+        if direction == "LEFT": # 57(약한 샷) ~ 67(강한 샷)
+            motion_num = speed + 55
+            self.TX_data_py3(motion_num) # default 세기 63
         else:
             self.TX_data_py3(68)
         self.wait_unlock()
