@@ -11,6 +11,7 @@ shot_count = 0
 plain_frame_count = 0
 clockwise = "Left"
 shot_direction = "Left"
+shot_power = 8
 
 if __name__ == "__main__":
     
@@ -75,9 +76,11 @@ if __name__ == "__main__":
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
+                shot_power = 3
             elif Robot.shotzone == "!!!R-Shot!!!":
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
+                shot_power = 2
             elif Robot.shotzone == "NoHole":
                 Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
@@ -93,7 +96,7 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            Robot.shotzone, frame = Camera.longChecker(img)
+            Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
@@ -231,9 +234,9 @@ if __name__ == "__main__":
             Robot.neck_pitch = 70
             Motion.neckup(70)
             if shot_direction == "Left":
-                Motion.shot()
+                Motion.shot("LEFT", shot_power)
             else:
-                Motion.shot("RIGHT")
+                Motion.shot("RIGHT", shot_power)
         # 7. Ceremony
         else:
             if Motion.getRx():
