@@ -23,6 +23,8 @@ if __name__ == "__main__":
     Motion.init(True)
     Motion.neckup(70)
     neck_before_find = 70
+    
+    time.sleep(1)
 
     # 미션 수행 함수 실행
     print("Loop 시작 :)")
