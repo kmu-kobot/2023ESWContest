@@ -64,7 +64,7 @@ class Camera:
             if density > min_density and area > max_area:
                 max_area = area
                 max_area_idx = i
-        if max_area < 100:
+        if max_area < 50:
                 max_area_idx = -1
         if max_area_idx != -1:
             x1, y1, w, h, _ = stats[max_area_idx]
