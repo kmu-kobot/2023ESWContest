@@ -11,8 +11,8 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.lowerLimitP = np.array([152, 55, 194], dtype=np.uint8)
-        self.upperLimitP = np.array([169,205,255], dtype=np.uint8)
+        self.lowerLimitP = np.array([141, 27, 54], dtype=np.uint8)
+        self.upperLimitP = np.array([179,244,255], dtype=np.uint8)
         self.shotZone = [500, 600]
         # cv2.line(filtered_frame, (310,0), (550,480), (0,0,255), 2) => y = 2x - 620
         # cv2.line(filtered_frame, (335,0), (640,380), (0,0,255), 2) => 76x- 61y = 25460 => y = 76x-25460/61
