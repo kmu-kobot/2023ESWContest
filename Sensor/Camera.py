@@ -247,7 +247,7 @@ class Camera:
     def longChecker(self, img):
         ret, xyxy = self.holeDetect(img)
         if ret == False:
-            return False, img
+            return "L-turn", img, None
         x1, y1, x2, y2 = xyxy
         x = int((x1 + x2)/2)
         y = int((y1 + y2)/2)
