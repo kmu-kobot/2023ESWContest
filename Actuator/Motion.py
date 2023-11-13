@@ -197,7 +197,7 @@ class Motion:
         return
 
     def ceremony(self):
-        self.TX_data_py3(70)
+        self.TX_data_py3(83)
         self.wait_unlock()
         return
     

@@ -257,20 +257,28 @@ class Camera:
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
             dist = ball_distance(70, y)
-            if dist > 125:
-                power = 12
-            elif dist > 85:
-                power = 11
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 19
+            elif dist > 75:
+                power = 18
+            elif dist > 70:
+                power = 17
+            elif dist > 60:
+                power = 16
             elif dist > 50:
-                power = 10
-            elif dist > 40:
-                power = 8
+                power = 15
+            elif dist > 45:
+                power = 14
             elif dist > 30:
-                power = 7
-            elif dist > 20:
-                power = 6
+                power = 11
+            elif dist > 25:
+                power = 10
             else:
-                power = 2 
+                power = 9
             return "!!!Shot!!!", img, power
         elif ret == True and y > (-75120+240*x)/67:
             return "R-turn", img, None
