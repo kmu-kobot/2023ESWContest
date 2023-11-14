@@ -172,14 +172,14 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
-                elif Robot.robot_ball_distance > 18:
+                elif int(Robot.robot_ball_distance) > 18:
                     Motion.walk()
-                elif Robot.robot_ball_distance > 13:
+                elif int(Robot.robot_ball_distance) > 13:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "big")
                     time.sleep(1)
-                elif Robot.robot_ball_distance > 12:
+                elif int(Robot.robot_ball_distance) > 12:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "small")
@@ -192,7 +192,7 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
-                elif Robot.robot_ball_distance < 12:
+                elif int(Robot.robot_ball_distance) < 12:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("BACK")
