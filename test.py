@@ -78,7 +78,7 @@ if __name__ == "__main__":
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
-                shot_power = 3
+                shot_power = 8
             elif Robot.shotzone == "!!!R-Shot!!!":
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
