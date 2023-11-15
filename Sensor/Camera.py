@@ -276,10 +276,8 @@ class Camera:
                 power = 15
             elif dist > 30:
                 power = 12
-            elif dist > 25:
-                power = 11
             else:
-                power = 10
+                power = 11
             return "!!!Shot!!!", img, power
         elif ret == True and y > (-75120+240*x)/67:
             return "R-turn", img, None
