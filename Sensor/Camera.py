@@ -134,21 +134,21 @@ class Camera:
         max_area = -1
         max_density = -1
         max_area_idx = -1
+        min_dist_idx = -1
+        min_dist = -1
         # 노이즈를 잡기 위한 최소한의 밀집도
         min_density = 0.2  # 예시: 50% 이상의 픽셀이 1이어야 함
 
         for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
             area = stats[i,cv2.CC_STAT_AREA]
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
-
-            if density > min_density and area > 100 and density > max_density:
-                max_density = density
-                max_density_idx = i
-                if area > max_area:
-                    max_area = area
-                    max_density_idx = i
-        if max_density_idx != -1:
-            x1, y1, w, h, _ = stats[max_density_idx]
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            if density > min_density and area > 100 and dist > min_dist:
+                min_dist = dist
+                min_dist_idx = i
+        if min_dist_idx != -1:
+            x1, y1, w, h, _ = stats[min_dist_idx]
             x2, y2 = x1 + w, y1 + h
             # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
             return True, (x1, y1, x2, y2)
