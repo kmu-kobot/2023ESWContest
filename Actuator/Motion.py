@@ -2,22 +2,6 @@ import serial
 import time
 from threading import Thread
 
-'''
-Motion = {"SIGNAL":{"INIT":26},
-          "VIEW":{"LEFT90":17, "LEFT45":28,        # 목각도
-                  "RIGHT90":27,"RIGHT45":30,
-                  "CENTER":21},
-          "WALK":{"LEFT70":14, "LEFT20":15,
-                  "RIGHT70":13,"RIGHT20":20,       # 70연속, 20
-                  "FORWARD":10,"BACKWARD":32,      # 종종 걸음
-                  "GOFORWARD":11,"GOBACKWARD":32}, # 연속 걸음
-          "SHOT":{"LEFT":2, "RIGHT":5},
-          "TURN":{"LEFT5":1, "LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
-                  "RIGHT5":3,"RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
-          }
-'''
-
-
 class Motion:
     def __init__(self):
         self.Read_RX = 0
@@ -190,9 +174,9 @@ class Motion:
             self.TX_data_py3(motion_num) # default 세기 63
         else:
             if speed == 2:
-                self.TX_data_py3(69)
+                self.TX_data_py3(81)
             else:
-                self.TX_data_py3(68)
+                self.TX_data_py3(82)
         self.wait_unlock()
         return
 

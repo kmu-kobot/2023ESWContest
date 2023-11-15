@@ -90,16 +90,16 @@ class Camera:
 
         # Area
         params.filterByArea = True
-        params.minArea = 250  # 최소 홀 크기
+        params.minArea = 90  # 최소 홀 크기
         params.maxArea = 500000000  # 최대 홀 크기
 
         # Circularity
         params.filterByCircularity = True
-        params.minCircularity = 0.2  # 최소 원형도
+        params.minCircularity = 0.1  # 최소 원형도
 
         # Convexity
         params.filterByConvexity = True
-        params.minConvexity = 0.05
+        params.minConvexity = 0.03
 
         # Inertia
         params.filterByInertia = True
