@@ -102,7 +102,10 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
-                Robot.long_shot = True
+                if shot_power < 10:
+                    Robot.long_shot = False
+                else:
+                    Robot.long_shot = True
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
             else:
@@ -237,12 +240,19 @@ if __name__ == "__main__":
             Robot.neck_yaw = 0
             Motion.view(0)
             if shot_direction == "Left":
+                if shot_count == 0:
+                    shot_power = 21
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)
             if Robot.long_shot:
                 # TODO long shot 이후 목 각도 확인 필요
-                Robot.neck_pitch = 80
+                if shot_power < 14:
+                    Robot.neck_pitch = 60
+                elif shot_power < 19:
+                    Robot.neck_pitch = 70
+                else:
+                    Robot.neck_pitch = 80
                 Motion.neckup(80)
                 Motion.turn("LEFT", 45)
                 Motion.turn("LEFT", 45)
