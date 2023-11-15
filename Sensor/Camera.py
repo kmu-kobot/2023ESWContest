@@ -81,8 +81,8 @@ class Camera:
         hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
         
         #노란색 추출 마스크
-        lower_yellow = np.array([0, 48, 221])
-        upper_yellow = np.array([40, 255, 255])
+        lower_yellow = np.array([20, 105, 57])
+        upper_yellow = np.array([44, 255, 255])
         mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
         detector = cv2.SimpleBlobDetector_create() # 개체 검출 객체 생성
@@ -99,7 +99,7 @@ class Camera:
 
         # Convexity
         params.filterByConvexity = True
-        params.minConvexity = 0.1
+        params.minConvexity = 0.05
 
         # Inertia
         params.filterByInertia = True
@@ -124,8 +124,8 @@ class Camera:
     
     # hall detect v2
     def holeDetect(self, img):
-        lower_bound = np.array([0, 48, 221])
-        upper_bound = np.array([40, 255, 255])
+        lower_bound = np.array([20, 105, 57])
+        upper_bound = np.array([44, 255, 255])
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
         # cv2.imshow("Frame", mask)
