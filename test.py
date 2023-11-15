@@ -76,10 +76,12 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "ShortCheck":
             Robot.shotzone, frame = Camera.shortChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
+                Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
                 shot_power = 8
             elif Robot.shotzone == "!!!R-Shot!!!":
+                Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
                 shot_power = 2
@@ -100,6 +102,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
+                Robot.long_shot = True
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
             else:
@@ -233,12 +236,16 @@ if __name__ == "__main__":
                 Motion.init()
             Robot.neck_yaw = 0
             Motion.view(0)
-            Robot.neck_pitch = 70
-            Motion.neckup(70)
             if shot_direction == "Left":
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)
+            if Robot.long_shot:
+                # TODO long shot 이후 목 각도 확인 필요
+                Robot.neck_pitch = 80
+                Motion.neckup(80)
+                Motion.turn("LEFT", 45)
+                Motion.turn("LEFT", 45)
         # 7. Ceremony
         else:
             if Motion.getRx():
