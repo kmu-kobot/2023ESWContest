@@ -243,9 +243,15 @@ class Camera:
         return False, [False, False, False, False]
     
     def longChecker(self, img):
-        ret, x, y = self.holeDetect(img)
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
         if ret == False:
             return "L-turn", img, None
+        
         cv2.line(img, (325,0), (522,480), (0,0,255), 2)
         cv2.line(img, (335,0), (595,480), (255,0,0), 2)
         cv2.line(img, (313,0), (447,480), (255,0,0), 2)
