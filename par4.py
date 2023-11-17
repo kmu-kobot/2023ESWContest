@@ -241,6 +241,8 @@ if __name__ == "__main__":
             Motion.view(0)
             if shot_direction == "Left":
                 if shot_count == 0:
+                    shot_power = 19
+                elif shot_count == 1:
                     shot_power = 20
                 Motion.shot("LEFT", shot_power)
             else:
