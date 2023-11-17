@@ -147,7 +147,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "FindBall":
             Motion.init()
             Motion.turn("LEFT", 45)
-            time.sleep(2)
+            time.sleep(1)
             Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
@@ -184,12 +184,12 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "big")
-                    time.sleep(1)
+                    time.sleep(0.5)
                 elif Robot.robot_ball_distance > 11:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "small")
-                    time.sleep(1)
+                    time.sleep(0.5)
                 elif xmean < 340:
                     if Motion.getRx():
                         Motion.init()
@@ -211,14 +211,14 @@ if __name__ == "__main__":
                 Motion.init()
             Robot.neck_pitch = 45
             Motion.neckup(45)                
-            time.sleep(1)
+            time.sleep(0.7)
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             if Motion.getRx():
                 Motion.init()
             Robot.neck_yaw = -90
             Motion.view(-90)
-            time.sleep(1)
+            time.sleep(0.5)
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
@@ -229,10 +229,10 @@ if __name__ == "__main__":
             # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
             if clockwise == "Left":
                 Motion.circular_orbit("Left", False)
-                time.sleep(2) # 동작 안정성을 위한 대기
+                time.sleep(1) # 동작 안정성을 위한 대기
             else:
                 Motion.circular_orbit("Right", True)
-                time.sleep(2) # 동작 안정성을 위한 대기
+                time.sleep(1) # 동작 안정성을 위한 대기
         # 6. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():
