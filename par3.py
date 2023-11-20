@@ -218,7 +218,7 @@ if __name__ == "__main__":
                 Motion.init()
             Robot.neck_yaw = -90
             Motion.view(-90)
-            time.sleep(0.5)
+            time.sleep(1)
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
