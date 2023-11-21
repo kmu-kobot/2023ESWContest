@@ -102,7 +102,12 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+            if shot_count == 0:
+                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+            elif shot_count == 1:
+                Robot.shotzone, frame, shot_power = Camera.longChecker_far(img)
+            else:
+                Robot.shotzone, frame, shot_power = Camera.longChecker_close(img)
             if Robot.shotzone == "!!!Shot!!!":
                 if shot_power < 10:
                     Robot.long_shot = False
