@@ -362,6 +362,90 @@ class Camera:
         else:
             return "L-turn", img, None
     
+    def longChecker_far(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_far(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
+        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
+        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 12
+            else:
+                power = 11
+            return "!!!Shot!!!", img, power
+        elif ret == True and y > (-75120+240*x)/67:
+            return "R-turn", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_close(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_close(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
+        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
+        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 12
+            else:
+                power = 11
+            return "!!!Shot!!!", img, power
+        elif ret == True and y > (-75120+240*x)/67:
+            return "R-turn", img, None
+        else:
+            return "L-turn", img, None
+    
     def shortChecker(self, img):
         ret, (x, y) = self.is_hole(img)
         if ret == False:
