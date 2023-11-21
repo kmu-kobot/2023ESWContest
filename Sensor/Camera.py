@@ -149,6 +149,34 @@ class Camera:
             # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
             return True, int(x), int(y)
         return False, False, False
+    
+    def holeDetect_center(self, img):
+        lower_bound = np.array([20, 105, 57])
+        upper_bound = np.array([44, 255, 255])
+        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        # cv2.imshow("Frame", mask)
+        # cv2.waitKey(1)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        max_area = -1
+        max_area_idx = -1
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            area = stats[i,cv2.CC_STAT_AREA]
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            if density > min_density and area > 100 and area > max_area:
+                max_area = area
+                max_area_idx = i
+        if max_area_idx != -1:
+            x1, y1, w, h, _ = stats[max_area_idx]
+            x, y = x1 + w/2, y1 + h/2
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, int(x), int(y)
+        return False, False, False
         
     def preprocess(self,img):
         lower_yellow = np.array([0, 48, 221])
@@ -279,7 +307,14 @@ class Camera:
     def shortChecker(self, img):
         ret, (x, y) = self.is_hole(img)
         if ret == False:
-            return "NoHole", img
+            ret, [x, y] = self.is_arrow(img)
+            if ret == True:
+                return "NoHole", img
+            else:
+                ret, (x, y) = self.holeDetect_center(img)
+                if ret == False:
+                    return "NoHole", img
+
         # shot y boundary
         cv2.line(img, (0, 260), (640, 260), (255,0,0), 2)
         cv2.line(img, (0, 320), (640, 320), (0,255,0), 2)
