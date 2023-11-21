@@ -77,7 +77,12 @@ if __name__ == "__main__":
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
             Robot.shotzone, frame = Camera.shortChecker(img)
-            if Robot.shotzone == "!!!Shot!!!":
+            if shot_count == 1:
+                Robot.long_shot = True
+                Robot.curr_mission = "Shot"
+                shot_direction = "Right"
+                shot_power = 20 # TODO 오른쪽 샷 세기 조절
+            elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
@@ -104,10 +109,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "LongCheck":
             Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
-                if shot_power < 10:
-                    Robot.long_shot = False
-                else:
-                    Robot.long_shot = True
+                Robot.long_shot = True
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
             else:
@@ -244,8 +246,6 @@ if __name__ == "__main__":
             if shot_direction == "Left":
                 if shot_count == 0:
                     shot_power = 19
-                elif shot_count == 1:
-                    shot_power = 20
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)
@@ -258,8 +258,12 @@ if __name__ == "__main__":
                 else:
                     Robot.neck_pitch = 80
                 Motion.neckup(80)
-                Motion.turn("LEFT", 45)
-                Motion.turn("LEFT", 45)
+                if shot_direction == "Left":
+                    Motion.turn("LEFT", 45)
+                    Motion.turn("LEFT", 45)
+                else:
+                    Motion.turn("RIGHT", 45)
+                    Motion.turn("RIGHT", 45)
         # 7. Ceremony
         else:
             if Motion.getRx():
