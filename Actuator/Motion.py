@@ -174,9 +174,9 @@ class Motion:
             self.TX_data_py3(motion_num) # default 세기 63
         else:
             if speed == 2:
-                self.TX_data_py3(81)
-            else:
                 self.TX_data_py3(82)
+            else:
+                self.TX_data_py3(81)
         self.wait_unlock()
         return
 
