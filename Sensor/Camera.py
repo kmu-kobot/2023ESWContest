@@ -3,7 +3,6 @@ from Brain.Robot_ball_distance import ball_distance
 import cv2
 import numpy as np
 import time
-import math
 from PIL import Image
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
@@ -218,13 +217,6 @@ class Camera:
                 rightmost_point = (x + w, y + h)
 
         return ret, leftmost_point, rightmost_point
-        
-    # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
-    def ball_hole(self, ball, hole, neck_angle):
-        # neck angle은 60 or 80
-        neck_angle = math.radians(neck_angle)
-        ball_hole = math.sqrt(ball**2 + hole**2 - 2*ball*hole*math.cos(neck_angle))
-        return ball_hole
     
     # 공 인식
     def cvCircleDetect(self, img):
