@@ -11,6 +11,11 @@ def mouse_callback(event, x, y, flags, param):
 Robot = Robot()
 Motion = Motion()
 Camera = Camera()
+
+Motion.initial()
+Motion.init(True)
+Motion.neckup(70)
+Motion.view(-90)
     
 cv2.namedWindow('frame')
 cv2.setMouseCallback('frame', mouse_callback)
