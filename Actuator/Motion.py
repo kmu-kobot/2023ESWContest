@@ -172,7 +172,7 @@ class Motion:
         if direction == "Left":
             self.TX_data_py3(86)
         else:
-            self.TX_data_py3(87)
+            self.TX_data_py3(87) # 비추
         self.wait_unlock()
         return
     
