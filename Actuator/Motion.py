@@ -167,6 +167,15 @@ class Motion:
         self.wait_unlock()
         return
 
+    # 공을 중심으로 원 궤도로 작게 회전
+    def circular_orbit_small(self, direction = "Left"):
+        if direction == "Left":
+            self.TX_data_py3(86)
+        else:
+            self.TX_data_py3(87)
+        self.wait_unlock()
+        return
+    
     # shot
     def shot(self, direction = "LEFT", speed = 8):
         if direction == "LEFT": # 57(약한 샷) ~ 67(강한 샷)
@@ -176,7 +185,7 @@ class Motion:
             if speed == 2:
                 self.TX_data_py3(82)
             else:
-                self.TX_data_py3(81)
+                self.TX_data_py3(85) # 오른쪽으로 세게 치는 샷
         self.wait_unlock()
         return
 
