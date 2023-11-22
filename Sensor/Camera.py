@@ -233,8 +233,8 @@ class Camera:
             x1, y1, w, h, _ = stats[max_area_idx]
             x, y = x1 + w/2, y1 + h/2
             # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-            return True, int(x), int(y)
-        return False, False, False
+            return True, (int(x), int(y))
+        return False, (False, False)
         
     def preprocess(self,img):
         lower_yellow = np.array([0, 48, 221])
