@@ -168,11 +168,17 @@ class Motion:
         return
 
     # 공을 중심으로 원 궤도로 작게 회전
-    def circular_orbit_small(self, direction = "Left"):
+    def circular_orbit_small(self, direction = "Left", angle = 5):
         if direction == "Left":
-            self.TX_data_py3(86)
+            # self.TX_data_py3(86)
+            self.turn("RIGHT", angle)
+            for _ in range(angle // 5):
+                self.crab("LEFT")
         else:
-            self.TX_data_py3(87) # 비추
+            # self.TX_data_py3(87) # 비추
+            self.turn("LEFT", angle)
+            for _ in range(angle // 5):
+                self.crab("RIGHT")
         self.wait_unlock()
         return
     
