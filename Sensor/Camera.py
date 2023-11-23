@@ -330,11 +330,24 @@ class Camera:
         if ret == False:
             return "L-turn", img, None
         
-        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
-        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
-        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (315,0), (460,480), (255,0,0), 1)
+        
+        # 5 degree
+        cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (410,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (170,0), (522,480), (200,0,200), 1)
+        
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+        if ret == True and ( (-156000+480*x)/197 > y > (-159840+480*x)/247):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -357,8 +370,24 @@ class Camera:
             else:
                 power = 11
             return "!!!Shot!!!", img, power
-        elif ret == True and y > (-75120+240*x)/67:
-            return "R-turn", img, None
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn", img, None
+            elif y < (-12300+30*x)/7:
+                return "L-turn-20", img, None
+            elif y < (-28800+80*x)/27:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-156000+480*x)/197:
+            if y > (-2550+25*x)/11:
+                return "R-turn", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-20", img, None
+            elif y > (-141600+480*x)/227:
+                return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
         else:
             return "L-turn", img, None
     
@@ -372,11 +401,24 @@ class Camera:
         if ret == False:
             return "L-turn", img, None
         
-        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
-        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
-        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (315,0), (460,480), (255,0,0), 1)
+        
+        # 5 degree
+        cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (410,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (170,0), (522,480), (200,0,200), 1)
+        
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+        if ret == True and ( (-156000+480*x)/197 > y > (-159840+480*x)/247):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -399,8 +441,24 @@ class Camera:
             else:
                 power = 11
             return "!!!Shot!!!", img, power
-        elif ret == True and y > (-75120+240*x)/67:
-            return "R-turn", img, None
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn", img, None
+            elif y < (-12300+30*x)/7:
+                return "L-turn-20", img, None
+            elif y < (-28800+80*x)/27:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-156000+480*x)/197:
+            if y > (-2550+25*x)/11:
+                return "R-turn", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-20", img, None
+            elif y > (-141600+480*x)/227:
+                return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
         else:
             return "L-turn", img, None
     
@@ -414,11 +472,24 @@ class Camera:
         if ret == False:
             return "L-turn", img, None
         
-        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
-        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
-        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (315,0), (460,480), (255,0,0), 1)
+        
+        # 5 degree
+        cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (410,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (170,0), (522,480), (200,0,200), 1)
+        
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+        if ret == True and ( (-156000+480*x)/197 > y > (-159840+480*x)/247):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -441,8 +512,24 @@ class Camera:
             else:
                 power = 11
             return "!!!Shot!!!", img, power
-        elif ret == True and y > (-75120+240*x)/67:
-            return "R-turn", img, None
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn", img, None
+            elif y < (-12300+30*x)/7:
+                return "L-turn-20", img, None
+            elif y < (-28800+80*x)/27:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-156000+480*x)/197:
+            if y > (-2550+25*x)/11:
+                return "R-turn", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-20", img, None
+            elif y > (-141600+480*x)/227:
+                return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
         else:
             return "L-turn", img, None
     
