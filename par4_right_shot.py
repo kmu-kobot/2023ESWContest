@@ -198,6 +198,7 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("LEFT")
+                    time.sleep(0.5)
                 elif xmean > 360:
                     if Motion.getRx():
                         Motion.init()
