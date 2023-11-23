@@ -374,18 +374,18 @@ class Camera:
             if y < (-120000+240*x)/11:  
                 return "L-turn", img, None
             elif y < (-51600+120*x)/23:
-                return "L-turn-20", img, None
-            elif y < (-28800+80*x)/27:
                 return "L-turn-10", img, None
+            elif y < (-28800+80*x)/27:
+                return "L-turn-5", img, None
             else:
                 return "L-turn-5", img, None
         elif ret == True and y >= (-156000+480*x)/197:
             if y > (-6000+40*x)/31:
                 return "R-turn", img, None
             elif y > (-121440+480*x)/269:
-                return "R-turn-20", img, None
-            elif y > (-141600+480*x)/227:
                 return "R-turn-10", img, None
+            elif y > (-141600+480*x)/227:
+                return "R-turn-5", img, None
             else:
                 return "R-turn-5", img, None
         else:
