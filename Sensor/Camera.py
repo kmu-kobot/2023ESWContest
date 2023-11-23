@@ -334,6 +334,10 @@ class Camera:
         cv2.line(img, (333,0), (580,480), (255,0,0), 1)
         cv2.line(img, (315,0), (460,480), (255,0,0), 1)
         
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
         # 10 degree
         cv2.line(img, (430,0), (522,480), (0,200,200), 1)
         cv2.line(img, (253,0), (522,480), (0,200,200), 1)
@@ -371,6 +375,8 @@ class Camera:
                 return "L-turn-20", img, None
             elif y < (-51600+120*x)/23:
                 return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
             else:
                 return "L-turn-5", img, None
         elif ret == True and y >= (-156000+480*x)/197:
@@ -378,6 +384,8 @@ class Camera:
                 return "R-turn-20", img, None
             elif y > (-121440+480*x)/269:
                 return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
             else:
                 return "R-turn-5", img, None
         else:
@@ -397,6 +405,10 @@ class Camera:
         cv2.line(img, (333,0), (580,480), (255,0,0), 1)
         cv2.line(img, (315,0), (460,480), (255,0,0), 1)
         
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
         # 10 degree
         cv2.line(img, (430,0), (522,480), (0,200,200), 1)
         cv2.line(img, (253,0), (522,480), (0,200,200), 1)
@@ -434,6 +446,8 @@ class Camera:
                 return "L-turn-20", img, None
             elif y < (-51600+120*x)/23:
                 return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
             else:
                 return "L-turn-5", img, None
         elif ret == True and y >= (-156000+480*x)/197:
@@ -441,6 +455,8 @@ class Camera:
                 return "R-turn-20", img, None
             elif y > (-121440+480*x)/269:
                 return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
             else:
                 return "R-turn-5", img, None
         else:
@@ -460,6 +476,10 @@ class Camera:
         cv2.line(img, (333,0), (580,480), (255,0,0), 1)
         cv2.line(img, (315,0), (460,480), (255,0,0), 1)
         
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
         # 10 degree
         cv2.line(img, (430,0), (522,480), (0,200,200), 1)
         cv2.line(img, (253,0), (522,480), (0,200,200), 1)
@@ -497,6 +517,8 @@ class Camera:
                 return "L-turn-20", img, None
             elif y < (-51600+120*x)/23:
                 return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
             else:
                 return "L-turn-5", img, None
         elif ret == True and y >= (-156000+480*x)/197:
@@ -504,6 +526,8 @@ class Camera:
                 return "R-turn-20", img, None
             elif y > (-121440+480*x)/269:
                 return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
             else:
                 return "R-turn-5", img, None
         else:
