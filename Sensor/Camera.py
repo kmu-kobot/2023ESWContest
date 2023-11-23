@@ -371,9 +371,9 @@ class Camera:
                 power = 11
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
-            if y < (-120000+240*x)/11:  
+            if y > -31800-60*x:  
                 return "L-turn", img, None
-            elif y < (-12300+30*x)/7:
+            elif y < (-51600+120*x)/23:
                 return "L-turn-20", img, None
             elif y < (-28800+80*x)/27:
                 return "L-turn-10", img, None
@@ -418,7 +418,7 @@ class Camera:
         cv2.line(img, (170,0), (522,480), (200,0,200), 1)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-156000+480*x)/197 > y > (-159840+480*x)/247):
+        if ret == True and ( (-30240+96*x)/29 > y > (-159840+480*x)/247):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -442,9 +442,9 @@ class Camera:
                 power = 11
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
-            if y < (-120000+240*x)/11:  
+            if y > -31800-60*x:  
                 return "L-turn", img, None
-            elif y < (-12300+30*x)/7:
+            elif y < (-51600+120*x)/23:
                 return "L-turn-20", img, None
             elif y < (-28800+80*x)/27:
                 return "L-turn-10", img, None
@@ -489,7 +489,7 @@ class Camera:
         cv2.line(img, (170,0), (522,480), (200,0,200), 1)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-156000+480*x)/197 > y > (-159840+480*x)/247):
+        if ret == True and ( (-30240+96*x)/29 > y > (-159840+480*x)/247):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -513,9 +513,9 @@ class Camera:
                 power = 11
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
-            if y < (-120000+240*x)/11:  
+            if y > -31800-60*x:  
                 return "L-turn", img, None
-            elif y < (-12300+30*x)/7:
+            elif y < (-51600+120*x)/23:
                 return "L-turn-20", img, None
             elif y < (-28800+80*x)/27:
                 return "L-turn-10", img, None
