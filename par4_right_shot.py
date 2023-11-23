@@ -288,9 +288,9 @@ if __name__ == "__main__":
                     Motion.turn("LEFT", 45)
                     Motion.turn("LEFT", 45)
                 else:
-                    Motion.turn("RIGHT", 45)
-                    Motion.turn("RIGHT", 45)
-                    Motion.turn("RIGHT", 45)
+                    Motion.turn("RIGHT", 60)
+                    Motion.turn("RIGHT", 60)
+                    Motion.turn("RIGHT", 60)
         # 7. Ceremony
         else:
             if Motion.getRx():
