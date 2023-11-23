@@ -4,6 +4,7 @@ class Robot:
         self.curr_mission = "ApproachBall" # 현재 수행 중인 미션
         self.robot_ball_distance = 1000
         self.long_shot = True
+        self.turn_angle = 5
 
         # humanoid variables
         self.neck_pitch = 70 # 상하

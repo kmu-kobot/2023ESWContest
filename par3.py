@@ -114,8 +114,29 @@ if __name__ == "__main__":
                 Motion.neckup(Robot.neck_pitch)
                 if Robot.shotzone == "R-turn":
                     clockwise = "Right"
+                    Robot.turn_angle = 100
+                elif Robot.shotzone == "R-turn-20":
+                    clockwise = "Right"
+                    Robot.turn_angle = 20
+                elif Robot.shotzone == "R-turn-10":
+                    clockwise = "Right"
+                    Robot.turn_angle = 10
+                elif Robot.shotzone == "R-turn-5":
+                    clockwise = "Right"
+                    Robot.turn_angle = 5
+                elif Robot.shotzone == "L-turn":
+                    clockwise = "Left"
+                    Robot.turn_angle = 100
+                elif Robot.shotzone == "L-turn-20":
+                    clockwise = "Left"
+                    Robot.turn_angle = 20
+                elif Robot.shotzone == "L-turn-10":
+                    clockwise = "Left"
+                    Robot.turn_angle = 10
                 else:
                     clockwise = "Left"
+                    Robot.turn_angle = 5
+                    
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
@@ -228,11 +249,16 @@ if __name__ == "__main__":
             time.sleep(1)
             # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
             if clockwise == "Left":
-                Motion.circular_orbit("Left", False)
-                time.sleep(1) # 동작 안정성을 위한 대기
+                if Robot.turn_angle == 100:
+                    Motion.circular_orbit("Left", False)
+                else:
+                    Motion.circular_orbit_small("Left", Robot.turn_angle)
             else:
-                Motion.circular_orbit("Right", True)
-                time.sleep(1) # 동작 안정성을 위한 대기
+                if Robot.turn_angle == 100:
+                    Motion.circular_orbit("Right", True)
+                else:
+                    Motion.circular_orbit_small("Right", Robot.turn_angle)
+            time.sleep(1) # 동작 안정성을 위한 대기
         # 6. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():
