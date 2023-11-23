@@ -88,9 +88,9 @@ class Motion:
     # 한 걸음
     def step(self, direction="FRONT", stride="small"):
         if direction == "FRONT" and stride == "small":  # 앞으로 한 걸음
-            self.TX_data_py3(5)
+            self.TX_data_py3(36)
         elif direction == "FRONT" and stride == "big":  # 앞으로 2cm 한 걸음
-            self.TX_data_py3(37)
+            self.TX_data_py3(5)
         else:                                           # 뒤로 한 걸음
             self.TX_data_py3(39)
         self.wait_unlock()
