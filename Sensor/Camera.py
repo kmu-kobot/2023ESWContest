@@ -10,8 +10,8 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.lowerLimitP = np.array([141, 27, 54], dtype=np.uint8)
-        self.upperLimitP = np.array([179,244,255], dtype=np.uint8)
+        self.lowerLimitP = np.array([116, 66, 113], dtype=np.uint8)
+        self.upperLimitP = np.array([179, 255, 255], dtype=np.uint8)
         self.shotZone = [500, 600]
         # cv2.line(filtered_frame, (310,0), (550,480), (0,0,255), 2) => y = 2x - 620
         # cv2.line(filtered_frame, (335,0), (640,380), (0,0,255), 2) => 76x- 61y = 25460 => y = 76x-25460/61
@@ -63,7 +63,7 @@ class Camera:
             if density > min_density and area > max_area:
                 max_area = area
                 max_area_idx = i
-        if max_area < 50:
+        if max_area < 10:
                 max_area_idx = -1
         if max_area_idx != -1:
             x1, y1, w, h, _ = stats[max_area_idx]
