@@ -94,6 +94,7 @@ class Motion:
         else:                                           # 뒤로 한 걸음
             self.TX_data_py3(39)
         self.wait_unlock()
+        time.sleep(0.5)
         return
 
     # 좌우 게걸음

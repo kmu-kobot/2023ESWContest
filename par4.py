@@ -204,12 +204,10 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "big")
-                    time.sleep(1)
                 elif Robot.robot_ball_distance > 11:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "small")
-                    time.sleep(1)
                 elif xmean < 340:
                     if Motion.getRx():
                         Motion.init()
