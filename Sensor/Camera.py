@@ -545,7 +545,7 @@ class Camera:
                     return "NoHole", img
 
         # shot y boundary
-        cv2.line(img, (0, 260), (640, 260), (255,0,0), 2)
+        cv2.line(img, (0, 250), (640, 250), (255,0,0), 2)
         cv2.line(img, (0, 320), (640, 320), (0,255,0), 2)
         cv2.line(img, (0, 400), (640, 400), (255,0,0), 2)
         
@@ -555,15 +555,15 @@ class Camera:
         # x center
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if ret == True and 260<y<400 and x<265:
+        if ret == True and 250<y<400 and x<265:
             return "!!!Shot!!!", img
-        elif ret == True and 260<y<400 and x>410:
+        elif ret == True and 250<y<400 and x>410:
             return "!!!R-Shot!!!", img
-        elif ret == True  and 260<=y<=400 and 265<=x<=410:
+        elif ret == True  and 250<=y<=400 and 265<=x<=410:
             return "!!!Goal!!!", img
-        elif ret == True and y <= 260 and x<333:
+        elif ret == True and y <= 250 and x<333:
             return "L-turn", img
-        elif ret == True and y <= 260 and x>=333:
+        elif ret == True and y <= 250 and x>=333:
             return "R-turn", img
         elif ret == True and 400 <= y and x<333:
             return "R-turn", img
