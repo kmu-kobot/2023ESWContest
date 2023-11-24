@@ -160,7 +160,7 @@ class Camera:
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_dist_idx = -1
-        max_dist = -1
+        max_dist = 1000
         # 노이즈를 잡기 위한 최소한의 밀집도
         min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
 
