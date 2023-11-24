@@ -140,7 +140,7 @@ class Camera:
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
             x, y, w, h, _ = stats[i]
             dist = y + h
-            if density > min_density and area > 100 and area > max_area:
+            if density > min_density and area > 80 and area > max_area:
                 max_area = area
                 max_area_idx = i
         if max_area_idx != -1:
