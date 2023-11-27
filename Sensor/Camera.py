@@ -170,7 +170,7 @@ class Camera:
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
             x, y, w, h, _ = stats[i]
             dist = y + h
-            if density > min_density and area > 10 and dist < max_dist:
+            if density > min_density and area > 5 and dist < max_dist:
                 max_dist = dist
                 max_dist_idx = i
         if max_dist_idx != -1:
@@ -329,7 +329,7 @@ class Camera:
             ret, x, y = self.holeDetect_far(img)
             
         if ret == False:
-            return "L-turn", img, None
+            return "R-turn", img, None
         
         cv2.line(img, (270,0), (120,480), (0,0,255), 1)
         cv2.line(img, (315,0), (185,480), (255,0,0), 1)
@@ -370,7 +370,7 @@ class Camera:
             else:
                 return "L-turn", img, None
         else:
-            return "L-turn", img, None
+            return "R-turn", img, None
         
         
     def longChecker(self, img):
