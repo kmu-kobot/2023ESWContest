@@ -119,10 +119,11 @@ if __name__ == "__main__":
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = True
                 Robot.curr_mission = "Shot"
-                if shot_count == 1:
-                    shot_direction = "Right"
-                else:
-                    shot_direction = "Left"
+                shot_direction = "Left"
+            elif Robot.shotzone == "!!!R-Shot!!!":
+                shot_direction = "Right"
+                Robot.long_shot = True
+                Robot.curr_mission = "Shot"
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
