@@ -321,6 +321,58 @@ class Camera:
                 return True, [int(x-radius), int(y-radius), int(x+radius), int(y+radius)]
         return False, [False, False, False, False]
     
+    def longChecker_R(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_far(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(frame, (270,0), (120,480), (0,0,255), 1)
+        cv2.line(frame, (315,0), (185,480), (255,0,0), 1)
+        cv2.line(frame, (230,0), (45,480), (255,0,0), 1)
+
+        # 5 degree
+        cv2.line(frame, (350,0), (120,480), (200,200,0), 1)
+        cv2.line(frame, (195,0), (120,480), (200,200,0), 1)
+
+        # 10 degree
+        cv2.line(frame, (400,0), (120,480), (0,200,200), 1)
+        cv2.line(frame, (150,0), (120,480), (0,200,200), 1)
+
+        # 20 degree
+        cv2.line(frame, (480,0), (120,480), (200,0,200), 1)
+        cv2.line(frame, (70,0), (120,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        
+        if ret == True and ( (22080-96*x)/37 < y < (15120-48*x)/13):
+            return "!!!R-Shot!!!", img, 20
+        elif ret == True and y <= (22080-96*x)/37:
+            if y > (6240-32*x)/5:  
+                return "R-turn-5", img, None
+            elif y > (2400-16*x):
+                return "R-turn-10", img, None
+            elif y > (-3360+48*x)/5:
+                return "R-turn", img, None
+            else:
+                return "R-turn-20", img, None
+        elif ret == True and y >= (15120-48*x)/13:
+            if y < (16800-48*x)/23:
+                return "L-turn-5", img, None
+            elif y < (4800-12*x)/7:
+                return "L-turn-10", img, None
+            elif y < (1920-4*x)/3:
+                return "L-turn-20", img, None
+            else:
+                return "L-turn", img, None
+        else:
+            return "L-turn", img, None
+        
+        
     def longChecker(self, img):
         ret, point = self.is_hole(img)
         if ret == True:
