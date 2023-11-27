@@ -79,7 +79,7 @@ if __name__ == "__main__":
             Robot.shotzone, frame = Camera.shortChecker(img)
             if shot_count == 1:
                 Robot.long_shot = True
-                Robot.curr_mission = "Shot"
+                Robot.curr_mission = "LongCheck"
                 shot_direction = "Right"
                 shot_power = 100 # TODO 오른쪽 샷 세기 조절
             elif Robot.shotzone == "!!!Shot!!!":
@@ -109,6 +109,7 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
+            # TODO shot_count == 1일 때 Camera.longCheckerRight
             Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = True
@@ -241,12 +242,19 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "LongCheck":
             if Motion.getRx():
                 Motion.init()
-            Robot.neck_yaw = -90
-            Motion.view(-90)
+            if shot_count == 1:
+                Motion.eagle()
+                Robot.neck_yaw = 90
+                Motion.view(90)
+            else:
+                Robot.neck_yaw = -90
+                Motion.view(-90)
             time.sleep(1)
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
+                Motion.init()
+            if shot_count == 1: # 내렸던 골프채 다시 올리기
                 Motion.init()
             Robot.neck_yaw = 0
             Motion.view(0)

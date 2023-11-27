@@ -155,6 +155,11 @@ class Motion:
         self.wait_unlock()
         return
 
+    def eagle(self):
+        self.TX_data_py3(89) # TODO
+        self.wait_unlock()
+        return
+    
     # 공을 중심으로 원 궤도로 회전
     def circular_orbit(self, direction = "Left", leg_up = True):
         if leg_up and direction == "Left":
