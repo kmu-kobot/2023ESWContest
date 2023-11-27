@@ -111,12 +111,18 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            # TODO shot_count == 1일 때 Camera.longCheckerRight shot power, shot direction 설정 필요
-            Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+            if shot_count == 1:
+                Robot.shotzone, frame, shot_power = Camera.longChecker_R(img)
+            else:
+                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+                
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = True
                 Robot.curr_mission = "Shot"
-                shot_direction = "Left"
+                if shot_count == 1:
+                    shot_direction = "Right"
+                else:
+                    shot_direction = "Left"
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
