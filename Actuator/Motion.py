@@ -156,7 +156,7 @@ class Motion:
         return
 
     def eagle(self):
-        self.TX_data_py3(89) # TODO
+        self.TX_data_py3(89)
         self.wait_unlock()
         return
     

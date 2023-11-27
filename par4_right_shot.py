@@ -81,7 +81,8 @@ if __name__ == "__main__":
                 Robot.long_shot = True
                 Robot.curr_mission = "LongCheck"
                 shot_direction = "Right"
-                shot_power = 100 # TODO 오른쪽 샷 세기 조절
+                shot_power = 100
+                # TODO 오른쪽 목 각도 설정
             elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
