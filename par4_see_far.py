@@ -95,16 +95,16 @@ if __name__ == "__main__":
             elif Robot.shotzone == "R-turn":
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Right"
+                Robot.turn_angle = 20 # TODO Short Check turn angle 결정
             elif Robot.shotzone == "L-turn":
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
+                Robot.turn_angle = 20 # TODO Short Check turn angle 결정
             else: # hole in
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            if shot_count == 0:
-                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
-            elif shot_count == 1:
+            if shot_count < 2:
                 Robot.shotzone, frame, shot_power = Camera.longChecker_far(img)
             else:
                 Robot.shotzone, frame, shot_power = Camera.longChecker_close(img)

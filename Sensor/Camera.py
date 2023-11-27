@@ -140,7 +140,8 @@ class Camera:
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
             x, y, w, h, _ = stats[i]
             dist = y + h
-            if density > min_density and area > 80 and area > max_area:
+            
+            if density > min_density and area > 30 and area > max_area:
                 max_area = area
                 max_area_idx = i
         if max_area_idx != -1:
@@ -160,7 +161,7 @@ class Camera:
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_dist_idx = -1
-        max_dist = -1
+        max_dist = 1000
         # 노이즈를 잡기 위한 최소한의 밀집도
         min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
 
@@ -169,7 +170,7 @@ class Camera:
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
             x, y, w, h, _ = stats[i]
             dist = y + h
-            if density > min_density and area > 50 and dist < max_dist:
+            if density > min_density and area > 10 and dist < max_dist:
                 max_dist = dist
                 max_dist_idx = i
         if max_dist_idx != -1:
@@ -198,7 +199,7 @@ class Camera:
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
             x, y, w, h, _ = stats[i]
             dist = y + h
-            if density > min_density and area > 50 and dist > min_dist:
+            if density > min_density and area > 10 and dist > min_dist:
                 min_dist = dist
                 min_dist_idx = i
         if min_dist_idx != -1:
