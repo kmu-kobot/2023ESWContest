@@ -81,8 +81,11 @@ class Motion:
         return
 
     # 연속 걸음
-    def walk(self):
-        self.TX_data_py3(11)
+    def walk(self, fast = False):
+        if not fast:
+            self.TX_data_py3(11)
+        else:
+            self.TX_data_py3(10)
         return
 
     # 한 걸음

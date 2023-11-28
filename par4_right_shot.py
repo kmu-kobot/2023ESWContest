@@ -235,7 +235,9 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
-                elif Robot.robot_ball_distance > 18:
+                elif Robot.robot_ball_distance > 30:
+                    Motion.walk(True)
+                elif Robot.robot_ball_distance > 15:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
