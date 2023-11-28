@@ -626,7 +626,7 @@ class Camera:
             return "NoHole", img
         
     def shortChecker_R(self, img):
-        ret, (x, y) = self.holeDetect(img)
+        ret, x, y = self.holeDetect(img)
         if ret == False:
             return "NoHole", img
 

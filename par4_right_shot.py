@@ -85,7 +85,7 @@ if __name__ == "__main__":
                 neck_before_find = Robot.neck_pitch
                 Robot.neck_pitch = 75
                 Motion.neckup(75)
-            elif shot_count == 2 and shot_count:
+            elif shot_count == 2 and shot_roi:
                 neck_before_find = Robot.neck_pitch
                 Motion.neckup(80)
                 time.sleep(1)
@@ -235,9 +235,7 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
-                elif Robot.robot_ball_distance > 30:
-                    Motion.walk(True)
-                elif Robot.robot_ball_distance > 15:
+                elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
