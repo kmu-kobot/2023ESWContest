@@ -91,12 +91,13 @@ if __name__ == "__main__":
                 time.sleep(1)
                 img = Camera.get_image()
                 Robot.shotzone, frame = Camera.shortChecker_R(img)
+                cv2.imshow("Frame", frame)
                 if Robot.shotzone == "L-turn":
                     Motion.circular_orbit("Left", False)
                 elif Robot.shotzone == "LL-turn":
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
-                else:
+                elif Robot.shotzone == "LLL-turn":
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
@@ -235,6 +236,8 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
+                elif Robot.robot_ball_distance > 30 and 1<=shot_count<=2:
+                    Motion.walk(True)
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:

@@ -631,13 +631,10 @@ class Camera:
             return "NoHole", img
 
         # shot y boundary
-        cv2.line(img, (200, 0), (200, 480), (255,0,0), 2)
-        cv2.line(img, (440, 0), (440, 480), (0,255,0), 2)
+        cv2.line(img, (320, 0), (200, 480), (255,0,0), 2)
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if x<200:
-            return "L-turn", img
-        elif x<440:
+        if x<320:
             return "LL-turn", img
         else:
             return "LLL-turn", img

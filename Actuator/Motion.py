@@ -212,5 +212,6 @@ class Motion:
 if __name__ == '__main__':
     Motion = Motion()
     Motion.initial()
+    Motion.view(-90)
     time.sleep(7)
     pass
