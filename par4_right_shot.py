@@ -14,6 +14,7 @@ plain_frame_count = 0
 clockwise = "Left"
 shot_direction = "Left"
 shot_power = 8
+shot_roi = False
 
 if __name__ == "__main__":
     
@@ -84,6 +85,24 @@ if __name__ == "__main__":
                 neck_before_find = Robot.neck_pitch
                 Robot.neck_pitch = 75
                 Motion.neckup(75)
+            elif shot_count == 2 and shot_count:
+                neck_before_find = Robot.neck_pitch
+                Motion.neckup(80)
+                time.sleep(1)
+                img = Camera.get_image()
+                Robot.shotzone, frame = Camera.shortChecker_R(img)
+                if Robot.shotzone == "L-turn":
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                else:
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                Robot.curr_mission = "ApproachBall"
+                shot_roi = False
+                Motion.neckup(neck_before_find)
             elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
@@ -162,6 +181,8 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "FindBall"
             shot_count += 1
+            if shot_count == 2:
+                shot_roi = True
         # 7. Ceremony
         else:
             print("미션 종료")
