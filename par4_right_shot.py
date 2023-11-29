@@ -77,21 +77,15 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            Robot.shotzone, frame = Camera.shortChecker(img)
-            if shot_count == 1:
-                Robot.long_shot = True
-                Robot.curr_mission = "LongCheck"
-                shot_direction = "Right"
-                neck_before_find = Robot.neck_pitch
-                Robot.neck_pitch = 75
-                Motion.neckup(75)
-            elif shot_count == 2 and shot_roi:
+            if shot_count == 2 and shot_roi:
+                shot_roi = False
                 neck_before_find = Robot.neck_pitch
                 Motion.neckup(80)
                 time.sleep(1)
-                img = Camera.get_image()
-                Robot.shotzone, frame = Camera.shortChecker_R(img)
-                cv2.imshow("Frame", frame)
+                shortchecker = Camera.get_image()
+                Robot.shotzone, shortchecker = Camera.shortChecker_R(shortchecker)
+                cv2.imshow("IMG_ROI", shortchecker)
+                Robot.curr_mission = "ApproachBall"
                 if Robot.shotzone == "L-turn":
                     Motion.circular_orbit("Left", False)
                 elif Robot.shotzone == "LL-turn":
@@ -101,9 +95,20 @@ if __name__ == "__main__":
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
-                Robot.curr_mission = "ApproachBall"
-                shot_roi = False
                 Motion.neckup(neck_before_find)
+                time.sleep(0.5)
+            else:
+                Robot.shotzone, frame = Camera.shortChecker(img)
+
+            if Robot.curr_mission == "ApproachBall":
+                pass # 조금 전에 roi를 보고 turn을 했다면 approachBall에 맞는 동작으로 넘어감
+            elif shot_count == 1:
+                Robot.long_shot = True
+                Robot.curr_mission = "LongCheck"
+                shot_direction = "Right"
+                neck_before_find = Robot.neck_pitch
+                Robot.neck_pitch = 75
+                Motion.neckup(75)
             elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
