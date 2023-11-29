@@ -82,6 +82,10 @@ if __name__ == "__main__":
                 Motion.circular_orbit("Left", False)
                 Motion.circular_orbit("Left", False)
                 Motion.circular_orbit("Left", False)
+                Motion.step("BACK")
+                Motion.step("BACK")
+                Motion.circular_orbit("Left", False)
+                Motion.circular_orbit("Left", False)
             elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
