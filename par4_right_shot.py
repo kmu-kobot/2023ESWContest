@@ -241,7 +241,7 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
-                elif Robot.robot_ball_distance > 30 and 1<=shot_count<=2:
+                elif Robot.robot_ball_distance > 30 and shot_count==1:
                     Motion.walk(True)
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
