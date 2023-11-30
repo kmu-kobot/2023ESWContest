@@ -95,6 +95,13 @@ if __name__ == "__main__":
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LLLL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.crab("LEFT")
+                    Motion.crab("LEFT")
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
                 Motion.neckup(neck_before_find)
                 time.sleep(0.5)
             else:
