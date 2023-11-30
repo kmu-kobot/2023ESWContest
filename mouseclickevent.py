@@ -1,6 +1,6 @@
-# from Actuator.Motion import Motion
-# from Sensor.Camera import Camera
-# from Brain.Robot import Robot
+from Actuator.Motion import Motion
+from Sensor.Camera import Camera
+from Brain.Robot import Robot
 
 import cv2
 import numpy
@@ -9,20 +9,20 @@ def mouse_callback(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
         print(f'({x}, {y})')
 
-# Robot = Robot()
-# Motion = Motion()
-# Camera = Camera()
+Robot = Robot()
+Motion = Motion()
+Camera = Camera()
 
-# Motion.initial()
-# Motion.init(True)
-# Motion.neckup(70)
-# Motion.view(-90)
+Motion.initial()
+Motion.init(True)
+Motion.neckup(80)
+Motion.view(90)
     
 cv2.namedWindow('frame')
 cv2.setMouseCallback('frame', mouse_callback)
 
 while True:
-    frame = numpy.zeros(shape=(480, 640, 3), dtype="uint8")
+    frame = Camera.get_image()
 
     cv2.line(frame, (270,0), (120,480), (0,0,255), 1)
     cv2.line(frame, (315,0), (185,480), (255,0,0), 1)
