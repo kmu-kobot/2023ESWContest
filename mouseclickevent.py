@@ -16,7 +16,7 @@ Camera = Camera()
 Motion.initial()
 Motion.init(True)
 Motion.neckup(80)
-Motion.view(-90)
+Motion.view(90)
     
 cv2.namedWindow('frame')
 cv2.setMouseCallback('frame', mouse_callback)
