@@ -343,6 +343,11 @@ if __name__ == "__main__":
                     Motion.turn("RIGHT", 60)
                     Motion.turn("RIGHT", 60)
                     Motion.turn("RIGHT", 60)
+            else:
+                if shot_direction == "Left":
+                    Motion.turn("LEFT", 20)
+                else:
+                    Motion.turn("RIGHT", 20)
         # 7. Ceremony
         else:
             if Motion.getRx():

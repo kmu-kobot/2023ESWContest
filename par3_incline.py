@@ -273,7 +273,6 @@ if __name__ == "__main__":
             else:
                 Motion.shot("RIGHT", shot_power)
             if Robot.long_shot:
-                # TODO long shot 이후 목 각도 확인 필요
                 if shot_power < 14:
                     Robot.neck_pitch = 60
                 elif shot_power < 19:
@@ -283,6 +282,11 @@ if __name__ == "__main__":
                 Motion.neckup(80)
                 Motion.turn("LEFT", 45)
                 Motion.turn("LEFT", 45)
+            else:
+                if shot_direction == "Left":
+                    Motion.turn("LEFT", 20)
+                else:
+                    Motion.turn("RIGHT", 20)
         # 7. Ceremony
         else:
             if Motion.getRx():
