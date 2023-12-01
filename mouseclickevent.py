@@ -37,7 +37,7 @@ while True:
     cv2.line(img, (520,0), (120,480), (200,0,200), 1)
     cv2.line(img, (180,0), (120,480), (200,0,200), 1)
         
-    cv2.imshow('frame', frame)
+    cv2.imshow('frame', img)
 
     key = cv2.waitKey(1)
     if key == 27:
