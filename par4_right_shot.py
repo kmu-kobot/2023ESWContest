@@ -192,7 +192,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "Shot":
             shot_direction = "Left"
             # shot을 하면 다음 shot을 위해 공을 찾는다
-            Robot.curr_mission = "FindBall"
+            Robot.curr_mission = "ApproachBall"
             shot_count += 1
             if shot_count == 2:
                 shot_roi = True
@@ -230,7 +230,11 @@ if __name__ == "__main__":
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
-                if xmean < 190:
+                if Robot.robot_ball_distance < 9.5:
+                    if Motion.getRx():
+                        Motion.init()
+                    Motion.step("BACK")
+                elif xmean < 190:
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("LEFT", 20)
@@ -269,10 +273,6 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
-                elif Robot.robot_ball_distance < 9.5:
-                    if Motion.getRx():
-                        Motion.init()
-                    Motion.step("BACK")
                 else:
                     Motion.init()
                 Robot.neck_yaw = 0
