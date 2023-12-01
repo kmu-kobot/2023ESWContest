@@ -39,6 +39,7 @@ if __name__ == "__main__":
         # Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
+            plain_frame_count = 0
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
         # if Robot.is_bunker:
         #     cv2.circle(frame, (bunkerL, 5, (255,255,255), -1))
