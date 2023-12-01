@@ -236,11 +236,7 @@ if __name__ == "__main__":
                 pass
             # 공 bounding box가 화면 중앙에 오도록 움직이고 shot 가능할때까지 걸어간다
             else:
-                if Robot.robot_ball_distance < 9.5:
-                    if Motion.getRx():
-                        Motion.init()
-                    Motion.step("BACK")
-                elif xmean < 190:
+                if xmean < 190:
                     if Motion.getRx():
                         Motion.init()
                     Motion.turn("LEFT", 20)
@@ -258,6 +254,10 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
+                elif Robot.robot_ball_distance < 9.5:
+                    if Motion.getRx():
+                        Motion.init()
+                    Motion.step("BACK")
                 elif Robot.robot_ball_distance > 30 and shot_count==1:
                     Motion.walk(True)
                 elif Robot.robot_ball_distance > 18:

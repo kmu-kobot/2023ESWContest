@@ -200,7 +200,7 @@ class Motion:
             if speed == 2:
                 self.TX_data_py3(82)
             else:
-                self.TX_data_py3(92) # 오른쪽으로 세게 치는 샷
+                self.TX_data_py3(93) # 오른쪽으로 세게 치는 샷
         self.wait_unlock()
         return
 
