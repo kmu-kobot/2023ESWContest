@@ -351,45 +351,46 @@ class Camera:
             return "R-turn", img, None
     
     def longChecker_R_accurate(self, img):
+        # ROI
+        for y in range(100,480):
+            img[y, :, :] = 0
+            
         ret, point = self.is_hole(img)
         if ret == True:
             x, y = point[0], point[1]
         else:
-            ret, x, y = self.holeDetect_far(img)
+            ret, x, y = self.holeDetect_close(img)
             
         if ret == False:
             return "R-turn", img, None
         
-        cv2.line(img, (350,0), (120,480), (0,0,255), 1)
-        cv2.line(img, (360,0), (150,480), (255,0,0), 1)
-        cv2.line(img, (340,0), (90,480), (255,0,0), 1)
-
+        cv2.line(img, (324,0), (120,480), (0,0,255), 1)
+        cv2.line(img, (330,0), (150,480), (255,0,0), 1)
+        cv2.line(img, (318,0), (90,480), (255,0,0), 1)
         # 5 degree
         cv2.line(img, (390,0), (120,480), (200,200,0), 1)
-        cv2.line(img, (310,0), (120,480), (200,200,0), 1)
-
+        # cv2.line(img, (260,0), (120,480), (200,200,0), 1)
         # 10 degree
         cv2.line(img, (460,0), (120,480), (0,200,200), 1)
         cv2.line(img, (240,0), (120,480), (0,200,200), 1)
-
         # 20 degree
         cv2.line(img, (520,0), (120,480), (200,0,200), 1)
         cv2.line(img, (180,0), (120,480), (200,0,200), 1)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         
-        if ret == True and ( (16320-48*x)/25 < y < (5760-16*x)/7):
+        if ret == True and ( (12720-40*x)/19 < y < (2640-8*x)/3):
             return "!!!R-Shot!!!", img, 20
-        elif ret == True and y <= (16320-48*x)/25:
-            if y > (14880-48*x)/19:  
+        elif ret == True and y <= (12720-40*x)/19:
+            if y > (960-4*x):  
                 return "R-turn-5", img, None
-            elif y > (960-4*x):
-                return "R-turn-10", img, None
             elif y > (1440-8*x):
-                return "R-turn-20", img, None
+                return "R-turn-10", img, None
+            # elif y > (1440-8*x):
+            #     return "R-turn-20", img, None
             else:
-                return "R-turn", img, None
-        elif ret == True and y >= (5760-16*x)/7:
+                return "R-turn-20", img, None
+        elif ret == True and y >= (2640-8*x)/3:
             if y < (6240-16*x)/9:
                 return "L-turn-5", img, None
             elif y < (11040-24*x)/17:
