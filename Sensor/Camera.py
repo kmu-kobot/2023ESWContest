@@ -300,11 +300,14 @@ class Camera:
         return False, [False, False, False, False]
     
     def longChecker_R(self, img):
+        for y in range(100,480):
+            img[y, :, :] = 0
+            
         ret, point = self.is_hole(img)
         if ret == True:
             x, y = point[0], point[1]
         else:
-            ret, x, y = self.holeDetect_far(img)
+            ret, x, y = self.holeDetect_close(img)
             
         if ret == False:
             return "R-turn", img, None
