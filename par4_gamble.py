@@ -1,3 +1,8 @@
+# 2타
+# 0번 샷: 오른쪽으로 치우쳐진 왼쪽 샷
+# 1번 샷: 정교한 계산을 통해 오른쪽으로 센 샷
+# 그 이상: 가까이 있는 노란색을 향한 샷
+
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 from Brain.Robot import Robot
@@ -77,16 +82,13 @@ if __name__ == "__main__":
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
             Robot.shotzone, frame = Camera.shortChecker(img)
-            if shot_count == 1 and shot_roi:
-                shot_roi = False
-                Robot.curr_mission = "ApproachBall"
-                Motion.circular_orbit("Left", False)
-                Motion.circular_orbit("Left", False)
-                Motion.circular_orbit("Left", False)
-                Motion.step("BACK")
-                Motion.step("BACK")
-                Motion.circular_orbit("Left", False)
-                Motion.circular_orbit("Left", False)
+            if shot_count == 1:
+                Robot.long_shot = True
+                Robot.curr_mission = "LongCheck"
+                shot_direction = "Right"
+                neck_before_find = Robot.neck_pitch
+                Robot.neck_pitch = 75
+                Motion.neckup(75)
             elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
@@ -122,12 +124,13 @@ if __name__ == "__main__":
                 Robot.shotzone, frame, shot_power = Camera.longChecker_close(img)
                 
             if Robot.shotzone == "!!!Shot!!!":
-                if shot_power < 10:
-                    Robot.long_shot = False
-                else:
-                    Robot.long_shot = True
+                Robot.long_shot = True
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
+            elif Robot.shotzone == "!!!R-Shot!!!":
+                shot_direction = "Right"
+                Robot.long_shot = True
+                Robot.curr_mission = "Shot"
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
@@ -166,7 +169,7 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "ApproachBall"
             shot_count += 1
-            if shot_count == 1:
+            if shot_count == 2:
                 shot_roi = True
         # 7. Ceremony
         else:
@@ -224,6 +227,8 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
+                elif Robot.robot_ball_distance > 30 and shot_count==1:
+                    Motion.walk(True)
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
@@ -257,12 +262,19 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "LongCheck":
             if Motion.getRx():
                 Motion.init()
-            Robot.neck_yaw = -90
-            Motion.view(-90)
+            if shot_count == 1:
+                Motion.eagle()
+                Robot.neck_yaw = 90
+                Motion.view(90)
+            else:
+                Robot.neck_yaw = -90
+                Motion.view(-90)
             time.sleep(1)
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             if Motion.getRx():
+                Motion.init()
+            if shot_count == 1: # 내렸던 골프채 다시 올리기
                 Motion.init()
             Robot.neck_yaw = 0
             Motion.view(0)
@@ -288,8 +300,6 @@ if __name__ == "__main__":
             if shot_direction == "Left":
                 if shot_count == 0:
                     shot_power = 19
-                elif shot_count == 1:
-                    shot_power = 20
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)
@@ -301,8 +311,13 @@ if __name__ == "__main__":
                 else:
                     Robot.neck_pitch = 80
                 Motion.neckup(80)
-                Motion.turn("LEFT", 45)
-                Motion.turn("LEFT", 45)
+                if shot_direction == "Left":
+                    Motion.turn("LEFT", 45)
+                    Motion.turn("LEFT", 45)
+                else:
+                    Motion.turn("RIGHT", 60)
+                    Motion.turn("RIGHT", 60)
+                    Motion.turn("RIGHT", 60)
             else:
                 if shot_direction == "Left":
                     Motion.turn("LEFT", 20)

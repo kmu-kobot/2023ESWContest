@@ -621,7 +621,7 @@ class Camera:
         if ret == True:
             x, y = point[0], point[1]
         else:
-            ret, x, y = self.holeDetect_far(img)
+            ret, x, y = self.holeDetect_close(img)
             
         if ret == False:
             return "L-turn", img, None

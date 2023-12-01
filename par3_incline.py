@@ -1,3 +1,5 @@
+# par3 기울기 있을 때
+
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 from Brain.Robot import Robot
@@ -269,7 +271,7 @@ if __name__ == "__main__":
             Motion.view(0)
             if shot_direction == "Left":
                 if shot_count == 0:
-                    shot_power = 19 # TODO 첫 샷 세기 수정
+                    shot_power = 18 # TODO 첫 샷 세기 수정
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)

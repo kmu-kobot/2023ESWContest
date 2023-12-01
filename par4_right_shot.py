@@ -1,4 +1,7 @@
-# 두번째 샷은 오른쪽으로 세게 치는 process
+# 안정 3타
+# 0번 샷: 오른쪽으로 치우쳐진 왼쪽 샷
+# 1번 샷: 오른쪽으로 적당한 세기로 샷
+# 그 이상: 가까이 있는 노란색을 향한 샷
 
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
@@ -144,10 +147,12 @@ if __name__ == "__main__":
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            if shot_count == 1:
+            if shot_count == 0:
+                Robot.shotzone, frame, shot_power = Camera.longChecker_gamble_firstshot(img)
+            elif shot_count == 1:
                 Robot.shotzone, frame, shot_power = Camera.longChecker_R(img)
             else:
-                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+                Robot.shotzone, frame, shot_power = Camera.longChecker_close(img)
                 
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = True
