@@ -15,7 +15,7 @@ Camera = Camera()
 
 Motion.initial()
 Motion.init(True)
-Motion.neckup(80)
+Motion.neckup(70)
 Motion.view(90)
     
 cv2.namedWindow('frame')
