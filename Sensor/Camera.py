@@ -74,15 +74,7 @@ class Camera:
     
     # 홀 인식
     def is_hole(self, img):
-        img2 = img.copy()
-        
-        #이미지를 HSV 색 공간으로 변환
-        hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
-        
-        #노란색 추출 마스크
-        lower_yellow = np.array([20, 105, 57])
-        upper_yellow = np.array([44, 255, 255])
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        mask = self.preprocess(img)
 
         detector = cv2.SimpleBlobDetector_create() # 개체 검출 객체 생성
         params = cv2.SimpleBlobDetector_Params()   # 파라미터 설정 객체(크기, 원형도, 관성 비율)
@@ -123,10 +115,7 @@ class Camera:
     
     # hall detect v2
     def holeDetect(self, img):
-        lower_bound = np.array([20, 105, 57])
-        upper_bound = np.array([44, 255, 255])
-        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        mask = self.preprocess(img)
         # cv2.imshow("Frame", mask)
         # cv2.waitKey(1)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
@@ -152,12 +141,7 @@ class Camera:
         return False, False, False
     
     def holeDetect_far(self, img):
-        lower_bound = np.array([20, 105, 57])
-        upper_bound = np.array([44, 255, 255])
-        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
-        # cv2.imshow("Frame", mask)
-        # cv2.waitKey(1)
+        mask = self.preprocess(img)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_dist_idx = -1
@@ -181,10 +165,7 @@ class Camera:
         return False, False, False
     
     def holeDetect_close(self, img):
-        lower_bound = np.array([20, 105, 57])
-        upper_bound = np.array([44, 255, 255])
-        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        mask = self.preprocess(img)
         # cv2.imshow("Frame", mask)
         # cv2.waitKey(1)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
@@ -210,10 +191,7 @@ class Camera:
         return False, False, False
     
     def holeDetect_center(self, img):
-        lower_bound = np.array([20, 105, 57])
-        upper_bound = np.array([44, 255, 255])
-        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        mask = self.preprocess(img)
         # cv2.imshow("Frame", mask)
         # cv2.waitKey(1)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
