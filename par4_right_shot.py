@@ -333,7 +333,7 @@ if __name__ == "__main__":
                     shot_power = 19
                 Motion.shot("LEFT", shot_power)
             else:
-                Motion.shot("RIGHT", shot_power)
+                Motion.shot("RIGHT", 93) # TODO 오른쪽 샷 세기 조절
             if Robot.long_shot:
                 if shot_power < 14:
                     Robot.neck_pitch = 60

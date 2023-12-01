@@ -171,6 +171,8 @@ class Motion:
             self.TX_data_py3(30)
         elif leg_up and direction == "Right":
             self.TX_data_py3(54)
+            self.wait_unlock()
+            self.turn("RIGHT", 10)
         else:
             self.TX_data_py3(55)
         self.wait_unlock()
@@ -200,7 +202,7 @@ class Motion:
             if speed == 2:
                 self.TX_data_py3(82)
             else:
-                self.TX_data_py3(93) # 오른쪽으로 세게 치는 샷
+                self.TX_data_py3(speed) # 오른쪽으로 세게 치는 샷
         self.wait_unlock()
         return
 
