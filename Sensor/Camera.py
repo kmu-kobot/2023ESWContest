@@ -630,7 +630,7 @@ class Camera:
             return "L-turn", img, None
         
         cv2.line(img, (325,0), (522,480), (0,0,255), 1)
-        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (340,0), (580,480), (255,0,0), 1)
         cv2.line(img, (253,0), (470,480), (255,0,0), 1)
         
         # 5 degree
@@ -639,14 +639,14 @@ class Camera:
         
         # 10 degree
         cv2.line(img, (430,0), (522,480), (0,200,200), 1)
-        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        # cv2.line(img, (253,0), (522,480), (0,200,200), 1)
         
         # 20 degree
         cv2.line(img, (500,0), (522,480), (200,0,200), 1)
         cv2.line(img, (150,0), (522,480), (200,0,200), 1)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-121440+480*x)/217 > y > (-156000+480*x)/197):
+        if ret == True and ( (-121440+480*x)/217 > y > (-50400+160*x)/69):
             dist = ball_distance(70, y)
             if dist > 130:
                 power = 22
@@ -669,15 +669,15 @@ class Camera:
             else:
                 power = 11
             return "!!!Shot!!!", img, power
-        elif ret == True and y <= (-156000+480*x)/197:
+        elif ret == True and y <= (-50400+160*x)/69:
             if y < (-120000+240*x)/11:  
-                return "L-turn-20", img, None
+                return "L-turn", img, None
             elif y < (-51600+120*x)/23:
+                return "L-turn-20", img, None
+            elif y < (-81600+240*x)/91:
                 return "L-turn-10", img, None
-            # elif y < (-28800+80*x)/27:
-            #     return "L-turn-10", img, None
             else:
-                return "L-turn-5", img, None
+                return "L-turn-10", img, None
         elif ret == True and y >= (-121440+480*x)/217:
             if y > (-6000+40*x)/31:
                 return "R-turn-20", img, None
@@ -706,17 +706,17 @@ class Camera:
         cv2.line(img, (0, 320), (640, 320), (0,255,0), 2)
         cv2.line(img, (0, 400), (640, 400), (255,0,0), 2)
         
-        cv2.line(img, (265, 0), (265, 480), (255,0,0), 2)
+        cv2.line(img, (255, 0), (255, 480), (255,0,0), 2)
         cv2.line(img, (333, 0), (333, 480), (0,255,0), 2)
-        cv2.line(img, (410, 0), (410, 480), (255,0,0), 2)
+        cv2.line(img, (420, 0), (420, 480), (255,0,0), 2)
         # x center
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if ret == True and 250<y<400 and x<265:
+        if ret == True and 250<y<400 and x<255:
             return "!!!Shot!!!", img
-        elif ret == True and 250<y<400 and x>410:
+        elif ret == True and 250<y<400 and x>420:
             return "!!!R-Shot!!!", img
-        elif ret == True  and 250<=y<=400 and 265<=x<=410:
+        elif ret == True  and 250<=y<=400 and 255<=x<=420:
             return "!!!Goal!!!", img
         elif ret == True and y <= 250 and x<333:
             return "L-turn", img
