@@ -171,8 +171,6 @@ class Motion:
             self.TX_data_py3(30)
         elif leg_up and direction == "Right":
             self.TX_data_py3(54)
-            self.wait_unlock()
-            self.turn("RIGHT", 10)
         else:
             self.TX_data_py3(55)
         self.wait_unlock()
