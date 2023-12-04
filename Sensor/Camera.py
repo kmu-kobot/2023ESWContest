@@ -721,9 +721,9 @@ class Camera:
         elif ret == True and y <= 250 and x<333:
             return "L-turn", img
         elif ret == True and y <= 250 and x>=333:
-            return "R-turn", img
+            return "R-turn-20", img
         elif ret == True and 400 <= y and x<333:
-            return "R-turn", img
+            return "R-turn-20", img
         elif ret == True and 400 <= y and x>=333:
             return "L-turn", img
         else:
