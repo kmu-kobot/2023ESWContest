@@ -192,7 +192,7 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "FindBall":
             Motion.init()
             Motion.turn("LEFT", 45)
-            time.sleep(2)
+            time.sleep(1)
             Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
