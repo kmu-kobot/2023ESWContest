@@ -24,8 +24,8 @@ cv2.setMouseCallback('frame', mouse_callback)
 while True:
     img = numpy.zeros(shape=(480, 640, 3), dtype="uint8")
 
-    cv2.line(img, (325,0), (522,480), (0,0,255), 1)
-    cv2.line(img, (340,0), (580,480), (255,0,0), 1)
+    cv2.line(img, (300,0), (510,480), (0,0,255), 1)
+    cv2.line(img, (340,0), (522,480), (255,0,0), 1)
     cv2.line(img, (245,0), (465,480), (255,0,0), 1)
     
     # 5 degree
