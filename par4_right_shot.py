@@ -18,6 +18,7 @@ clockwise = "Left"
 shot_direction = "Left"
 shot_power = 8
 shot_roi = False
+r_turn_flag = False
 
 if __name__ == "__main__":
     
@@ -75,6 +76,16 @@ if __name__ == "__main__":
             elif 9.5 <= Robot.robot_ball_distance <= 11 and 330 < (xmin+xmax) // 2 < 370:
                 Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
+                if shot_count == 1 and not r_turn_flag:
+                    r_turn_flag = True
+                    Motion.circular_orbit("Right")
+                    Motion.crab("RIGHT")
+                    Motion.crab("RIGHT")
+                    Motion.circular_orbit("Right")
+                    Motion.crab("RIGHT")
+                    Motion.crab("RIGHT")
+                    Robot.curr_mission = "ApproachBall"
+                    Robot.is_ball = False # 다음 state는 approachball이지만 공이 없다고 설정했으므로 한 프레임 대기 
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
