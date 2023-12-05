@@ -169,6 +169,7 @@ if __name__ == "__main__":
                 shot_direction = "Right"
                 Robot.long_shot = True
                 Robot.curr_mission = "Shot"
+                shot_power = 91
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
@@ -340,7 +341,7 @@ if __name__ == "__main__":
                     shot_power = 19
                 Motion.shot("LEFT", shot_power)
             else:
-                Motion.shot("RIGHT", 91) # TODO 오른쪽 샷 세기 조절
+                Motion.shot("RIGHT", shot_power) # TODO 오른쪽 샷 세기 조절
             if Robot.long_shot:
                 if shot_power < 14:
                     Robot.neck_pitch = 60
