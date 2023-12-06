@@ -496,6 +496,77 @@ class Camera:
         if ret == False:
             return "L-turn", img, None
         
+        cv2.line(img, (344,0), (520,480), (0,0,255), 1)
+        cv2.line(img, (350,0), (560,480), (255,0,0), 1)
+        cv2.line(img, (338,0), (480,480), (255,0,0), 1)
+        
+        # 5 degree
+        cv2.line(img, (374,0), (520,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (520,480), (0,200,200), 1)
+        cv2.line(img, (250,0), (520,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (510,0), (520,480), (200,0,200), 1)
+        cv2.line(img, (140,0), (520,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-81120+240*x)/71 > y > (-5600+16*x)/7):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-5600+16*x)/7:
+            if y < (-24480+48*x):  
+                return "L-turn", img, None
+            elif y < (-6880+16*x)/3:
+                return "L-turn-20", img, None
+            elif y < (-89760+240*x)/73:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-81120+240*x)/71:
+            if y > (-3360+24*x)/19:
+                return "R-turn-20", img, None
+            elif y > (-4000+16*x)/9:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_preserve(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
         cv2.line(img, (325,0), (522,480), (0,0,255), 1)
         cv2.line(img, (333,0), (580,480), (255,0,0), 1)
         cv2.line(img, (318,0), (470,480), (255,0,0), 1)

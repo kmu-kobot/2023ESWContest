@@ -28,8 +28,8 @@ if __name__ == "__main__":
     
     Motion.initial()
     Motion.init(True)
-    Motion.neckup(70)
-    neck_before_find = 70
+    Motion.neckup(50)
+    neck_before_find = 50
     
     time.sleep(1)
 
@@ -197,10 +197,14 @@ if __name__ == "__main__":
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
             pass
         elif Robot.curr_mission == "FindBall":
-            Motion.init()
-            Motion.turn("LEFT", 45)
-            time.sleep(1)
-            Robot.neck_yaw = 0
+            if shot_count == 0 and Robot.neck_pitch != 70:
+                Robot.neck_pitch = 70
+                Motion.neckup(70)
+            else:
+                Motion.init()
+                Motion.turn("LEFT", 45)
+                time.sleep(1)
+                Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
             (xmin, ymin) = ballBox1
