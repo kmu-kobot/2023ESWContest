@@ -10,8 +10,12 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.lowerLimitP = np.array([116, 66, 113], dtype=np.uint8)
+        self.lowerLimitP = np.array([116, 62, 103], dtype=np.uint8)
         self.upperLimitP = np.array([179, 255, 255], dtype=np.uint8)
+
+        self.lowerLimitH = np.array([0, 44, 17], dtype=np.uint8)
+        self.upperLimitH = np.array([14, 255, 255], dtype=np.uint8)
+
         self.shotZone = [500, 600]
         # cv2.line(filtered_frame, (310,0), (550,480), (0,0,255), 2) => y = 2x - 620
         # cv2.line(filtered_frame, (335,0), (640,380), (0,0,255), 2) => 76x- 61y = 25460 => y = 76x-25460/61
@@ -48,7 +52,9 @@ class Camera:
     
     def hsvDetect(self, img):
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
+        mask1 = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
+        mask2 = cv2.inRange(hsvImg, self.lowerLimitH, self.upperLimitH)
+        mask = cv2.bitwise_or(mask1, mask2)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_density = -1
@@ -307,7 +313,7 @@ class Camera:
         if ret == True:
             x, y = point[0], point[1]
         else:
-            ret, x, y = self.holeDetect_close(img)
+            ret, x, y = self.holeDetect(img)
             
         if ret == False:
             return "R-turn", img, None
