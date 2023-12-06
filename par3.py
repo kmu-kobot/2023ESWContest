@@ -85,7 +85,7 @@ if __name__ == "__main__":
                 Motion.neckup(80)
                 time.sleep(1)
                 shortchecker = Camera.get_image()
-                Robot.shotzone, shortchecker = Camera.shortChecker_R(img)
+                Robot.shotzone, shortchecker = Camera.shortChecker_R(shortchecker)
                 cv2.imshow("IMG_ROI", shortchecker)
                 Robot.curr_mission = "ApproachBall"
                 if Robot.shotzone == "L-turn":
