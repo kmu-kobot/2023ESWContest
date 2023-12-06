@@ -83,6 +83,7 @@ if __name__ == "__main__":
                 shot_roi = False
                 neck_before_find = Robot.neck_pitch
                 Motion.neckup(80)
+                time.sleep(1)
                 shortchecker = Camera.get_image()
                 Robot.shotzone, shortchecker = Camera.shortChecker_R(img)
                 cv2.imshow("IMG_ROI", shortchecker)
