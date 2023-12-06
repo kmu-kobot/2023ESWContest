@@ -518,23 +518,23 @@ class Camera:
             if dist > 130:
                 power = 22
             elif dist > 110:
-                power = 20
+                power = 21
             elif dist > 80:
                 power = 20
             elif dist > 75:
-                power = 19
+                power = 20
             elif dist > 70:
-                power = 18
+                power = 19
             elif dist > 60:
-                power = 17
+                power = 18
             elif dist > 50:
-                power = 16
+                power = 17
             elif dist > 45:
-                power = 15
+                power = 16
             elif dist > 30:
-                power = 13
+                power = 15
             else:
-                power = 13
+                power = 15
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-5600+16*x)/7:
             if y < (-24480+48*x):  
