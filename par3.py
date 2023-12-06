@@ -15,7 +15,7 @@ plain_frame_count = 0
 clockwise = "Left"
 shot_direction = "Left"
 shot_power = 8
-r_turn_flag = False
+shot_roi = False
 
 if __name__ == "__main__":
     
@@ -73,20 +73,44 @@ if __name__ == "__main__":
             elif 9.5 <= Robot.robot_ball_distance <= 11 and 330 < (xmin+xmax) // 2 < 370:
                 Robot.curr_mission = "ShortCheck"
                 plain_frame_count = 0
-                if shot_count == 1 and not r_turn_flag:
-                    r_turn_flag = True
-                    Motion.circular_orbit_small("Right", 20)
-                    Motion.circular_orbit_small("Right", 20)
-                    Robot.curr_mission = "ApproachBall"
-                    Robot.is_ball = False # 다음 state는 approachball이지만 공이 없다고 설정했으므로 한 프레임 대기 
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
             else:
                 Robot.curr_mission = "ApproachBall"
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            Robot.shotzone, frame = Camera.shortChecker(img)
-            if Robot.shotzone == "!!!Shot!!!":
+            if shot_count == 2 and shot_roi:
+                shot_roi = False
+                neck_before_find = Robot.neck_pitch
+                Motion.neckup(80)
+                shortchecker = Camera.get_image()
+                Robot.shotzone, shortchecker = Camera.shortChecker_R(img)
+                cv2.imshow("IMG_ROI", shortchecker)
+                Robot.curr_mission = "ApproachBall"
+                if Robot.shotzone == "L-turn":
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LLL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LLLL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.crab("LEFT")
+                    Motion.crab("LEFT")
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                Motion.neckup(neck_before_find)
+                time.sleep(0.5)
+            else:
+                Robot.shotzone, frame = Camera.shortChecker(img)
+
+            if Robot.curr_mission == "ApproachBall":
+                pass
+            elif Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
@@ -163,6 +187,8 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "ApproachBall"
             shot_count += 1
+            if shot_count == 1:
+                shot_roi = True
         # 7. Ceremony
         else:
             print("미션 종료")
