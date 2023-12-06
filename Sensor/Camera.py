@@ -453,9 +453,9 @@ class Camera:
             elif dist > 45:
                 power = 15
             elif dist > 30:
-                power = 12
+                power = 13
             else:
-                power = 11
+                power = 13
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
             if y < (-120000+240*x)/11:  
@@ -524,9 +524,9 @@ class Camera:
             elif dist > 45:
                 power = 15
             elif dist > 30:
-                power = 12
+                power = 13
             else:
-                power = 11
+                power = 13
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
             if y < (-120000+240*x)/11:  
@@ -595,9 +595,9 @@ class Camera:
             elif dist > 45:
                 power = 15
             elif dist > 30:
-                power = 12
+                power = 13
             else:
-                power = 11
+                power = 13
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-159840+480*x)/247:
             if y < (-120000+240*x)/11:  
@@ -666,9 +666,9 @@ class Camera:
             elif dist > 45:
                 power = 15
             elif dist > 30:
-                power = 12
+                power = 13
             else:
-                power = 11
+                power = 13
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-50400+160*x)/69:
             if y < (-120000+240*x)/11:  
@@ -737,9 +737,9 @@ class Camera:
             elif dist > 45:
                 power = 15
             elif dist > 30:
-                power = 12
+                power = 13
             else:
-                power = 11
+                power = 13
             return "!!!Shot!!!", img, power
         elif ret == True and y <= (-4800+16*x)/7:
             if y < (-120000+240*x)/11:  
