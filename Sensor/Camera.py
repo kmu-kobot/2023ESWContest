@@ -222,8 +222,8 @@ class Camera:
         return False, (False, False)
         
     def preprocess(self,img):
-        lower_yellow = np.array([0, 48, 221])
-        upper_yellow = np.array([40, 255, 255])
+        lower_yellow = np.array([19, 120, 0])
+        upper_yellow = np.array([42, 255, 255])
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         yellow_mask = cv2.inRange(hsvImg, lower_yellow, upper_yellow)
 
