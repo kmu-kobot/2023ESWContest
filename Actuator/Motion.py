@@ -129,7 +129,7 @@ class Motion:
         serial_num = target_angle // 5 + 33
         self.TX_data_py3(serial_num)
         self.wait_unlock()
-        time.sleep(0.5)
+        time.sleep(0.3)
         return
 
     # 몸통 회전 LEFT, RIGHT 각각 5도, 10도, 20도, 45도, 60도

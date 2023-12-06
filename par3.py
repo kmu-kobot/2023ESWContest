@@ -79,7 +79,7 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            if shot_count == 2 and shot_roi:
+            if shot_count == 1 and shot_roi:
                 shot_roi = False
                 neck_before_find = Robot.neck_pitch
                 Motion.neckup(80)
