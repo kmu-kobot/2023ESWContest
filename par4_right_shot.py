@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
-                shot_power = 8
+                shot_power = 11
             elif Robot.shotzone == "!!!R-Shot!!!":
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
