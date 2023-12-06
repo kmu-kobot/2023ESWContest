@@ -28,8 +28,8 @@ if __name__ == "__main__":
     
     Motion.initial()
     Motion.init(True)
-    Motion.neckup(70)
-    neck_before_find = 70
+    Motion.neckup(50)
+    neck_before_find = 50
     
     time.sleep(1)
 
@@ -78,8 +78,8 @@ if __name__ == "__main__":
                 plain_frame_count = 0
                 if shot_count == 1 and not r_turn_flag:
                     r_turn_flag = True
-                    Motion.circular_orbit("Right")
-                    Motion.circular_orbit("Right")
+                    Motion.circular_orbit_small("Right", 20)
+                    Motion.circular_orbit_small("Right", 20)
                     Robot.curr_mission = "ApproachBall"
                     Robot.is_ball = False # 다음 state는 approachball이지만 공이 없다고 설정했으므로 한 프레임 대기 
             # 공이 shot 불가능한 위치에 있으면 공으로 다가간다
@@ -229,10 +229,14 @@ if __name__ == "__main__":
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
             pass
         elif Robot.curr_mission == "FindBall":
-            Motion.init()
-            Motion.turn("LEFT", 45)
-            time.sleep(1)
-            Robot.neck_yaw = 0
+            if shot_count == 0 and Robot.neck_pitch != 70:
+                Robot.neck_pitch = 70
+                Motion.neckup(70)
+            else:
+                Motion.init()
+                Motion.turn("LEFT", 45)
+                time.sleep(1)
+                Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
             (xmin, ymin) = ballBox1

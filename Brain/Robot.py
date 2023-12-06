@@ -7,7 +7,7 @@ class Robot:
         self.turn_angle = 5
 
         # humanoid variables
-        self.neck_pitch = 70 # 상하
+        self.neck_pitch = 50 # 상하
         self.neck_yaw = 0    # 좌우
         
         # object detection boolean variables
