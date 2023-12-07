@@ -79,7 +79,19 @@ if __name__ == "__main__":
                 plain_frame_count = 0
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
-            if shot_count == 1 and shot_roi:
+            Robot.shotzone, frame = Camera.shortChecker(img)
+
+            if Robot.shotzone == "!!!Shot!!!":
+                Robot.long_shot = False
+                Robot.curr_mission = "Shot"
+                shot_direction = "Left"
+                shot_power = 11
+            elif Robot.shotzone == "!!!R-Shot!!!":
+                Robot.long_shot = False
+                Robot.curr_mission = "Shot"
+                shot_direction = "Right"
+                shot_power = 2
+            elif Robot.shotzone == "NoHole" and shot_count == 1 and shot_roi:
                 shot_roi = False
                 neck_before_find = Robot.neck_pitch
                 Motion.neckup(80)
@@ -106,21 +118,6 @@ if __name__ == "__main__":
                     Motion.circular_orbit("Left", False)
                 Motion.neckup(neck_before_find)
                 time.sleep(0.5)
-            else:
-                Robot.shotzone, frame = Camera.shortChecker(img)
-
-            if Robot.curr_mission == "ApproachBall":
-                pass
-            elif Robot.shotzone == "!!!Shot!!!":
-                Robot.long_shot = False
-                Robot.curr_mission = "Shot"
-                shot_direction = "Left"
-                shot_power = 11
-            elif Robot.shotzone == "!!!R-Shot!!!":
-                Robot.long_shot = False
-                Robot.curr_mission = "Shot"
-                shot_direction = "Right"
-                shot_power = 2
             elif Robot.shotzone == "NoHole":
                 Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
