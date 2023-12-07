@@ -159,7 +159,7 @@ if __name__ == "__main__":
             elif shot_count == 1:
                 Robot.shotzone, frame, shot_power = Camera.longChecker_R(img)
             else:
-                Robot.shotzone, frame, shot_power = Camera.longChecker_close(img)
+                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
                 
             if Robot.shotzone == "!!!Shot!!!":
                 Robot.long_shot = True
