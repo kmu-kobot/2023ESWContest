@@ -82,11 +82,15 @@ if __name__ == "__main__":
             Robot.shotzone, frame = Camera.shortChecker(img)
 
             if Robot.shotzone == "!!!Shot!!!":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
                 shot_power = 11
             elif Robot.shotzone == "!!!R-Shot!!!":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
@@ -124,10 +128,14 @@ if __name__ == "__main__":
                 Motion.neck_pitch = 70
                 Motion.neckup(70)
             elif Robot.shotzone == "R-turn":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Right"
                 Robot.turn_angle = 100 # TODO Short Check turn angle 결정
             elif Robot.shotzone == "L-turn":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
                 Robot.turn_angle = 100 # TODO Short Check turn angle 결정
