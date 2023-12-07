@@ -270,8 +270,6 @@ if __name__ == "__main__":
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("BACK")
-                elif Robot.robot_ball_distance > 30 and shot_count==1:
-                    Motion.walk(True)
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
@@ -342,7 +340,7 @@ if __name__ == "__main__":
             Motion.view(0)
             if shot_direction == "Left":
                 if shot_count == 0:
-                    shot_power = 20
+                    shot_power = 18
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power) # TODO 오른쪽 샷 세기 조절

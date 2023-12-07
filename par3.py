@@ -313,7 +313,7 @@ if __name__ == "__main__":
             Motion.view(0)
             if shot_direction == "Left":
                 if shot_count == 0:
-                    shot_power = 17 # TODO 첫 샷 세기 수정
+                    shot_power = 15 # TODO 첫 샷 세기 수정
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)

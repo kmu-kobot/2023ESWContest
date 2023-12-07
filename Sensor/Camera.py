@@ -10,7 +10,7 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.lowerLimitP = np.array([116, 62, 103], dtype=np.uint8)
+        self.lowerLimitP = np.array([116, 40, 103], dtype=np.uint8)
         self.upperLimitP = np.array([179, 255, 255], dtype=np.uint8)
 
         self.lowerLimitH = np.array([0, 44, 17], dtype=np.uint8)
@@ -222,7 +222,7 @@ class Camera:
         return False, (False, False)
         
     def preprocess(self,img):
-        lower_yellow = np.array([19, 120, 0])
+        lower_yellow = np.array([19, 105, 0])
         upper_yellow = np.array([42, 255, 255])
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         yellow_mask = cv2.inRange(hsvImg, lower_yellow, upper_yellow)
