@@ -319,37 +319,33 @@ class Camera:
             return "R-turn", img, None
         
         cv2.line(img, (270,0), (120,480), (0,0,255), 1)
-        cv2.line(img, (315,0), (185,480), (255,0,0), 1)
-        cv2.line(img, (230,0), (45,480), (255,0,0), 1)
+        # cv2.line(img, (315,0), (185,480), (255,0,0), 1)
+        cv2.line(img, (150,0), (45,480), (255,0,0), 1)
 
         # 5 degree
         cv2.line(img, (350,0), (120,480), (200,200,0), 1)
-        cv2.line(img, (195,0), (120,480), (200,200,0), 1)
+        cv2.line(img, (110,0), (120,480), (200,200,0), 1)
 
         # 10 degree
         cv2.line(img, (400,0), (120,480), (0,200,200), 1)
-        cv2.line(img, (150,0), (120,480), (0,200,200), 1)
+        cv2.line(img, (0,0), (120,480), (0,200,200), 1)
 
         # 20 degree
         cv2.line(img, (480,0), (120,480), (200,0,200), 1)
-        cv2.line(img, (70,0), (120,480), (200,0,200), 1)
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         
-        if ret == True and ( (22080-96*x)/37 < y < (15120-48*x)/13):
+        if ret == True and ( ((4800-32*x)/7) < y < ((4320-16*x)/5) ):
             return "!!!R-Shot!!!", img, 20
-        #TODO 알맞게 찾아야함
-        elif ret == True and y <= (22080-96*x)/37:
-            if y > (6240-32*x)/5:  
+        elif ret == True and y <= (4800-32*x)/7:
+            if y < (-5280+48*x):  
                 return "R-turn-5", img, None
-            elif y > (2400-16*x):
-                return "R-turn-5", img, None
-            elif y > (-3360+48*x)/5:
-                return "R-turn", img, None
-            else:
+            elif y < (-4*x):
                 return "R-turn-10", img, None
-        elif ret == True and y >= (15120-48*x)/13:
-            if y < (16800-48*x)/23:
+            else:
+                return "R-turn-20", img, None
+        elif ret == True and y >= (4320-16*x)/5:
+            if y < (2400-8*x)/3:
                 return "L-turn-5", img, None
             elif y < (4800-12*x)/7:
                 return "L-turn-10", img, None
