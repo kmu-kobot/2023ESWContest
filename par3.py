@@ -15,7 +15,6 @@ plain_frame_count = 0
 clockwise = "Left"
 shot_direction = "Left"
 shot_power = 8
-shot_roi = False
 
 if __name__ == "__main__":
     
@@ -82,60 +81,25 @@ if __name__ == "__main__":
             Robot.shotzone, frame = Camera.shortChecker(img)
 
             if Robot.shotzone == "!!!Shot!!!":
-                if shot_count == 1 and shot_roi:
-                    shot_roi = False
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
                 shot_power = 11
             elif Robot.shotzone == "!!!R-Shot!!!":
-                if shot_count == 1 and shot_roi:
-                    shot_roi = False
                 Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
                 shot_power = 2
-            elif Robot.shotzone == "NoHole" and shot_count == 1 and shot_roi:
-                shot_roi = False
-                neck_before_find = Robot.neck_pitch
-                Motion.neckup(80)
-                time.sleep(1)
-                shortchecker = Camera.get_image()
-                Robot.shotzone, shortchecker = Camera.shortChecker_R(shortchecker)
-                cv2.imshow("IMG_ROI", shortchecker)
-                Robot.curr_mission = "ApproachBall"
-                if Robot.shotzone == "L-turn":
-                    Motion.circular_orbit("Left", False)
-                elif Robot.shotzone == "LL-turn":
-                    Motion.circular_orbit("Left", False)
-                    Motion.circular_orbit("Left", False)
-                elif Robot.shotzone == "LLL-turn":
-                    Motion.circular_orbit("Left", False)
-                    Motion.circular_orbit("Left", False)
-                    Motion.circular_orbit("Left", False)
-                elif Robot.shotzone == "LLLL-turn":
-                    Motion.circular_orbit("Left", False)
-                    Motion.circular_orbit("Left", False)
-                    Motion.crab("LEFT")
-                    Motion.crab("LEFT")
-                    Motion.circular_orbit("Left", False)
-                    Motion.circular_orbit("Left", False)
-                Motion.neckup(neck_before_find)
-                time.sleep(0.5)
             elif Robot.shotzone == "NoHole":
                 Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
                 Motion.neck_pitch = 70
                 Motion.neckup(70)
-            elif Robot.shotzone == "R-turn":
-                if shot_count == 1 and shot_roi:
-                    shot_roi = False
+            elif Robot.shotzone == "R-turn-20":
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Right"
-                Robot.turn_angle = 100 # TODO Short Check turn angle 결정
+                Robot.turn_angle = 20 # TODO Short Check turn angle 결정
             elif Robot.shotzone == "L-turn":
-                if shot_count == 1 and shot_roi:
-                    shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
                 Robot.turn_angle = 100 # TODO Short Check turn angle 결정
@@ -193,8 +157,6 @@ if __name__ == "__main__":
             # shot을 하면 다음 shot을 위해 공을 찾는다
             Robot.curr_mission = "ApproachBall"
             shot_count += 1
-            if shot_count == 1:
-                shot_roi = True
         # 7. Ceremony
         else:
             print("미션 종료")
