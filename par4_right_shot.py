@@ -148,9 +148,11 @@ if __name__ == "__main__":
                 Motion.neck_pitch = 70
                 Motion.neckup(70)
             elif Robot.shotzone == "R-turn-20":
+                if shot_count == 2 and shot_roi:
+                    shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
-                clockwise = "Right"
-                Robot.turn_angle = 20 # TODO Short Check turn angle 결정
+                clockwise = "Left"
+                Robot.turn_angle = 200 # TODO Short Check turn angle 결정
             elif Robot.shotzone == "L-turn":
                 if shot_count == 2 and shot_roi:
                     shot_roi = False
@@ -176,7 +178,7 @@ if __name__ == "__main__":
                 shot_direction = "Right"
                 Robot.long_shot = True
                 Robot.curr_mission = "Shot"
-                shot_power = 91
+                shot_power = 85
             else:
                 Robot.curr_mission = "ApproachGoal"
                 Robot.neck_pitch = neck_before_find
@@ -329,7 +331,13 @@ if __name__ == "__main__":
             time.sleep(1)
             # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
             if clockwise == "Left":
-                if Robot.turn_angle == 100:
+                if Robot.turn_angle == 200:
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.step("BACK")
+                    Motion.step("BACK")
+                    Motion.circular_orbit("Left", False)
+                elif Robot.turn_angle == 100:
                     Motion.circular_orbit("Left", False)
                 else:
                     Motion.circular_orbit_small("Left", Robot.turn_angle)
