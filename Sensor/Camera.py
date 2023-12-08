@@ -3,7 +3,6 @@ from Brain.Robot_ball_distance import ball_distance
 import cv2
 import numpy as np
 import time
-import math
 from PIL import Image
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
@@ -11,8 +10,12 @@ from imutils.video import FPS
 class Camera:
     def __init__(self):
         # 카메라 설정
-        self.lowerLimitP = np.array([141, 27, 54], dtype=np.uint8)
-        self.upperLimitP = np.array([179,244,255], dtype=np.uint8)
+        self.lowerLimitP = np.array([116, 40, 103], dtype=np.uint8)
+        self.upperLimitP = np.array([179, 255, 255], dtype=np.uint8)
+
+        self.lowerLimitH = np.array([0, 44, 17], dtype=np.uint8)
+        self.upperLimitH = np.array([14, 255, 255], dtype=np.uint8)
+
         self.shotZone = [500, 600]
         # cv2.line(filtered_frame, (310,0), (550,480), (0,0,255), 2) => y = 2x - 620
         # cv2.line(filtered_frame, (335,0), (640,380), (0,0,255), 2) => 76x- 61y = 25460 => y = 76x-25460/61
@@ -49,7 +52,9 @@ class Camera:
     
     def hsvDetect(self, img):
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
+        mask1 = cv2.inRange(hsvImg, self.lowerLimitP, self.upperLimitP)
+        mask2 = cv2.inRange(hsvImg, self.lowerLimitH, self.upperLimitH)
+        mask = cv2.bitwise_or(mask1, mask2)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
         max_density = -1
@@ -64,7 +69,7 @@ class Camera:
             if density > min_density and area > max_area:
                 max_area = area
                 max_area_idx = i
-        if max_area < 50:
+        if max_area < 10:
                 max_area_idx = -1
         if max_area_idx != -1:
             x1, y1, w, h, _ = stats[max_area_idx]
@@ -75,31 +80,23 @@ class Camera:
     
     # 홀 인식
     def is_hole(self, img):
-        img2 = img.copy()
-        
-        #이미지를 HSV 색 공간으로 변환
-        hsv = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
-        
-        #노란색 추출 마스크
-        lower_yellow = np.array([0, 48, 221])
-        upper_yellow = np.array([40, 255, 255])
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        mask = self.preprocess(img)
 
         detector = cv2.SimpleBlobDetector_create() # 개체 검출 객체 생성
         params = cv2.SimpleBlobDetector_Params()   # 파라미터 설정 객체(크기, 원형도, 관성 비율)
 
         # Area
         params.filterByArea = True
-        params.minArea = 250  # 최소 홀 크기
+        params.minArea = 90  # 최소 홀 크기
         params.maxArea = 500000000  # 최대 홀 크기
 
         # Circularity
         params.filterByCircularity = True
-        params.minCircularity = 0.2  # 최소 원형도
+        params.minCircularity = 0.1  # 최소 원형도
 
         # Convexity
         params.filterByConvexity = True
-        params.minConvexity = 0.1
+        params.minConvexity = 0.03
 
         # Inertia
         params.filterByInertia = True
@@ -124,38 +121,109 @@ class Camera:
     
     # hall detect v2
     def holeDetect(self, img):
-        lower_bound = np.array([0, 48, 221])
-        upper_bound = np.array([40, 255, 255])
-        hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsvImg, lower_bound, upper_bound)
+        mask = self.preprocess(img)
         # cv2.imshow("Frame", mask)
         # cv2.waitKey(1)
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
         max_area = -1
-        max_density = -1
         max_area_idx = -1
         # 노이즈를 잡기 위한 최소한의 밀집도
-        min_density = 0.2  # 예시: 50% 이상의 픽셀이 1이어야 함
+        min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
 
         for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
             area = stats[i,cv2.CC_STAT_AREA]
             density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
-
-            if density > min_density and area > max_area:
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            
+            if density > min_density and area > 30 and area > max_area:
                 max_area = area
                 max_area_idx = i
-        if max_area < 100:
-                max_area_idx = -1
         if max_area_idx != -1:
             x1, y1, w, h, _ = stats[max_area_idx]
-            x2, y2 = x1 + w, y1 + h
+            x, y = x1 + w/2, y1 + h/2
             # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
-            return True, (x1, y1, x2, y2)
-        return False, (False, False, False, False)
+            return True, int(x), int(y)
+        return False, False, False
+    
+    def holeDetect_far(self, img):
+        mask = self.preprocess(img)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        max_area = -1
+        max_dist_idx = -1
+        max_dist = 1000
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            area = stats[i,cv2.CC_STAT_AREA]
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            if density > min_density and area > 5 and dist < max_dist:
+                max_dist = dist
+                max_dist_idx = i
+        if max_dist_idx != -1:
+            x1, y1, w, h, _ = stats[max_dist_idx]
+            x, y = x1 + w/2, y1 + h
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, int(x), int(y)
+        return False, False, False
+    
+    def holeDetect_close(self, img):
+        mask = self.preprocess(img)
+        # cv2.imshow("Frame", mask)
+        # cv2.waitKey(1)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        max_area = -1
+        min_dist_idx = -1
+        min_dist = -1
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            area = stats[i,cv2.CC_STAT_AREA]
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            if density > min_density and area > 10 and dist > min_dist:
+                min_dist = dist
+                min_dist_idx = i
+        if min_dist_idx != -1:
+            x1, y1, w, h, _ = stats[min_dist_idx]
+            x, y = x1 + w/2, y1 + h
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, int(x), int(y)
+        return False, False, False
+    
+    def holeDetect_center(self, img):
+        mask = self.preprocess(img)
+        # cv2.imshow("Frame", mask)
+        # cv2.waitKey(1)
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        max_area = -1
+        max_area_idx = -1
+        # 노이즈를 잡기 위한 최소한의 밀집도
+        min_density = 0.1  # 예시: 50% 이상의 픽셀이 1이어야 함
+
+        for i in range(1, num_labels):  # 0번은 배경이므로 무시합니다.
+            area = stats[i,cv2.CC_STAT_AREA]
+            density = stats[i, cv2.CC_STAT_AREA] / (stats[i, cv2.CC_STAT_WIDTH] * stats[i, cv2.CC_STAT_HEIGHT])
+            x, y, w, h, _ = stats[i]
+            dist = y + h
+            if density > min_density and area > 8000 and area > max_area:
+                max_area = area
+                max_area_idx = i
+        if max_area_idx != -1:
+            x1, y1, w, h, _ = stats[max_area_idx]
+            x, y = x1 + w/2, y1 + h/2
+            # img = cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 4)
+            return True, (int(x), int(y))
+        return False, (False, False)
         
     def preprocess(self,img):
-        lower_yellow = np.array([0, 48, 221])
-        upper_yellow = np.array([40, 255, 255])
+        lower_yellow = np.array([19, 105, 0])
+        upper_yellow = np.array([42, 255, 255])
         hsvImg = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         yellow_mask = cv2.inRange(hsvImg, lower_yellow, upper_yellow)
 
@@ -220,13 +288,6 @@ class Camera:
                 rightmost_point = (x + w, y + h)
 
         return ret, leftmost_point, rightmost_point
-        
-    # 카메라와 공, 카메라와 홀 사이의 거리를 알 때 공과 홀 사이의 거리 계산
-    def ball_hole(self, ball, hole, neck_angle):
-        # neck angle은 60 or 80
-        neck_angle = math.radians(neck_angle)
-        ball_hole = math.sqrt(ball**2 + hole**2 - 2*ball*hole*math.cos(neck_angle))
-        return ball_hole
     
     # 공 인식
     def cvCircleDetect(self, img):
@@ -244,70 +305,665 @@ class Camera:
                 return True, [int(x-radius), int(y-radius), int(x+radius), int(y+radius)]
         return False, [False, False, False, False]
     
-    def longChecker(self, img):
-        ret, xyxy = self.holeDetect(img)
+    def longChecker_R(self, img):
+        for y in range(100,480):
+            img[y, :, :] = 0
+            
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
+        if ret == False:
+            return "R-turn", img, None
+        
+        cv2.line(img, (230,0), (120,480), (0,0,255), 1)
+        # cv2.line(img, (315,0), (185,480), (255,0,0), 1)
+        cv2.line(img, (150,0), (45,480), (255,0,0), 1)
+
+        # 5 degree
+        cv2.line(img, (310,0), (120,480), (200,200,0), 1)
+        cv2.line(img, (110,0), (120,480), (200,200,0), 1)
+
+        # 10 degree
+        cv2.line(img, (360,0), (120,480), (0,200,200), 1)
+        cv2.line(img, (0,0), (120,480), (0,200,200), 1)
+
+        # 20 degree
+        cv2.line(img, (460,0), (120,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        
+        if ret == True and ( ((4800-32*x)/7) < y < ((11040-48*x)/11) ):
+            return "!!!R-Shot!!!", img, 20
+        elif ret == True and y <= (4800-32*x)/7:
+            if y < (-5280+48*x):  
+                return "R-turn-5", img, None
+            elif y < (-4*x):
+                return "R-turn-10", img, None
+            else:
+                return "R-turn-20", img, None
+        elif ret == True and y >= (11040-48*x)/11:
+            if y < (14880-48*x)/19:
+                return "L-turn-5", img, None
+            elif y < (720-2*x):
+                return "L-turn-10", img, None
+            elif y < (11040-24*x)/17:
+                return "L-turn-20", img, None
+            else:
+                return "L-turn", img, None
+        else:
+            return "R-turn", img, None
+    
+    def longChecker_R_accurate(self, img):
+        # ROI
+        for y in range(100,480):
+            img[y, :, :] = 0
+            
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_close(img)
+            
+        if ret == False:
+            return "R-turn", img, None
+        
+        cv2.line(img, (324,0), (120,480), (0,0,255), 1)
+        cv2.line(img, (330,0), (150,480), (255,0,0), 1)
+        cv2.line(img, (318,0), (90,480), (255,0,0), 1)
+        # 5 degree
+        cv2.line(img, (390,0), (120,480), (200,200,0), 1)
+        # cv2.line(img, (260,0), (120,480), (200,200,0), 1)
+        # 10 degree
+        cv2.line(img, (460,0), (120,480), (0,200,200), 1)
+        cv2.line(img, (240,0), (120,480), (0,200,200), 1)
+        # 20 degree
+        cv2.line(img, (520,0), (120,480), (200,0,200), 1)
+        cv2.line(img, (180,0), (120,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        
+        if ret == True and ( (12720-40*x)/19 < y < (2640-8*x)/3):
+            return "!!!R-Shot!!!", img, 20
+        elif ret == True and y <= (12720-40*x)/19:
+            if y > (960-4*x):  
+                return "R-turn-5", img, None
+            elif y > (1440-8*x):
+                return "R-turn-10", img, None
+            # elif y > (1440-8*x):
+            #     return "R-turn-20", img, None
+            else:
+                return "R-turn-20", img, None
+        elif ret == True and y >= (2640-8*x)/3:
+            if y < (6240-16*x)/9:
+                return "L-turn-5", img, None
+            elif y < (11040-24*x)/17:
+                return "L-turn-10", img, None
+            elif y < (3120-6*x)/5:
+                return "L-turn-20", img, None
+            else:
+                return "L-turn", img, None
+        else:
+            return "R-turn", img, None
+        
+    def longChecker_par3_first_shot(self, img):
+        for y in range(70,480):
+            img[y, :, :] = 0
+
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
         if ret == False:
             return "L-turn", img, None
-        x1, y1, x2, y2 = xyxy
-        x = int((x1 + x2)/2)
-        y = int((y1 + y2)/2)
-        cv2.line(img, (325,0), (522,480), (0,0,255), 2)
-        cv2.line(img, (335,0), (595,480), (255,0,0), 2)
-        cv2.line(img, (313,0), (447,480), (255,0,0), 2)
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (340,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (310,0), (470,480), (255,0,0), 1)
+        
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (150,0), (522,480), (200,0,200), 1)
+        
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
-        if ret == True and ( (-75120+240*x)/67 > y > (-8040+24*x)/13):
+        if ret == True and ( (-930+3*x) > y > (-680+2*x)):
             dist = ball_distance(70, y)
-            if dist > 125:
-                power = 12
-            elif dist > 85:
-                power = 11
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
             elif dist > 50:
-                power = 10
-            elif dist > 40:
-                power = 8
+                power = 16
+            elif dist > 45:
+                power = 15
             elif dist > 30:
-                power = 7
-            elif dist > 20:
-                power = 6
+                power = 13
             else:
-                power = 2 
+                power = 13
             return "!!!Shot!!!", img, power
-        elif ret == True and y > (-75120+240*x)/67:
-            return "R-turn", img, None
+        elif ret == True and y <= (-680+2*x):
+            if y < (-120000+240*x)/11:  
+                return "L-turn-20", img, None
+            elif y < (-51600+120*x)/23:
+                return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-930+3*x):
+            if y > (-6000+40*x)/31:
+                return "R-turn-20", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+        
+    def longChecker(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (344,0), (520,480), (0,0,255), 1)
+        cv2.line(img, (350,0), (560,480), (255,0,0), 1)
+        cv2.line(img, (338,0), (480,480), (255,0,0), 1)
+        
+        # 5 degree
+        cv2.line(img, (374,0), (520,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (520,480), (0,200,200), 1)
+        cv2.line(img, (250,0), (520,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (510,0), (520,480), (200,0,200), 1)
+        cv2.line(img, (140,0), (520,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-81120+240*x)/71 > y > (-5600+16*x)/7):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 20
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 20
+            elif dist > 70:
+                power = 19
+            elif dist > 60:
+                power = 18
+            elif dist > 50:
+                power = 17
+            elif dist > 45:
+                power = 16
+            elif dist > 30:
+                power = 15
+            else:
+                power = 15
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-5600+16*x)/7:
+            if y < (-24480+48*x):  
+                return "L-turn", img, None
+            elif y < (-6880+16*x)/3:
+                return "L-turn-20", img, None
+            elif y < (-89760+240*x)/73:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-81120+240*x)/71:
+            if y > (-3360+24*x)/19:
+                return "R-turn-20", img, None
+            elif y > (-4000+16*x)/9:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_preserve(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (318,0), (470,480), (255,0,0), 1)
+        
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (150,0), (522,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-19080+60*x)/19 > y > (-159840+480*x)/247):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn-20", img, None
+            elif y < (-51600+120*x)/23:
+                return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-19080+60*x)/19:
+            if y > (-6000+40*x)/31:
+                return "R-turn-20", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_far(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_far(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (318,0), (470,480), (255,0,0), 1)
+        
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (150,0), (522,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-19080+60*x)/19 > y > (-159840+480*x)/247):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn-20", img, None
+            elif y < (-51600+120*x)/23:
+                return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-19080+60*x)/19:
+            if y > (-6000+40*x)/31:
+                return "R-turn-20", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_close(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_close(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (325,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (333,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (318,0), (470,480), (255,0,0), 1)
+        
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (150,0), (522,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-19080+60*x)/19 > y > (-159840+480*x)/247):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-159840+480*x)/247:
+            if y < (-120000+240*x)/11:  
+                return "L-turn-20", img, None
+            elif y < (-51600+120*x)/23:
+                return "L-turn-10", img, None
+            # elif y < (-28800+80*x)/27:
+            #     return "L-turn-10", img, None
+            else:
+                return "L-turn-5", img, None
+        elif ret == True and y >= (-19080+60*x)/19:
+            if y > (-6000+40*x)/31:
+                return "R-turn-20", img, None
+            elif y > (-121440+480*x)/269:
+                return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-5", img, None
+        else:
+            return "L-turn", img, None
+        
+    def longChecker_gamble_firstshot(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_close(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        # cv2.line(img, (315,0), (522,480), (0,0,255), 1)
+        cv2.line(img, (340,0), (522,480), (255,0,0), 1)
+        cv2.line(img, (245,0), (465,480), (255,0,0), 1)
+
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        cv2.line(img, (200,0), (522,480), (200,200,0), 1)
+
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        cv2.line(img, (90,0), (522,480), (0,200,200), 1)
+
+        # 20 degree
+        cv2.line(img, (570,0), (522,480), (200,0,200), 1)
+        # cv2.line(img, (0,0), (522,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-5880+24*x)/11 > y > (-81600+240*x)/91):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-81600+240*x)/91:
+            if y > (5700-10*x):  
+                return "L-turn", img, None
+            else:
+                if y > (-51600+120*x)/23:
+                    return "L-turn-5", img, None
+                else:
+                    return "L-turn-10", img, None
+        elif ret == True and y >= (-5880+24*x)/11:
+            if y < (-48000+240*x)/161:
+                return "R-turn-5", img, None
+            # elif y > (-121440+480*x)/269:
+            #     return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            elif y < (-900+10*x)/9:
+                return "R-turn-10", img, None
+            else:
+                return "R-turn-20", img, None
+        else:
+            return "L-turn", img, None
+    
+    def longChecker_gamble_firstshot_plus(self, img):
+        ret, point = self.is_hole(img)
+        if ret == True:
+            x, y = point[0], point[1]
+        else:
+            ret, x, y = self.holeDetect_close(img)
+            
+        if ret == False:
+            return "L-turn", img, None
+        
+        cv2.line(img, (300,0), (510,480), (0,0,255), 1)
+        cv2.line(img, (340,0), (580,480), (255,0,0), 1)
+        cv2.line(img, (245,0), (465,480), (255,0,0), 1)
+        
+        # 5 degree
+        #cv2.line(img, (360,0), (522,480), (200,200,0), 1)
+        #cv2.line(img, (295,0), (522,480), (200,200,0), 1)
+        
+        # 10 degree
+        cv2.line(img, (430,0), (522,480), (0,200,200), 1)
+        # cv2.line(img, (253,0), (522,480), (0,200,200), 1)
+        
+        # 20 degree
+        cv2.line(img, (500,0), (522,480), (200,0,200), 1)
+        cv2.line(img, (150,0), (522,480), (200,0,200), 1)
+        
+        cv2.circle(img, (x,y), 3, (0,255,0), 3)
+        if ret == True and ( (-5880+24*x)/11 > y > (-4800+16*x)/7):
+            dist = ball_distance(70, y)
+            if dist > 130:
+                power = 22
+            elif dist > 110:
+                power = 20
+            elif dist > 80:
+                power = 20
+            elif dist > 75:
+                power = 19
+            elif dist > 70:
+                power = 18
+            elif dist > 60:
+                power = 17
+            elif dist > 50:
+                power = 16
+            elif dist > 45:
+                power = 15
+            elif dist > 30:
+                power = 13
+            else:
+                power = 13
+            return "!!!Shot!!!", img, power
+        elif ret == True and y <= (-4800+16*x)/7:
+            if y < (-120000+240*x)/11:  
+                return "L-turn", img, None
+            elif y < (-51600+120*x)/23:
+                return "L-turn-20", img, None
+            elif y < (-81600+240*x)/91:
+                return "L-turn-10", img, None
+            else:
+                return "L-turn-10", img, None
+        elif ret == True and y >= (-5880+24*x)/11:
+            if y > (-6000+40*x)/31:
+                return "R-turn-20", img, None
+            # elif y > (-121440+480*x)/269:
+            #     return "R-turn-10", img, None
+            # elif y > (-141600+480*x)/227:
+            #     return "R-turn-10", img, None
+            else:
+                return "R-turn-10", img, None
         else:
             return "L-turn", img, None
     
     def shortChecker(self, img):
         ret, (x, y) = self.is_hole(img)
         if ret == False:
-            return "NoHole", img
+            ret, [x, y] = self.is_arrow(img)
+            if ret == True:
+                return "NoHole", img
+            else:
+                ret, (x, y) = self.holeDetect_center(img)
+                if ret == False:
+                    return "NoHole", img
+
         # shot y boundary
-        cv2.line(img, (0, 260), (640, 260), (255,0,0), 2)
+        cv2.line(img, (0, 250), (640, 250), (255,0,0), 2)
         cv2.line(img, (0, 320), (640, 320), (0,255,0), 2)
         cv2.line(img, (0, 400), (640, 400), (255,0,0), 2)
         
-        cv2.line(img, (265, 0), (265, 480), (255,0,0), 2)
+        cv2.line(img, (255, 0), (255, 480), (255,0,0), 2)
         cv2.line(img, (333, 0), (333, 480), (0,255,0), 2)
-        cv2.line(img, (410, 0), (410, 480), (255,0,0), 2)
+        cv2.line(img, (420, 0), (420, 480), (255,0,0), 2)
         # x center
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if ret == True and 260<y<400 and x<265:
+        if ret == True and 250<y<400 and x<252:
             return "!!!Shot!!!", img
-        elif ret == True and 260<y<400 and x>410:
+        elif ret == True and 250<y<400 and x>423:
             return "!!!R-Shot!!!", img
-        elif ret == True  and 260<=y<=400 and 265<=x<=410:
+        elif ret == True  and 242<=y<=408 and 252<=x<=423:
             return "!!!Goal!!!", img
-        elif ret == True and y <= 260 and x<333:
+        elif ret == True and y <= 250 and x<333:
             return "L-turn", img
-        elif ret == True and y <= 260 and x>=333:
-            return "R-turn", img
+        elif ret == True and y <= 250 and x>=333:
+            return "R-turn-20", img
         elif ret == True and 400 <= y and x<333:
-            return "R-turn", img
+            return "R-turn-20", img
         elif ret == True and 400 <= y and x>=333:
             return "L-turn", img
         else:
             return "NoHole", img
+        
+    def shortChecker_R(self, img):
+        ret, x, y = self.holeDetect(img)
+        if ret == False:
+            return "NoHole", img
+
+        # shot y boundary
+        cv2.line(img, (280, 0), (280, 480), (255,0,0), 2)
+        cv2.line(img, (560, 0), (560, 480), (255,0,0), 2)
+        
+        cv2.circle(img, (x,y), 3, (0,0,255), 3)
+        if x<280:
+            return "LLL-turn", img
+        elif x<560:
+            return "LLL-turn", img
+        else:
+            return "LLLL-turn", img
     
 if __name__ == "__main__":
     camera = Camera()

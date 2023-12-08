@@ -2,22 +2,6 @@ import serial
 import time
 from threading import Thread
 
-'''
-Motion = {"SIGNAL":{"INIT":26},
-          "VIEW":{"LEFT90":17, "LEFT45":28,        # 목각도
-                  "RIGHT90":27,"RIGHT45":30,
-                  "CENTER":21},
-          "WALK":{"LEFT70":14, "LEFT20":15,
-                  "RIGHT70":13,"RIGHT20":20,       # 70연속, 20
-                  "FORWARD":10,"BACKWARD":32,      # 종종 걸음
-                  "GOFORWARD":11,"GOBACKWARD":32}, # 연속 걸음
-          "SHOT":{"LEFT":2, "RIGHT":5},
-          "TURN":{"LEFT5":1, "LEFT10":4, "LEFT20":7, "LEFT45":22, "LEFT60":25,
-                  "RIGHT5":3,"RIGHT10":6,"RIGHT20":9, "RIGHT45":24,"RIGHT60":19}
-          }
-'''
-
-
 class Motion:
     def __init__(self):
         self.Read_RX = 0
@@ -97,19 +81,23 @@ class Motion:
         return
 
     # 연속 걸음
-    def walk(self):
-        self.TX_data_py3(11)
+    def walk(self, fast = False):
+        if not fast:
+            self.TX_data_py3(11)
+        else:
+            self.TX_data_py3(10)
         return
 
     # 한 걸음
     def step(self, direction="FRONT", stride="small"):
         if direction == "FRONT" and stride == "small":  # 앞으로 한 걸음
-            self.TX_data_py3(5)
+            self.TX_data_py3(36)
         elif direction == "FRONT" and stride == "big":  # 앞으로 2cm 한 걸음
-            self.TX_data_py3(37)
+            self.TX_data_py3(5)
         else:                                           # 뒤로 한 걸음
             self.TX_data_py3(39)
         self.wait_unlock()
+        time.sleep(0.5)
         return
 
     # 좌우 게걸음
@@ -141,6 +129,7 @@ class Motion:
         serial_num = target_angle // 5 + 33
         self.TX_data_py3(serial_num)
         self.wait_unlock()
+        time.sleep(0.3)
         return
 
     # 몸통 회전 LEFT, RIGHT 각각 5도, 10도, 20도, 45도, 60도
@@ -170,6 +159,11 @@ class Motion:
         self.wait_unlock()
         return
 
+    def eagle(self):
+        self.TX_data_py3(89)
+        self.wait_unlock()
+        return
+    
     # 공을 중심으로 원 궤도로 회전
     def circular_orbit(self, direction = "Left", leg_up = True):
         if leg_up and direction == "Left":
@@ -178,11 +172,28 @@ class Motion:
             self.TX_data_py3(30)
         elif leg_up and direction == "Right":
             self.TX_data_py3(54)
+            self.wait_unlock()
+            self.crab("RIGHT")
         else:
             self.TX_data_py3(55)
         self.wait_unlock()
         return
 
+    # 공을 중심으로 원 궤도로 작게 회전
+    def circular_orbit_small(self, direction = "Left", angle = 5):
+        if direction == "Left":
+            # self.TX_data_py3(86)
+            self.turn("RIGHT", angle)
+            for _ in range(angle // 5):
+                self.crab("LEFT")
+        else:
+            # self.TX_data_py3(87) # 비추
+            self.turn("LEFT", angle)
+            for _ in range(angle // 5):
+                self.crab("RIGHT")
+        self.wait_unlock()
+        return
+    
     # shot
     def shot(self, direction = "LEFT", speed = 8):
         if direction == "LEFT": # 57(약한 샷) ~ 67(강한 샷)
@@ -190,19 +201,20 @@ class Motion:
             self.TX_data_py3(motion_num) # default 세기 63
         else:
             if speed == 2:
-                self.TX_data_py3(69)
+                self.TX_data_py3(82)
             else:
-                self.TX_data_py3(68)
+                self.TX_data_py3(speed) # 오른쪽으로 세게 치는 샷
         self.wait_unlock()
         return
 
     def ceremony(self):
-        self.TX_data_py3(70)
+        self.TX_data_py3(83)
         self.wait_unlock()
         return
     
 if __name__ == '__main__':
     Motion = Motion()
     Motion.initial()
+    Motion.view(-90)
     time.sleep(7)
     pass

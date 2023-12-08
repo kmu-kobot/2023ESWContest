@@ -22,7 +22,6 @@ Motion.wait_unlock()
 def empty_callback(x):
     pass
 
-cap = cv2.VideoCapture(0)
 
 cv2.namedWindow('Video')
 
@@ -37,9 +36,7 @@ cv2.createTrackbar('Saturation Max', 'Video', s_max, 255, empty_callback)
 cv2.createTrackbar('Value Max', 'Video', v_max, 255, empty_callback)
 
 while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    frame = Camera.get_image()
 
     h_min = cv2.getTrackbarPos('Hue Min', 'Video')
     s_min = cv2.getTrackbarPos('Saturation Min', 'Video')
@@ -55,6 +52,21 @@ while True:
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
 
     filtered_frame = cv2.bitwise_and(frame, frame, mask=mask)
+    cv2.line(frame, (344,0), (520,480), (0,0,255), 1)
+    cv2.line(frame, (350,0), (560,480), (255,0,0), 1)
+    cv2.line(frame, (338,0), (480,480), (255,0,0), 1)
+    
+    # 5 degree
+    cv2.line(frame, (374,0), (520,480), (200,200,0), 1)
+    #cv2.line(frame, (314,0), (520,480), (200,200,0), 1)
+    
+    # 10 degree
+    cv2.line(frame, (430,0), (520,480), (0,200,200), 1)
+    cv2.line(frame, (250,0), (520,480), (0,200,200), 1)
+    
+    # 20 degree
+    cv2.line(frame, (510,0), (520,480), (200,0,200), 1)
+    cv2.line(frame, (140,0), (520,480), (200,0,200), 1)
 
     cv2.imshow('Frame', filtered_frame)
 

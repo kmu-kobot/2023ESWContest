@@ -1,3 +1,6 @@
+# par3 기울기 없을 때
+# 목표: 홀인원
+
 from Actuator.Motion import Motion
 from Sensor.Camera import Camera
 from Brain.Robot import Robot
@@ -12,6 +15,7 @@ plain_frame_count = 0
 clockwise = "Left"
 shot_direction = "Left"
 shot_power = 8
+shot_roi = False
 
 if __name__ == "__main__":
     
@@ -21,8 +25,8 @@ if __name__ == "__main__":
     
     Motion.initial()
     Motion.init(True)
-    Motion.neckup(70)
-    neck_before_find = 70
+    Motion.neckup(50)
+    neck_before_find = 50
     
     time.sleep(1)
 
@@ -38,6 +42,7 @@ if __name__ == "__main__":
         # Robot.shotzone, hole_frame = Camera.shotzoneChecker(img)
 
         if Robot.is_ball:
+            plain_frame_count = 0
             cv2.rectangle(frame, ballBox1, ballBox2, (0,0,255), 2)
         # if Robot.is_bunker:
         #     cv2.circle(frame, (bunkerL, 5, (255,255,255), -1))
@@ -75,31 +80,80 @@ if __name__ == "__main__":
         # 3. ShortCheck
         elif Robot.curr_mission == "ShortCheck":
             Robot.shotzone, frame = Camera.shortChecker(img)
+
             if Robot.shotzone == "!!!Shot!!!":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
+                Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
-                shot_power = 3
+                shot_power = 11
             elif Robot.shotzone == "!!!R-Shot!!!":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
+                Robot.long_shot = False
                 Robot.curr_mission = "Shot"
                 shot_direction = "Right"
                 shot_power = 2
+            elif Robot.shotzone == "NoHole" and shot_count == 1 and shot_roi:
+                shot_roi = False
+                neck_before_find = Robot.neck_pitch
+                Motion.neckup(80)
+                time.sleep(1)
+                shortchecker = Camera.get_image()
+                Robot.shotzone, shortchecker = Camera.shortChecker_R(shortchecker)
+                cv2.imshow("IMG_ROI", shortchecker)
+                Robot.curr_mission = "ApproachBall"
+                if Robot.shotzone == "L-turn":
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LLL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.step("BACK")
+                    Motion.step("BACK")
+                    Motion.circular_orbit("Left", False)
+                elif Robot.shotzone == "LLLL-turn":
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.crab("LEFT")
+                    Motion.crab("LEFT")
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                Motion.neckup(neck_before_find)
+                time.sleep(0.5)
             elif Robot.shotzone == "NoHole":
                 Robot.curr_mission = "LongCheck"
                 neck_before_find = Robot.neck_pitch
                 Motion.neck_pitch = 70
                 Motion.neckup(70)
-            elif Robot.shotzone == "R-turn":
-                Robot.curr_mission = "ApproachGoal"
-                clockwise = "Right"
-            elif Robot.shotzone == "L-turn":
+            elif Robot.shotzone == "R-turn-20":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
+                Robot.turn_angle = 200 # TODO Short Check turn angle 결정
+            elif Robot.shotzone == "L-turn":
+                if shot_count == 1 and shot_roi:
+                    shot_roi = False
+                Robot.curr_mission = "ApproachGoal"
+                clockwise = "Left"
+                Robot.turn_angle = 100 # TODO Short Check turn angle 결정
             else: # hole in
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
-            Robot.shotzone, frame, shot_power = Camera.longChecker(img)
+            if shot_count == 0:
+                Robot.shotzone, frame, shot_power = Camera.longChecker_par3_first_shot(img)
+            else:
+                Robot.shotzone, frame, shot_power = Camera.longChecker(img)
             if Robot.shotzone == "!!!Shot!!!":
+                if shot_power < 10:
+                    Robot.long_shot = False
+                else:
+                    Robot.long_shot = True
                 Robot.curr_mission = "Shot"
                 shot_direction = "Left"
             else:
@@ -108,8 +162,29 @@ if __name__ == "__main__":
                 Motion.neckup(Robot.neck_pitch)
                 if Robot.shotzone == "R-turn":
                     clockwise = "Right"
+                    Robot.turn_angle = 100
+                elif Robot.shotzone == "R-turn-20":
+                    clockwise = "Right"
+                    Robot.turn_angle = 20
+                elif Robot.shotzone == "R-turn-10":
+                    clockwise = "Right"
+                    Robot.turn_angle = 10
+                elif Robot.shotzone == "R-turn-5":
+                    clockwise = "Right"
+                    Robot.turn_angle = 5
+                elif Robot.shotzone == "L-turn":
+                    clockwise = "Left"
+                    Robot.turn_angle = 100
+                elif Robot.shotzone == "L-turn-20":
+                    clockwise = "Left"
+                    Robot.turn_angle = 20
+                elif Robot.shotzone == "L-turn-10":
+                    clockwise = "Left"
+                    Robot.turn_angle = 10
                 else:
                     clockwise = "Left"
+                    Robot.turn_angle = 5
+                    
         # 5. ApproachGoal
         elif Robot.curr_mission == "ApproachGoal":
             # goal을 찾아 한걸음 움직였으면 공과의 거리를 보정한다
@@ -118,8 +193,10 @@ if __name__ == "__main__":
         elif Robot.curr_mission == "Shot":
             shot_direction = "Left"
             # shot을 하면 다음 shot을 위해 공을 찾는다
-            Robot.curr_mission = "FindBall"
+            Robot.curr_mission = "ApproachBall"
             shot_count += 1
+            if shot_count == 1:
+                shot_roi = True
         # 7. Ceremony
         else:
             print("미션 종료")
@@ -139,10 +216,14 @@ if __name__ == "__main__":
         if Motion.getRx() and Robot.curr_mission != "ApproachBall":
             pass
         elif Robot.curr_mission == "FindBall":
-            Motion.init()
-            Motion.turn("LEFT", 45)
-            time.sleep(2)
-            Robot.neck_yaw = 0
+            if shot_count == 0 and Robot.neck_pitch != 70:
+                Robot.neck_pitch = 70
+                Motion.neckup(70)
+            else:
+                Motion.init()
+                Motion.turn("LEFT", 45)
+                time.sleep(1)
+                Robot.neck_yaw = 0
         # 2. ApproachBall
         elif Robot.curr_mission == "ApproachBall":
             (xmin, ymin) = ballBox1
@@ -172,30 +253,29 @@ if __name__ == "__main__":
                         Motion.init()
                     Robot.neck_pitch -= 5
                     Motion.neckup(Robot.neck_pitch)
+                elif Robot.robot_ball_distance < 9.5:
+                    if Motion.getRx():
+                        Motion.init()
+                    Motion.step("BACK")
                 elif Robot.robot_ball_distance > 18:
                     Motion.walk()
                 elif Robot.robot_ball_distance > 13:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "big")
-                    time.sleep(1)
-                elif Robot.robot_ball_distance > 12:
+                elif Robot.robot_ball_distance > 11:
                     if Motion.getRx():
                         Motion.init()
                     Motion.step("FRONT", "small")
-                    time.sleep(1)
                 elif xmean < 340:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("LEFT")
+                    time.sleep(0.5)
                 elif xmean > 360:
                     if Motion.getRx():
                         Motion.init()
                     Motion.crab("RIGHT")
-                elif Robot.robot_ball_distance < 12:
-                    if Motion.getRx():
-                        Motion.init()
-                    Motion.step("BACK")
                 else:
                     Motion.init()
                 Robot.neck_yaw = 0
@@ -205,7 +285,7 @@ if __name__ == "__main__":
                 Motion.init()
             Robot.neck_pitch = 45
             Motion.neckup(45)                
-            time.sleep(1)
+            time.sleep(0.7)
         # 4. LongCheck
         elif Robot.curr_mission == "LongCheck":
             if Motion.getRx():
@@ -222,23 +302,49 @@ if __name__ == "__main__":
             time.sleep(1)
             # hole이 공이 움직일 궤도 왼쪽에 있다면 반시계 방향으로 회전한다
             if clockwise == "Left":
-                Motion.circular_orbit("Left", False)
-                time.sleep(2) # 동작 안정성을 위한 대기
+                if Robot.turn_angle == 200:
+                    Motion.circular_orbit("Left", False)
+                    Motion.circular_orbit("Left", False)
+                    Motion.step("BACK")
+                    Motion.step("BACK")
+                    Motion.circular_orbit("Left", False)
+                elif Robot.turn_angle == 100:
+                    Motion.circular_orbit("Left", False)
+                else:
+                    Motion.circular_orbit_small("Left", Robot.turn_angle)
             else:
-                Motion.circular_orbit("Right", True)
-                time.sleep(2) # 동작 안정성을 위한 대기
+                if Robot.turn_angle == 100:
+                    Motion.circular_orbit("Right", True)
+                else:
+                    Motion.circular_orbit_small("Right", Robot.turn_angle)
+            time.sleep(1) # 동작 안정성을 위한 대기
         # 6. Shot
         elif Robot.curr_mission == "Shot":
             if Motion.getRx():
                 Motion.init()
             Robot.neck_yaw = 0
             Motion.view(0)
-            Robot.neck_pitch = 70
-            Motion.neckup(70)
             if shot_direction == "Left":
+                if shot_count == 0:
+                    shot_power = 15 # TODO 첫 샷 세기 수정
                 Motion.shot("LEFT", shot_power)
             else:
                 Motion.shot("RIGHT", shot_power)
+            if Robot.long_shot:
+                if shot_power < 14:
+                    Robot.neck_pitch = 60
+                elif shot_power < 19:
+                    Robot.neck_pitch = 70
+                else:
+                    Robot.neck_pitch = 80
+                Motion.neckup(80)
+                Motion.turn("LEFT", 45)
+                Motion.turn("LEFT", 45)
+            else:
+                if shot_direction == "Left":
+                    Motion.turn("LEFT", 20)
+                else:
+                    Motion.turn("RIGHT", 20)
         # 7. Ceremony
         else:
             if Motion.getRx():
