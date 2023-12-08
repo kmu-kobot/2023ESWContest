@@ -959,11 +959,11 @@ class Camera:
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
         if x<300:
-            return "LL-turn", img
+            return "L-turn", img
         elif x<560:
-            return "LLL-turn", img
+            return "LL-turn", img
         else:
-            return "LLLL-turn", img
+            return "LL-turn", img
     
 if __name__ == "__main__":
     camera = Camera()
