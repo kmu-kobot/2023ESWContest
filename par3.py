@@ -112,6 +112,8 @@ if __name__ == "__main__":
                 elif Robot.shotzone == "LLL-turn":
                     Motion.circular_orbit("Left", False)
                     Motion.circular_orbit("Left", False)
+                    Motion.step("BACK")
+                    Motion.step("BACK")
                     Motion.circular_orbit("Left", False)
                 elif Robot.shotzone == "LLLL-turn":
                     Motion.circular_orbit("Left", False)

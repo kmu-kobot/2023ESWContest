@@ -512,9 +512,9 @@ class Camera:
         if ret == True and ( (-81120+240*x)/71 > y > (-5600+16*x)/7):
             dist = ball_distance(70, y)
             if dist > 130:
-                power = 22
+                power = 20
             elif dist > 110:
-                power = 21
+                power = 20
             elif dist > 80:
                 power = 20
             elif dist > 75:
@@ -931,11 +931,11 @@ class Camera:
         # x center
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if ret == True and 250<y<400 and x<255:
+        if ret == True and 250<y<400 and x<252:
             return "!!!Shot!!!", img
-        elif ret == True and 250<y<400 and x>420:
+        elif ret == True and 250<y<400 and x>423:
             return "!!!R-Shot!!!", img
-        elif ret == True  and 250<=y<=400 and 255<=x<=420:
+        elif ret == True  and 242<=y<=408 and 252<=x<=423:
             return "!!!Goal!!!", img
         elif ret == True and y <= 250 and x<333:
             return "L-turn", img
@@ -954,16 +954,16 @@ class Camera:
             return "NoHole", img
 
         # shot y boundary
-        cv2.line(img, (300, 0), (300, 480), (255,0,0), 2)
+        cv2.line(img, (280, 0), (280, 480), (255,0,0), 2)
         cv2.line(img, (560, 0), (560, 480), (255,0,0), 2)
         
         cv2.circle(img, (x,y), 3, (0,0,255), 3)
-        if x<300:
-            return "L-turn", img
+        if x<280:
+            return "LLL-turn", img
         elif x<560:
-            return "LL-turn", img
+            return "LLL-turn", img
         else:
-            return "LL-turn", img
+            return "LLLL-turn", img
     
 if __name__ == "__main__":
     camera = Camera()
