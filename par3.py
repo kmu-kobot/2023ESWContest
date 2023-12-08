@@ -132,13 +132,13 @@ if __name__ == "__main__":
                     shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
-                Robot.turn_angle = 20 # TODO Short Check turn angle 결정
+                Robot.turn_angle = 200 # TODO Short Check turn angle 결정
             elif Robot.shotzone == "L-turn":
                 if shot_count == 1 and shot_roi:
                     shot_roi = False
                 Robot.curr_mission = "ApproachGoal"
                 clockwise = "Left"
-                Robot.turn_angle = 200 # TODO Short Check turn angle 결정
+                Robot.turn_angle = 100 # TODO Short Check turn angle 결정
             else: # hole in
                 Robot.curr_mission = "Ceremony"            
         # 4. LongCheck
