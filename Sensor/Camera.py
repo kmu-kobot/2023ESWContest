@@ -335,7 +335,7 @@ class Camera:
         
         cv2.circle(img, (x,y), 3, (0,255,0), 3)
         
-        if ret == True and ( ((4800-32*x)/7) < y < ((4320-16*x)/5) ):
+        if ret == True and ( ((4800-32*x)/7) < y < ((11040-48*x)/11) ):
             return "!!!R-Shot!!!", img, 20
         elif ret == True and y <= (4800-32*x)/7:
             if y < (-5280+48*x):  
@@ -344,12 +344,12 @@ class Camera:
                 return "R-turn-10", img, None
             else:
                 return "R-turn-20", img, None
-        elif ret == True and y >= (4320-16*x)/5:
-            if y < (2400-8*x)/3:
+        elif ret == True and y >= (11040-48*x)/11:
+            if y < (14880-48*x)/19:
                 return "L-turn-5", img, None
-            elif y < (4800-12*x)/7:
+            elif y < (720-2*x):
                 return "L-turn-10", img, None
-            elif y < (1920-4*x)/3:
+            elif y < (11040-24*x)/17:
                 return "L-turn-20", img, None
             else:
                 return "L-turn", img, None
