@@ -28,7 +28,7 @@ OpenCV, Python, bas
     - `Camera.py`: 영상처리 파일
   - **Brain**
     - `Robot.py`: 미션에 필요한 변수를 관리하는 파일
-    - `Robot_ball_distance.py`: 목 각도 별로 공과 로봇 사이 거리 계산.
+    - `Robot_ball_distance.py`: 목 각도 별로 공과 로봇 사이 거리 계산
   - `par3.py`: 파3 경기 인지, 판단, 제어
   - `par4.py`: 파4 경기 인지, 판단, 제어
 
